@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>Oregon Procurement Opportunities</title>
+        <link>http://OregonProcurementSearch.com/</link>
+        <description>This is a searchable, RSSable database of procurement opportunities in Oregon, including cities, counties, regional governments, state-level agencies, and private companies.</description>
+        <language>en-us</language>
+        @foreach (var res in Model)
+        {
+            @:<item>
+            @:    <title>@res.Title</title>
+            @:    <description>@res.Description</description>
+            @:    <link>http://oregonprocurementsearch.com/view/@res.Id</link>
+            @:    <pubDate>@res.Date</pubDate>
+            @:</item>
+        }
+    </channel>
+</rss>
+@{ Layout = null; }

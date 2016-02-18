@@ -1,0 +1,313 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic);
+
+* { /* for sticky footer */
+    margin: 0;
+}
+
+html, body { /* for sticky footer */
+    height: 100%;
+}
+
+.wrapper { /* for sticky footer */
+    min-height: 100%;
+    margin: 0 auto -65px;
+}
+
+.footer, .push { /* for sticky footer */
+    min-height: 65px;
+}
+
+
+body {
+    color: #555;
+    background-color: #FFFBF6;
+}
+
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    font-family: 'Open Sans', sans-serif;
+}
+
+input[type=text] {
+    border: solid thin #333;
+    color: #777;
+    box-sizing: border-box;
+    border-radius: 2px;
+    outline: medium none;
+}
+
+
+.l-box {
+    padding: 2em;
+}
+
+.header .rss {
+    float: right;
+}
+
+.header .pure-menu {
+    border-bottom: solid thin #CCCCCC;
+    border-radius: 0;
+}
+
+.minisearch {
+}
+
+.minisearch input[type=text] {
+    height: 37px;
+    font-size: 14pt;
+    vertical-align: top;
+    border-color: #ccc;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 500px;
+}
+
+.minisearch .logo {
+    padding-right: 10px;
+    padding-top: 1em;
+    float: left;
+}
+
+.minisearch form {
+    padding: 1em 0;
+}
+
+.minisearch .search-container {
+    margin-right: 120px;
+}
+
+.pure-menu-link {
+    padding: 1em 1em;
+}
+
+#main-logo-container {
+    text-align: center;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+}
+
+.content-box .head {
+    font-size: 26pt;
+    font-weight: 500;
+    text-align: center;
+    line-height: 100%;
+}
+
+.content-box input {
+    width: 95%;
+    font-size: 18pt;
+    padding: 6px 4px;
+}
+
+.content-box button {
+    margin: 1em auto 0 auto;
+}
+
+.content-box form {
+    text-align: center;
+}
+
+.green {
+    color: #486A29;
+}
+
+a {
+    color: #666;
+}
+
+.content-box p {
+    font-size: 10.5pt;
+    margin: 1em auto;
+}
+
+.content-box p.tip {
+    font-style: italic;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    color: #B1AAA0;
+}
+
+.footnote p.tip {
+    font-style: italic;
+    font-size: 10.5pt;
+}
+
+
+
+.pure-g > div {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.l-box {
+    padding: 1em;
+}
+
+.pages {
+    font-size: 10pt;
+    margin: .5em auto 3em;
+}
+
+.pages .head {
+    margin: .5em;
+    padding: .5em 0;
+    text-transform: uppercase;
+    border-top: solid thin #ccc;
+    border-bottom: solid thin #ccc;
+    color: #111;
+}
+
+
+.search-rss {
+    margin: 1em;
+    font-size: 11pt;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 120%;
+    background-color: #F8F1E8;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.search-rss p {
+    padding: 0.5em;
+}
+
+.search-rss img {
+    float: left;
+    padding-right: 0.5em;
+}
+
+.search-results {
+    margin: 1.5em 1em;
+}
+
+.search-results .head {
+    font-size: 18pt;
+    color: #4B4642;
+}
+
+.search-results .count {
+    font-size: 13pt;
+}
+
+.search-results .results {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.search-results .results .item {
+    margin-top: 20px;
+}
+
+.search-results .results .item .title {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #4B4642;
+}
+
+.search-results .results .item .title a {
+    color: #555;
+}
+
+.search-results .results .item .preview {
+    font-size: 12pt;
+    color: #4B4642;
+}
+
+.search-results .results .item .link a {
+    font-size: 12pt;
+    color: #486A28;
+}
+
+
+.footer {
+    background: #E8E0D6;
+    font-size: 10.5pt;
+}
+
+.footer .steve {
+    font-weight: 600;
+}
+
+
+.view-box h2 {
+    font-size: 17pt;
+    font-weight: bold;
+    margin: 1em auto;
+}
+
+.view-box .title {
+    font-size: 14pt;
+}
+
+.view-box iframe {
+    margin: 1em auto;
+    width: 99%;
+    height: 300px;
+    border: solid thin black;
+}
+
+.view-box .view-action-steps {
+    line-height: 150%;
+    font-size: 14pt;
+}
+
+.view-box .view-action-steps .attention {
+    font-weight: bold;
+}
+
+.view-box .view-action-steps ol {
+    list-style-type: decimal;
+    list-style-position: inside;
+    padding: 1em;
+}
+
+.view-box .attachments {
+    padding-bottom: 1em;
+}
+
+.view-box .share-title {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+
+@media screen and (max-width: 48em) {
+    /* small screens */
+    .small-hide {
+	display: none !important;
+    }
+
+    .view-box {
+	margin: 2em 1em 1em;
+    }
+
+    .search-rss {
+    }
+
+    .minisearch input[type=text] {
+    }
+
+}
+
+@media screen and (min-width: 48em) {
+    /* large screens */
+    .large-hide {
+	display: none !important;
+    }
+
+    .view-box {
+	margin: 4em 3em 2em;
+    }
+
+    .search-rss {
+	width: 60%;
+    }
+
+    .minisearch input[type=text] {
+    }
+}

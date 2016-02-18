@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Views/Shared/_Search.cshtml";
+}
+<div class="search-rss">
+    <a href="/rss/@ViewBag.searchUrl">
+        <img src="/images/rss-box.png"
+             alt="RSS for this search" height="40" width="40">
+    </a>
+    <p class="green">
+        You can save this search as an RSS feed and receive notices
+        when opportunities match your keywords.
+    </p>
+</div>
+
+<div class="search-results">
+    <p class="head">
+        <b>RESULTS for</b> @ViewBag.searchString:
+    </p>
+    <p class="count">@ViewBag.searchCount results</p>
+
+    <div class="results">
+        @foreach (var res in Model.searchResults)
+        {
+        <div class="item">
+            <span class="title"><a href="/details/@res.Id">@res.Title</a></span><br>
+            <div class="preview">@res.Description</div>
+            <span class="link"><a href="/details/@res.Id">View details</a></span>
+        </div>
+        }
+    </div>
+</div>
+
+
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">What is RSS?</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>

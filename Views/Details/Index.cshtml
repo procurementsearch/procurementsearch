@@ -1,0 +1,62 @@
+﻿<div class="view-box">
+    <h2>Viewing @Model.sourceName Procurement Opportunity:</h2>
+    <div class="title">
+        @Model.title
+    </div>
+    <iframe src="/details/@Model.id/iframe"></iframe>
+
+    <div class="view-action-steps">
+        @Html.Raw(Model.actionSteps)
+    </div>
+
+    @if (Model.attachments.Length > 0)
+    {
+    <div class="attachments">
+        Attachments:
+        <ul>
+            @foreach (var res in Model.attachments)
+            {
+            <li><a href="@res.Url">@res.Title</a> @res.Filetype</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <p class="share-title">
+        Share with a friend!
+    </p>
+    <p>
+        <span class="st_sharethis_large" displaytext="ShareThis"></span>
+        <span class="st_facebook_large" displaytext="Facebook"></span>
+        <span class="st_twitter_large" displaytext="Tweet"></span>
+        <span class="st_linkedin_large" displaytext="LinkedIn"></span>
+        <span class="st_googleplus_large" displaytext="Google +"></span>
+        <span class="st_email_large" displaytext="Email"></span>
+    </p>
+</div>
+
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">What is RSS?</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>
