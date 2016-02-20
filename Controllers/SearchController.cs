@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 
 using SteveHavelka.SimpleFTS;
 using SearchProcurement.Models;
+using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
@@ -23,6 +24,12 @@ namespace SearchProcurement.Controllers
             ViewBag.searchString = s.searchString;
             ViewBag.searchCount = s.searchCount;
             ViewBag.searchUrl = s.searchUrl;
+
+            // Update the search results views
+            foreach(searchItem my_s in s.searchResults)
+            {
+                AccessesHelper.updateSearch(my_s.Id);
+            }
 
             // Load the model
             return View(s);

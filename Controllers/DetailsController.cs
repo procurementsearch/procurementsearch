@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 
 using SearchProcurement.Models;
+using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
@@ -24,6 +25,9 @@ namespace SearchProcurement.Controllers
             // Get the model, so we can get the source from it
             Details d = new Details(id);
             frameDetails f = d.loadFrameData();
+
+            // Update the access count
+            AccessesHelper.updateDetails(id);
 
             // Load the model
             switch(f.sourceId)

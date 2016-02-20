@@ -35,6 +35,11 @@ namespace SearchProcurement.Models
 		public attachment[] attachments { get; private set; }
 
 
+		/**
+		 * The procurement listing details class constructor
+		 *
+		 * @param my_id  The listing ID to retreive details for
+		 */
 		public Details(int my_id)
 		{
 			id = my_id;
@@ -88,7 +93,12 @@ namespace SearchProcurement.Models
 
 		}
 
-		// Load the embedded frame data
+
+		/**
+		 * Load the embedded frame data for the procurement object
+		 *
+		 * @return the frameDetails structure
+		 */
 		public frameDetails loadFrameData()
 		{
 			// Set up the database connection, there has to be a better way!
@@ -124,7 +134,12 @@ namespace SearchProcurement.Models
 		}
 
 
-		// Load the attachments
+		/**
+		 * Load the attachments for a given procurement listing
+		 *
+		 * @param id  The listing ID to retrieve attachments for
+		 * @return The attachments for the procurement listing
+		 */
 		private attachment[] loadAttachments(int id)
 		{
 			List<attachment> adata = new List<attachment>();

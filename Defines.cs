@@ -17,12 +17,13 @@ namespace SearchProcurement
 		public const int PortlandStateUniversity = 8;
 		public const int PortlandStateUniversityConstructionContracts = 9;
 		public const int CityOfBeaverton = 10;
-		public const int PortOfPortland = 11;
-		public const int OregonHealthAuthority = 12;
+		public const int OregonDepartmentOfCorrections = 11;
+		public const int ChemeketaCommunityCollege = 12;
+		public const int PortOfPortland = 13;
 
 	    /* site-specific sources */
-	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 8, 9, 10 };
-	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 8, 9, 10, 11, 13 };
+	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 8, 9, 10, 11, 12, 13 };
 
 		/* My sources */
 		public static readonly int[] mySources = Oregon_Sources;

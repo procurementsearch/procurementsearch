@@ -6,8 +6,8 @@ using System.Text;
 using System.ServiceModel.Syndication;
 using Microsoft.AspNet.Mvc;
 
-using SearchProcurement.Helpers;
 using SearchProcurement.Models;
+using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
@@ -46,6 +46,9 @@ namespace SearchProcurement.Controllers
                     item.Id.ToString(),
                     item.Created);
                 items.Add(myItem);
+
+                // Update the number of accesses by RSS for the item
+                AccessesHelper.updateRss(item.Id);
             }
 
             // Create the syndication feed
