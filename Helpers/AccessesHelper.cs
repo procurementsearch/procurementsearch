@@ -12,7 +12,7 @@ namespace SearchProcurement.Helpers
 		 *
 		 * @param id  The listing ID
 		 */
-		public static void updateSearch(int id)
+		public static void updateForSearch(int id)
 		{
 			incrementCounter(id, "search");
 		}
@@ -22,7 +22,7 @@ namespace SearchProcurement.Helpers
 		 *
 		 * @param id  The listing ID
 		 */
-		public static void updateDetails(int id)
+		public static void updateForDetails(int id)
 		{
 			incrementCounter(id, "viewed");
 		}
@@ -32,7 +32,7 @@ namespace SearchProcurement.Helpers
 		 *
 		 * @param id  The listing ID
 		 */
-		public static void updateRss(int id)
+		public static void updateForRss(int id)
 		{
 			incrementCounter(id, "rss");
 		}

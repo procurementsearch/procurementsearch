@@ -28,7 +28,7 @@ namespace SearchProcurement.Controllers
             // Update the search results views
             foreach(searchItem my_s in s.searchResults)
             {
-                AccessesHelper.updateSearch(my_s.Id);
+                AccessesHelper.updateForSearch(my_s.Id);
             }
 
             // Load the model

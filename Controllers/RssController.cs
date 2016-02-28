@@ -48,7 +48,7 @@ namespace SearchProcurement.Controllers
                 items.Add(myItem);
 
                 // Update the number of accesses by RSS for the item
-                AccessesHelper.updateRss(item.Id);
+                AccessesHelper.updateForRss(item.Id);
             }
 
             // Create the syndication feed
