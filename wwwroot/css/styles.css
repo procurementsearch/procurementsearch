@@ -223,6 +223,10 @@ a {
     color: #486A28;
 }
 
+.search-results .results .item .source a {
+    font-size: 12pt;
+    color: #BC800F;
+}
 
 .footer {
     background: #E8E0D6;

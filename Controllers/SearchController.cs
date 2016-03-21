@@ -12,13 +12,17 @@ namespace SearchProcurement.Controllers
 {
     public class SearchController : Controller
     {
-        public IActionResult Index(string kw)
+        public IActionResult Index(string kw, int? source)
         {
-            if( kw == null )
+            if( kw == null && source == null)
                 return Redirect("/");
 
             // Get the search model ready
-            Search s = new Search(kw);
+            Search s;
+            if( kw == null )
+                s = Search.loadBySource(source.GetValueOrDefault());
+            else
+                s = new Search(kw);
 
             // Load up some of the data
             ViewBag.searchString = s.searchString;
