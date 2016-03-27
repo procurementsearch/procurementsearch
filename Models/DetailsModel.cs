@@ -168,16 +168,17 @@ namespace SearchProcurement.Models
 							// And load the data into the attchment
 							attachment a;
 							a.Title = r.GetString(0);
-							a.Url = r.GetString(2);
+							a.Url = r.IsDBNull(2) ? "" : r.GetString(2);
 							a.Filetype = r.GetString(1);
 							adata.Add(a);
 						}
+
+            			// and we're done, we have attachments
+            			return adata.ToArray();
 					}
 				}
 			}
 
-			// and we're done, we have attachments
-			return adata.ToArray();
 		}
 
 	}
