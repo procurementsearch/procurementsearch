@@ -58,8 +58,9 @@ input[type=text] {
     font-size: 14pt;
     vertical-align: top;
     border-color: #ccc;
+    color: #333;
     margin: 0;
-    padding: 0;
+    padding: 0 2px;
     width: 100%;
     max-width: 500px;
 }
