@@ -37,9 +37,15 @@ namespace SearchProcurement.Controllers
                     ViewBag.contents = f.contents;
                     return View("~/Views/Details/Templates/Pdc.cshtml");
 
+                // PDC gets a custom template
+                case Defines.PortOfPortland:
+                    ViewBag.contents = f.contents;
+                    return View("~/Views/Details/Templates/Portofportland.cshtml");
+
                 // Orpin-sourced data gets a modified raw_contents template
                 case Defines.Metro:
                 case Defines.PortlandStateUniversity:
+                case Defines.OregonDepartmentOfCorrections:
                     ViewBag.rawContents = f.rawContents.Replace("<head>", "<head><base href=\"http://orpin.oregon.gov/\">");
                     return View("~/Views/Details/Templates/Orpin.cshtml");
 
