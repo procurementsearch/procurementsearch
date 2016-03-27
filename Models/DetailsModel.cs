@@ -56,8 +56,8 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select s.source_name, l.title, s.action_steps_text, " +
-	                    "l.origin_id, l.origin_opportunity_no, l.contact from listing as l " +
-	                    "left join source as s on l.source_id = s.source_id " +
+	                    "l.origin_id, l.origin_opportunity_no, l.contact, s.show_attachments " +
+                        "from listing as l left join source as s on l.source_id = s.source_id " +
 	                    "where l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
@@ -83,8 +83,12 @@ namespace SearchProcurement.Models
 								Replace("%CONTACT%", r.IsDBNull(5) ? "" : r.GetString(5));
 						}
 	
-						// And, get the attachments!
-						attachments = loadAttachments(my_id);
+						// And, get the attachments if the source wants to show them!
+                        if( r.GetInt32(6) == 1 )
+    						attachments = loadAttachments(my_id);
+                        else
+                            attachments = new attachment[] {};
+
 					}
 
 				}
