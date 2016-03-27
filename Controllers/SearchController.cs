@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Http.Features;
 
 using SteveHavelka.SimpleFTS;
 using SearchProcurement.Models;
@@ -32,8 +33,11 @@ namespace SearchProcurement.Controllers
             // Update the search results views
             foreach(searchItem my_s in s.searchResults)
             {
-                AccessesHelper.updateForSearch(my_s.Id);
+                LogHelper.updateSearchAccesses(my_s.Id);
             }
+
+            // And log the search terms
+            LogHelper.logSearchTerms(kw, s.searchCount, HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString());
 
             // Load the model
             return View(s);

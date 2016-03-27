@@ -27,7 +27,7 @@ namespace SearchProcurement.Controllers
             frameDetails f = d.loadFrameData();
 
             // Update the access count
-            AccessesHelper.updateForDetails(id);
+            LogHelper.updateDetailsAccesses(id);
 
             // Load the model
             switch(f.sourceId)

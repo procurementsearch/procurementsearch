@@ -31,7 +31,7 @@ namespace SearchProcurement.Helpers
                 items.Add(myItem);
 
                 // Update the number of accesses by RSS for the item
-                AccessesHelper.updateForRss(item.Id);
+                LogHelper.updateRssAccesses(item.Id);
             }
 
             // Create the syndication feed
