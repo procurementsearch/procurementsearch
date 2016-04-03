@@ -118,9 +118,13 @@ a {
     color: #666;
 }
 
-.content-box p, .content-box ul li {
+.content-box p {
     font-size: 10.5pt;
     margin: 1em auto;
+}
+
+.content-box ul li {
+    font-size: 10.5pt;
 }
 
 .content-box p.tip {
