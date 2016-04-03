@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Text;
+using System.IO;
 using System.ServiceModel.Syndication;
 
 namespace SearchProcurement.Helpers
@@ -40,15 +41,15 @@ namespace SearchProcurement.Helpers
 
             // And generate the text itself
             var rss = new Rss20FeedFormatter(feed);
-            var rss_output = new StringBuilder();
-            using (var writer = XmlWriter.Create(rss_output, new XmlWriterSettings { Indent = true }))
+            using (var stream = new MemoryStream())
+            using (var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true }))
             {
                 rss.WriteTo(writer);
                 writer.Flush();
-            }
 
-            // And we're done here
-            return rss_output.ToString();
+                // And we're done here
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
 
         }
 

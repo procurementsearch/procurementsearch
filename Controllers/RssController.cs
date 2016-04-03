@@ -40,7 +40,7 @@ namespace SearchProcurement.Controllers
             string rss = RssHelper.makeRss(myTitle, rssItems);
 
             // Output the RSS
-            Response.ContentType = "application/rss+xml";
+            Response.ContentType = "application/rss+xml; charset=utf-8";
             return Content(rss);
         }
 
