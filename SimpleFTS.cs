@@ -34,7 +34,9 @@ namespace SteveHavelka.SimpleFTS
 		public string[] prepareWords(string stg)
 		{
 			/* strip out junk, split on spaces, remove empty elements */
-			stg = Regex.Replace(stg, @"[^\w]", " ", RegexOptions.None);
+			stg = Regex.Replace(stg, @"(\s|-)+", " ");
+			stg = Regex.Replace(stg, @"'+", "");
+			stg = Regex.Replace(stg, @"[^\w ]+", "", RegexOptions.None);
 
 			/* failsafe */
 			if( stg.Length == 0 || stg == " " )
