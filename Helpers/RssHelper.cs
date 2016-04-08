@@ -42,13 +42,16 @@ namespace SearchProcurement.Helpers
             // And generate the text itself
             var rss = new Rss20FeedFormatter(feed);
             using (var stream = new MemoryStream())
-            using (var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true }))
             {
-                rss.WriteTo(writer);
-                writer.Flush();
+                using (var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true }))
+                {
+                    rss.WriteTo(writer);
+                    writer.Flush();
 
-                // And we're done here
-                return Encoding.UTF8.GetString(stream.ToArray());
+                    // And we're done here
+                    return Encoding.UTF8.GetString(stream.ToArray());
+                }
+                
             }
 
         }
