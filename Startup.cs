@@ -86,26 +86,6 @@ namespace SearchProcurement.com
                     name: "Rss feed",
                     template: "rss",
                     defaults: new { controller = "Rss", action = "Index" });
-                routes.MapRoute(
-                    name: "about",
-                    template: "about",
-                    defaults: new { controller = "Static", action = "About" });
-                routes.MapRoute(
-                    name: "faq",
-                    template: "faq",
-                    defaults: new { controller = "Static", action = "Faq" });
-                routes.MapRoute(
-                    name: "whatisrss",
-                    template: "what-is-rss",
-                    defaults: new { controller = "Static", action = "WhatIsRss" });
-                routes.MapRoute(
-                    name: "resources",
-                    template: "resources",
-                    defaults: new { controller = "Static", action = "Resources" });
-                routes.MapRoute(
-                    name: "contact",
-                    template: "contact",
-                    defaults: new { controller = "Static", action = "Contact" });
             });
         }
 
