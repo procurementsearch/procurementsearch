@@ -26,9 +26,9 @@ namespace SearchProcurement.Helpers
                 SyndicationItem myItem = new SyndicationItem(
                     item.Title,
                     item.Description,
-                    new Uri(Defines.RssDetailsUrl + "/" + item.Id.ToString()),
-                    item.Id.ToString(),
-                    item.Created);
+                    new Uri(Defines.RssDetailsUrl + "/" + item.Id.ToString()));
+                myItem.Id = item.Id.ToString();
+                myItem.PublishDate = item.Created;
                 items.Add(myItem);
 
                 // Update the number of accesses by RSS for the item
