@@ -3,7 +3,7 @@
     <div class="title">
         @Model.title
     </div>
-    <iframe src="/details/@Model.id/iframe"></iframe>
+    <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
 
     <div class="view-action-steps">
         @Html.Raw(Model.actionSteps)
@@ -35,6 +35,17 @@
     </p>
 </div>
 
+<script type="text/javascript">
+function resizedetailsframe(){
+    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var buffer = 150; // how many pixels to subtract from window height to fit the iframe
+    if( h <= 450 )
+        document.getElementById('detailsframe').style.height = (h - buffer) + 'px';
+    else
+        document.getElementById('detailsframe').style.height = '300px';
+};
+window.onload = window.onresize = resizedetailsframe;
+</script>
 
 
 <div class="pure-g">
