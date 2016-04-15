@@ -138,6 +138,7 @@ a {
 .footnote p.tip {
     font-style: italic;
     font-size: 10.5pt;
+    padding-top: 2em;
 }
 
 
@@ -150,6 +151,24 @@ a {
 
 .l-box {
     padding: 1em;
+}
+
+.l2-box {
+    padding: 1.5em;
+}
+
+.footer .listhead {
+    font-weight: bold;
+}
+
+.footer ul {
+    padding: 0;
+}
+
+.footer ul li {
+    list-style-type: none;
+    font-size: 9pt;
+    line-height: 150%;
 }
 
 .pages {
