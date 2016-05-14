@@ -10,6 +10,8 @@ namespace SearchProcurement.Controllers
     {
         public IActionResult Index()
         {
+            // The home page has a default title prefix
+            ViewBag.extraTitle = "Your one-stop shop for discovering government contracting opportunities in Oregon";
             return View();
         }
 

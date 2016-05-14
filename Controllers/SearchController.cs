@@ -20,10 +20,15 @@ namespace SearchProcurement.Controllers
 
             // Get the search model ready
             Search s;
-            if( kw == null )
+            if( kw == null ) {
                 s = Search.loadBySource(source.GetValueOrDefault());
+                ViewBag.extraTitle = "Showing all " + s.searchString + " opportunities";
+            }
             else
+            {
                 s = new Search(kw);
+                ViewBag.extraTitle = "Searching Opportunities: " + s.searchString;
+            }
 
             // Load up some of the data
             ViewBag.searchString = s.searchString;

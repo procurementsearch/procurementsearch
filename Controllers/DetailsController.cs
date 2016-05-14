@@ -15,6 +15,7 @@ namespace SearchProcurement.Controllers
         {
             // Get the details model
             Details d = new Details(id);
+            ViewBag.extraTitle = d.title;
 
             // Load the model
             return View(d);
