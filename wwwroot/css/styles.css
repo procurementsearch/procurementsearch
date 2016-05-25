@@ -298,6 +298,10 @@ a {
     padding-bottom: 1em;
 }
 
+.view-box p {
+    margin: 1em auto;
+}
+
 .view-box .share-title {
     font-size: 14pt;
     font-weight: bold;
