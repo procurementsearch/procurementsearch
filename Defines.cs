@@ -22,8 +22,8 @@ namespace SearchProcurement
 		public const int PortOfPortland = 13;
 
 	    /* site-specific sources */
-	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 8, 10, 11, 13 };
-	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 8, 10, 11, 12, 13 };
+	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 6, 8, 10, 11, 13 };
+	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 6, 8, 10, 11, 12, 13 };
 
 		/* My sources */
 		public static readonly int[] mySources = Oregon_Sources;

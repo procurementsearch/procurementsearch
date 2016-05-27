@@ -55,8 +55,14 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select s.source_name, l.title, s.action_steps_text, " +
-	                    "l.origin_id, l.origin_opportunity_no, l.contact, s.show_attachments " +
+					cmd.CommandText = "select s.source_name, " + // 0
+                        "l.title, " + // 1
+                        "s.action_steps_text, " + // 2
+	                    "l.origin_id, " + // 3
+                        "l.origin_url, " + // 4
+                        "l.origin_opportunity_no, " + // 5
+                        "l.contact, " + // 6
+                        "s.show_attachments " + // 7
                         "from listing as l left join source as s on l.source_id = s.source_id " +
 	                    "where l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -79,12 +85,13 @@ namespace SearchProcurement.Models
 							actionSteps = r.GetString(2).
 								Replace("%TITLE%", title).
 								Replace("%ORIGIN_ID%", r.GetString(3)).
-								Replace("%ORIGIN_OPPORTUNITY_NO%", r.IsDBNull(4) ? "" : r.GetString(4)).
-								Replace("%CONTACT%", r.IsDBNull(5) ? "" : r.GetString(5));
+								Replace("%ORIGIN_OPPORTUNITY_NO%", r.IsDBNull(5) ? "" : r.GetString(5)).
+								Replace("%ORIGIN_URL%", r.IsDBNull(4) ? "" : r.GetString(4)).
+								Replace("%CONTACT%", r.IsDBNull(6) ? "" : r.GetString(6));
 						}
 	
 						// And, get the attachments if the source wants to show them!
-                        if( r.GetInt32(6) == 1 )
+                        if( r.GetInt32(7) == 1 )
     						attachments = loadAttachments(my_id);
                         else
                             attachments = new attachment[] {};
