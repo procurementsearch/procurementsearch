@@ -56,6 +56,45 @@ namespace SearchProcurement.Helpers
 		public static void updateDetailsAccesses(int id)
 		{
 			incrementCounter(id, "viewed");
+
+            DateTime my_date = DateTime.Today;
+
+			// Set up the database connection, there has to be a better way!
+			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "select count(*) from detailslog where year = @y and month = @m and listing_id = @id";
+					cmd.Parameters.AddWithValue("@y", my_date.Year);
+					cmd.Parameters.AddWithValue("@m", my_date.Month);
+					cmd.Parameters.AddWithValue("@id", id);
+					cmd.Prepare();
+
+                    // Do we need to add a detailslog row for this entry?
+                    if( Convert.ToInt32(cmd.ExecuteScalar()) == 0 )
+                    {
+                        cmd.CommandText = "insert into detailslog (year, month, listing_id, views) values (@y, @m, @id, 1)";
+                        cmd.Prepare();
+                        cmd.ExecuteScalar();
+                    }
+                    else
+                    {
+                        // No, we have a row, just update
+                        cmd.CommandText = "update detailslog set views = views + 1 where year = @y and month = @m and listing_id = @id";
+                        cmd.Prepare();
+                        cmd.ExecuteScalar();
+                    }
+
+				}
+
+			}
+
 		}
 
 		/**
