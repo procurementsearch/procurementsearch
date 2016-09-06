@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 using SearchProcurement.Models;
 using SearchProcurement.Helpers;

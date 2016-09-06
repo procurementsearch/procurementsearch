@@ -4,7 +4,7 @@ namespace SearchProcurement
 	static class Defines
 	{
 		/* The database connection string */
-		public const string myConnectionString = "server=127.0.0.1;uid=root;pwd=toor;database=rss_procure;";
+		public const string myConnectionString = "server=127.0.0.1;uid=root;pwd=toor;database=rss_procure;sslmode=none;";
 
 		/* The sources */
 		public const int PDC = 1;
