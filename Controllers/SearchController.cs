@@ -43,7 +43,7 @@ namespace SearchProcurement.Controllers
 
             // And log the search terms
             string kwlog = (kw == null) ? "source:" + s.searchString : "kw:" + kw;
-            LogHelper.logSearchTerms(kwlog, s.searchCount, HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString());
+            LogHelper.logSearchTerms(kwlog, s.searchCount, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
 
             // Load the model
             return View(s);
