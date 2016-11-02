@@ -33,20 +33,31 @@ namespace SearchProcurement.Controllers
             // Load the model
             switch(f.sourceId)
             {
+                // Oregon Department of Transportation EBIDS gets a custom template
+                case Defines.OregonDepartmentOfTransportationEBIDS:
+                    ViewBag.contents = f.contents;
+                    return View("~/Views/Details/Templates/OdotEBIDS.cshtml");
+
+                // Port of Portland gets a custom template
+                case Defines.PortOfPortland:
+                    ViewBag.contents = f.contents;
+                    return View("~/Views/Details/Templates/Portofportland.cshtml");
+
                 // PDC gets a custom template
                 case Defines.PDC:
                     ViewBag.contents = f.contents;
                     return View("~/Views/Details/Templates/Pdc.cshtml");
 
-                // PDC gets a custom template
-                case Defines.PortOfPortland:
+                // PPS gets a custom template
+                case Defines.PortlandPublicSchools:
                     ViewBag.contents = f.contents;
-                    return View("~/Views/Details/Templates/Portofportland.cshtml");
+                    return View("~/Views/Details/Templates/Pps.cshtml");
 
                 // Orpin-sourced data gets a modified raw_contents template
                 case Defines.Metro:
                 case Defines.PortlandStateUniversity:
                 case Defines.OregonDepartmentOfCorrections:
+                case Defines.OregonDepartmentOfTransportation:
                     ViewBag.rawContents = f.rawContents.Replace("<head>", "<head><base href=\"http://orpin.oregon.gov/\">");
                     return View("~/Views/Details/Templates/Orpin.cshtml");
 

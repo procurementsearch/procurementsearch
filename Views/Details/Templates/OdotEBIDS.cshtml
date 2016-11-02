@@ -1,0 +1,20 @@
+@{
+    Layout = null;
+}
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<style>
+body {
+  font-family: 'Open Sans', Arial, sans;
+  padding: 1em;
+}
+</style>
+</head>
+<body>
+    <img src="/images/odot-logo-bw-small.png"><br>
+    <p>
+        @Html.Raw(ViewBag.contents)
+    </p>
+</body>
+</html>
