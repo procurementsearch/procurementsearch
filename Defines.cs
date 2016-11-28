@@ -25,8 +25,8 @@ namespace SearchProcurement
         public const int PortlandPublicSchools = 16;
 
 	    /* site-specific sources */
-	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 6, 8, 10, 11, 13, 14, 15, 16 };
-	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 6, 8, 10, 11, 12, 13, 14, 15, 16 };
+	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 13, 14, 15, 16 };
+	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16 };
 
 		/* My sources */
 		public static readonly int[] mySources = Oregon_Sources;
