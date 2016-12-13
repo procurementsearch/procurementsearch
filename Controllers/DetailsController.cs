@@ -63,8 +63,8 @@ namespace SearchProcurement.Controllers
 
                 // Otherwise, we're probably doing a redirect..
                 default:
-                    if( f.originUrl != "" )
-                        return Redirect(f.originUrl);
+                    if( f.redirectUrl != "" )
+                        return Redirect(f.redirectUrl);
                     else
                     {
                         ViewBag.rawContents = f.rawContents;

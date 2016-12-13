@@ -20,7 +20,7 @@ namespace SearchProcurement.Models
 		public int sourceId;
 		public string contents;
 		public string rawContents;
-		public string originUrl;
+		public string redirectUrl;
 	}
 
 
@@ -123,7 +123,9 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select source_id, contents, raw_contents, origin_url from listing where listing_id = @id";
+					cmd.CommandText = "select l.source_id, l.contents, l.raw_contents, l.origin_url, s.redirect_url_suffix " +
+                        "from listing as l left join source as s on l.source_id = s.source_id " +
+                        "where listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -137,7 +139,12 @@ namespace SearchProcurement.Models
 						f.sourceId = r.GetInt32(0);
 						f.contents = r.GetString(1);
 						f.rawContents = r.IsDBNull(2) ? "" : r.GetString(2);
-						f.originUrl = r.IsDBNull(3) ? "" : r.GetString(3);
+						f.redirectUrl = r.IsDBNull(3) ? "" : r.GetString(3);
+
+                        // And, if we have a url suffix for the origin URL (e.g. for analytics/UTM tagging)
+                        if( !r.IsDBNull(4) )
+                            f.redirectUrl += r.GetString(4);
+
 						return f;
 					}
 				}
