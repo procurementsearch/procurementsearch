@@ -83,6 +83,32 @@ namespace SearchProcurement
                     name: "Rss feed",
                     template: "rss",
                     defaults: new { controller = "Rss", action = "Index" });
+
+                // Special routes for agency-specific RSS feeds
+                routes.MapRoute(
+                    name: "Rss feed for City of Beaverton",
+                    template: "rss_cityofbeaverton",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.CityOfBeaverton });
+                routes.MapRoute(
+                    name: "Rss feed for City of Portland",
+                    template: "rss_portland",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.CityOfPortland });
+                routes.MapRoute(
+                    name: "Rss feed for Port of Portland",
+                    template: "rss_portofportland",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortOfPortland });
+                routes.MapRoute(
+                    name: "Rss feed for Oregon Department of Corrections",
+                    template: "rss_odoc",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.OregonDepartmentOfCorrections });
+                routes.MapRoute(
+                    name: "Rss feed for Portland State University",
+                    template: "rss_psu",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortlandStateUniversity });
+                routes.MapRoute(
+                    name: "Rss feed for Portland Public Schools",
+                    template: "rss_pps",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortlandPublicSchools });
             });
         }
     }
