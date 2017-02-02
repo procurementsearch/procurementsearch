@@ -109,6 +109,10 @@ namespace SearchProcurement
                     name: "Rss feed for Portland Public Schools",
                     template: "rss_pps",
                     defaults: new { controller = "Rss", action = "Index", source = Defines.PortlandPublicSchools });
+                routes.MapRoute(
+                    name: "Rss feed for Oregon Department of Transportation",
+                    template: "rss_odot",
+                    defaults: new { controller = "Rss", action = "Index", source = Defines.OregonDepartmentOfTransportation });
             });
         }
     }
