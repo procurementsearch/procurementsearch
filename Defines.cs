@@ -23,22 +23,25 @@ namespace SearchProcurement
         public const int OregonDepartmentOfTransportation = 14;
         public const int OregonDepartmentOfTransportationEBIDS = 15;
         public const int PortlandPublicSchools = 16;
+		public const int Skanska = 17;
 
 	    /* site-specific sources */
+		public static readonly int[] All_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17 };
 	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 13, 14, 15, 16 };
 	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16 };
+		public static readonly int[] Washington_Sources = { 17 };
 
 		/* My sources */
-		public static readonly int[] mySources = Oregon_Sources;
+		public static readonly int[] mySources = All_Sources;
 
 		/* The keyword table I'm using */
-		public const string myTable = "kw_oregon";
+		public const string myTable = "kw_all";
 
 		/* The RSS data for this specific site */
-		public const string RssTitle = "Oregon Procurement Opportunities";
-		public const string RssDescription = "This is a searchable, RSSable database of procurement opportunities in Oregon, including cities, counties, regional governments, state-level agencies, and private companies.";
-		public const string RssUrl = "http://OregonProcurementSearch.com";
-		public const string RssDetailsUrl = "http://OregonProcurementSearch.com/details";
+		public const string RssTitle = "Procurement Opportunities";
+		public const string RssDescription = "This is a searchable, RSSable database of government contracting opportunities, including cities, counties, regional governments, state-level agencies, and private companies.";
+		public const string RssUrl = "http://ProcurementSearch.com";
+		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
 
 	}
 	

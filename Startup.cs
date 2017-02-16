@@ -55,8 +55,25 @@ namespace SearchProcurement
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            // Internationalization
+/*            var supportedCultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("en-US"),
+                new CultureInfo("es"),
+                new CultureInfo("es-ES")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+*/
+            // Make sure we can serve up the static content
             app.UseStaticFiles();
 
+            // And set up our routes
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
