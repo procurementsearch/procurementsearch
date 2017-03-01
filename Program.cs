@@ -16,7 +16,7 @@ namespace SearchProcurement
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseUrls("http://0.0.0.0:5007")
+                .UseUrls("http://0.0.0.0:5005")
                 .Build();
 
             host.Run();
