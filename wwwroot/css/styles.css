@@ -20,7 +20,7 @@ html, body { /* for sticky footer */
 
 body {
     color: #555;
-    background-color: #FFFBF6;
+    background-color: #f5f9f4;
 }
 
 html, button, input, select, textarea,
@@ -198,11 +198,19 @@ a {
 
 .search-rss p {
     padding: 0.5em;
+    padding-bottom: 1em;
 }
 
 .search-rss img {
     float: left;
-    padding-right: 0.5em;
+    padding: 4px;
+}
+
+.search-rss hr {
+    display: block;
+    clear: left;
+    margin: -0.66em 0.5em;
+    visibility: hidden;
 }
 
 .search-results {
@@ -244,16 +252,16 @@ a {
 
 .search-results .results .item .link a {
     font-size: 12pt;
-    color: #486A28;
+    color: #008484;
 }
 
 .search-results .results .item .source a {
     font-size: 12pt;
-    color: #BC800F;
+    color: #186f2c;
 }
 
 .footer {
-    background: #E8E0D6;
+    background: #d5ecd1;
     font-size: 10.5pt;
 }
 
