@@ -34,6 +34,7 @@ namespace SearchProcurement.Controllers
             ViewBag.searchString = s.searchString;
             ViewBag.searchCount = s.searchCount;
             ViewBag.searchUrl = s.searchUrl;
+            ViewBag.rssUrl = Defines.RssUrl;
 
             // Update the search results views
             foreach(searchItem my_s in s.searchResults)

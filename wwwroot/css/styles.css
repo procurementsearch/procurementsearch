@@ -114,6 +114,10 @@ input[type=text] {
     color: #486A29;
 }
 
+.blue {
+    color: #008484;
+}
+
 a {
     color: #666;
 }
@@ -206,6 +210,10 @@ a {
     padding: 4px;
 }
 
+.search-rss.by-email img {
+    float: right;
+}
+
 .search-rss hr {
     display: block;
     clear: left;
@@ -215,6 +223,7 @@ a {
 
 .search-results {
     margin: 1.5em 1em;
+    padding-bottom: 2em;
 }
 
 .search-results .head {
