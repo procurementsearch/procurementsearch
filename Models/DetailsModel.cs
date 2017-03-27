@@ -262,8 +262,6 @@ namespace SearchProcurement.Models
 
 							foreach( string phrase in wordMap )
 							{
-								Console.WriteLine("Looking for " + phrase);
-
 								// no match?  Ok, next phrase
 								if( !Regex.IsMatch(aText, @"\b" + phrase + @"\b", RegexOptions.IgnoreCase) )
 									continue;
@@ -283,10 +281,6 @@ namespace SearchProcurement.Models
 
 									// And now start at wordIndex + wordLen and work our way forward
 									wordLen = aText.IndexOf(" ", wordIndex + wordLen, StringComparison.CurrentCultureIgnoreCase) - wordIndex;
-
-									Console.WriteLine("Text length is " + aText.Length);
-									Console.WriteLine("Snippet start is " + wordIndex);
-									Console.WriteLine("Snippet length is " + wordLen);
 
 									// Now we've got our snippet ..
 									a.Snippet = aText.Substring(wordIndex, wordLen);
