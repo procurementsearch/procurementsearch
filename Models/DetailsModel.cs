@@ -256,6 +256,10 @@ namespace SearchProcurement.Models
 							attachment a = new attachment {};
 							a.Title = r.GetString(0);
 
+							// Rarely, we do have a null text field
+							if( r.IsDBNull(1) )
+								continue;
+
 							// This is tricky... we know one of our word maps appears here,
 							// so we need to find it
 							aText = SimpleFTS.cleanText(r.GetString(1));
