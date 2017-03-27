@@ -11,11 +11,12 @@ namespace SearchProcurement.Controllers
 {
     public class DetailsController : Controller
     {
-        public IActionResult Index(int id)
+        public IActionResult Index(int id, string kw)
         {
             // Get the details model
-            Details d = new Details(id);
+            Details d = new Details(id, kw);
             ViewBag.extraTitle = d.title;
+            ViewBag.kw = kw;
 
             // Load the model
             return View(d);
@@ -24,7 +25,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Iframe(int id)
         {
             // Get the model, so we can get the source from it
-            Details d = new Details(id);
+            Details d = new Details(id, null);
             frameDetails f = d.loadFrameData();
 
             // Update the access count

@@ -5,22 +5,36 @@
     </div>
     <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
 
-    <div class="view-action-steps">
-        @Html.Raw(Model.actionSteps)
+    @if (Model.snippets.Length > 0 )
+    {
+    <div class="snippets">
+        Bid document preview for <b>@ViewBag.kw</b>:
+        <dl>
+            @foreach (var res in Model.snippets)
+            {
+            <dt>@res.Title:</dt>
+            <dd>@Html.Raw(res.Snippet)</dd>
+            }
+        </dl>
     </div>
+    }
 
-    @if (Model.attachments.Length > 0)
+    @if (Model.attachments.Length > 0 )
     {
     <div class="attachments">
-        Attachments:
+        Bid Documents:
         <ul>
             @foreach (var res in Model.attachments)
             {
-            <li><a href="@res.Url">@res.Title</a> @res.Filetype</li>
+            <li><a target="_blank" href="@res.Url">@res.Title</a> (@res.Filetype)</li>
             }
         </ul>
     </div>
     }
+
+    <div class="view-action-steps">
+        @Html.Raw(Model.actionSteps)
+    </div>
 
     <p class="share-title">
         Share with a friend!

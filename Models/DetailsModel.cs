@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 
 using SteveHavelka.SimpleFTS;
@@ -12,6 +13,8 @@ namespace SearchProcurement.Models
 		public string Url;
 		public string Title;
 		public string Filetype;
+		public string Snippet;
+		public bool exactMatch;
 	}
 
 	/* The details of the embedded iframe */
@@ -23,7 +26,6 @@ namespace SearchProcurement.Models
 		public string redirectUrl;
 	}
 
-
 	public class Details
 	{
 		public string sourceName { get; private set; }
@@ -33,6 +35,7 @@ namespace SearchProcurement.Models
 
 		/* The attachments */
 		public attachment[] attachments { get; private set; }
+		public attachment[] snippets { get; private set; }
 
 
 		/**
@@ -40,7 +43,7 @@ namespace SearchProcurement.Models
 		 *
 		 * @param my_id  The listing ID to retreive details for
 		 */
-		public Details(int my_id)
+		public Details(int my_id, string kw)
 		{
 			id = my_id;
 
@@ -89,12 +92,18 @@ namespace SearchProcurement.Models
 								Replace("%ORIGIN_URL%", r.IsDBNull(4) ? "" : r.GetString(4)).
 								Replace("%CONTACT%", r.IsDBNull(6) ? "" : r.GetString(6));
 						}
-	
-						// And, get the attachments if the source wants to show them!
-                        if( r.GetInt32(7) == 1 )
-    						attachments = loadAttachments(my_id);
-                        else
-                            attachments = new attachment[] {};
+
+						// And, get the attachments if the source wants to show them or
+						// if we're showing some matching search terms
+						if( r.GetInt32(7) == 1 )
+							attachments = loadAttachments(my_id);
+						else
+							attachments = new attachment[] {};
+
+						if( kw != null )
+    						snippets = loadSnippets(my_id, kw);
+						else
+							snippets = new attachment[] {};
 
 					}
 
@@ -184,7 +193,7 @@ namespace SearchProcurement.Models
 						while(r.Read())
 						{
 							// And load the data into the attchment
-							attachment a;
+							attachment a = new attachment{};
 							a.Title = r.GetString(0);
 							a.Url = r.IsDBNull(2) ? "" : r.GetString(2);
 							a.Filetype = r.GetString(1);
@@ -198,6 +207,115 @@ namespace SearchProcurement.Models
 			}
 
 		}
+
+
+
+		/**
+		 * Load the attachments for a given procurement listing,
+		 * and look for the given keywords, to show the snippets.
+		 *
+		 * @param id  The listing ID to retrieve attachments for
+		 * @return The attachments for the procurement listing
+		 */
+		private attachment[] loadSnippets(int id, string kw)
+		{
+			List<attachment> adata = new List<attachment>();
+
+			// Get the word map, for extracting the snippets
+			SimpleFTS s = new SimpleFTS();
+			s.prepareWords(kw);
+
+			// The phrase map
+			string[] wordMap = s.buildWordMap();
+
+
+			// Set up the database connection, there has to be a better way!
+			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "select a.title, a.text from attachment as a where a.listing_id = @id";
+					cmd.Parameters.AddWithValue("@id", id);
+					cmd.Prepare();
+
+					// Run the DB command
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+						while(r.Read())
+						{
+							// We're going to filter the attachment text, to find snippets
+							string aText;
+
+							// And load the data into the attchment
+							attachment a = new attachment {};
+							a.Title = r.GetString(0);
+
+							// This is tricky... we know one of our word maps appears here,
+							// so we need to find it
+							aText = SimpleFTS.cleanText(r.GetString(1));
+
+							foreach( string phrase in wordMap )
+							{
+								Console.WriteLine("Looking for " + phrase);
+
+								// no match?  Ok, next phrase
+								if( !Regex.IsMatch(aText, @"\b" + phrase + @"\b", RegexOptions.IgnoreCase) )
+									continue;
+
+								// And we got a match... so let's extract the snippet
+								int wordIndex = Regex.Match(aText, @"\b" + phrase + @"\b", RegexOptions.IgnoreCase).Index;
+//								int wordIndex = aText.IndexOf(phrase, StringComparison.CurrentCultureIgnoreCase);
+								int wordLen;
+								if( wordIndex != -1 )
+								{
+									// we have a match!  Let's get out the snippet
+									wordIndex = (wordIndex >= Defines.snippetBefore) ? wordIndex - Defines.snippetBefore : 0;
+									wordLen = (wordIndex + Defines.snippetAfter > aText.Length) ? aText.Length - wordIndex : Defines.snippetAfter;
+
+									// Let's start at wordIndex and work our way backward...
+									wordIndex = aText.LastIndexOf(" ", wordIndex, StringComparison.CurrentCultureIgnoreCase) + 1;
+
+									// And now start at wordIndex + wordLen and work our way forward
+									wordLen = aText.IndexOf(" ", wordIndex + wordLen, StringComparison.CurrentCultureIgnoreCase) - wordIndex;
+
+									Console.WriteLine("Text length is " + aText.Length);
+									Console.WriteLine("Snippet start is " + wordIndex);
+									Console.WriteLine("Snippet length is " + wordLen);
+
+									// Now we've got our snippet ..
+									a.Snippet = aText.Substring(wordIndex, wordLen);
+									a.Snippet = Regex.Replace(a.Snippet, @"(^|\s)(" + phrase + @")(\s|$)", " <b>$2</b> ", RegexOptions.IgnoreCase);
+									a.Snippet = "... " + a.Snippet + " ...";
+
+									// Was it an exact match?
+									if( phrase == wordMap[0] )
+										a.exactMatch = true;
+									else
+										a.exactMatch = false;
+
+									// And we're done, we have our snippet
+									adata.Add(a);
+									break;
+								}
+							}
+
+						}
+
+            			// and we're done, we have attachments
+            			return adata.ToArray();
+					}
+				}
+			}
+
+		}
+
+
 
 	}
 }

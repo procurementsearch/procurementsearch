@@ -311,6 +311,24 @@ a {
     padding: 1em;
 }
 
+.view-box .snippets {
+    padding-bottom: 1em;
+}
+
+.view-box .snippets dl {
+    padding: .5em;
+}
+
+.view-box .snippets dl dt {
+    font-weight: bold;
+}
+
+.view-box .snippets dl dd {
+    padding-left: .5em;
+    font-style: italic;
+}
+
+
 .view-box .attachments {
     padding-bottom: 1em;
 }

@@ -28,6 +28,7 @@ namespace SearchProcurement.Controllers
             {
                 s = new Search(kw);
                 ViewBag.extraTitle = "Searching Opportunities: " + s.searchString;
+                ViewBag.kwMatch = "?" + s.searchUrl;
             }
 
             // Load up some of the data

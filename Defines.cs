@@ -43,6 +43,9 @@ namespace SearchProcurement
 		public const string RssUrl = "http://ProcurementSearch.com";
 		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
 
+		/* Configurable snippet settings */
+		public const int snippetBefore = 20;
+		public const int snippetAfter = 100;
 	}
 	
 }

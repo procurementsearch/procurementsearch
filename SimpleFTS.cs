@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Net;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -30,13 +31,23 @@ namespace SteveHavelka.SimpleFTS
 		private string query { get; set; }
 
 
-		/* Prepares the words based on a search string */
-		public string[] prepareWords(string stg)
+		/* Clean text by stripping out all punctuation and whitespace */
+		public static string cleanText(string stg)
 		{
 			/* strip out junk, split on spaces, remove empty elements */
 			stg = Regex.Replace(stg, @"(\s|-)+", " ");
 			stg = Regex.Replace(stg, @"'+", "");
-			stg = Regex.Replace(stg, @"[^\w ]+", "", RegexOptions.None);
+			stg = Regex.Replace(stg, @"[^\w ]+", " ", RegexOptions.None);
+			stg = Regex.Replace(stg, @"(\s|-)+", " ");
+			return stg;
+		}
+
+
+		/* Prepares the words based on a search string */
+		public string[] prepareWords(string stg)
+		{
+			/* strip out junk, split on spaces, remove empty elements */
+			stg = cleanText(stg);
 
 			/* failsafe */
 			if( stg.Length == 0 || stg == " " )
@@ -46,11 +57,10 @@ namespace SteveHavelka.SimpleFTS
 			words = stg.Split(null as char[], StringSplitOptions.RemoveEmptyEntries);
 
 			/* set the search URL */
-			searchUrl = "kw=" + WebUtility.UrlEncode(String.Join(" ", words)) + searchUrlSeparator;
+			searchUrl = "kw=" + WebUtility.UrlEncode(String.Join(" ", words)).Replace(" ", "+") + searchUrlSeparator;
 			searchString = String.Join(", ", words);
 			return words;
 		}
-
 
 
 		/*
@@ -79,7 +89,7 @@ namespace SteveHavelka.SimpleFTS
 		public int count()
 		{
 			/* failsafe */
-			if( words.Length == 0 )
+			if( words == null || words.Length == 0 )
 				return 0;
 
 			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
@@ -148,7 +158,7 @@ namespace SteveHavelka.SimpleFTS
 		public int[] search()
 		{
 			/* failsafe */
-			if( words.Length == 0 )
+			if( words == null || words.Length == 0 )
 				return null;
 
 			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
@@ -208,7 +218,7 @@ namespace SteveHavelka.SimpleFTS
 						{
 							ids.Add(Convert.ToInt32(r.GetString(2)));
 						}
-			
+
 						/* And we're done */
 						return ids.ToArray();
 						
@@ -217,6 +227,33 @@ namespace SteveHavelka.SimpleFTS
 				}
 
 			}
+
+		}
+
+
+		/*
+		 * Take the search phrase and make a word mep, e.g.:
+		 * "on call mediation" ->
+		 * "on call mediation", "on call", "call mediation", "on", "call", "mediation"
+		 */
+		public string[] buildWordMap()
+		{
+			/* failsafe */
+			if( words == null || words.Length == 0 )
+				return null;
+
+			/* The result array */
+			List<string> wordMap = new List<string>();
+
+			int len = words.Length;
+			while( len-- > 0 )
+			{
+				for(int idx=0; idx + len < words.Length; idx++)
+					wordMap.Add(String.Join(" ", words, idx, len+1));
+			}
+
+			/* And we're done */
+			return wordMap.ToArray();
 
 		}
 
