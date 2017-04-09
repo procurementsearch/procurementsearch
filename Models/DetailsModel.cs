@@ -272,6 +272,8 @@ namespace SearchProcurement.Models
 							{
 								// Read the line item
 								ar.Read();
+								if( ar.IsDBNull(0) )
+									continue;
 
 								string atext = ar.GetString(0);
 								if( atext == "" )
