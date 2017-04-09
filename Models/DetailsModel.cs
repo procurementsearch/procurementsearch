@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 
-using SteveHavelka.SimpleFTS;
+using SteveHavelka.SphinxFTS;
 
 namespace SearchProcurement.Models
 {
@@ -221,86 +220,66 @@ namespace SearchProcurement.Models
 		{
 			List<attachment> adata = new List<attachment>();
 
-			// Get the word map, for extracting the snippets
-			SimpleFTS s = new SimpleFTS();
-			s.prepareWords(kw);
-
-			// The phrase map
-			string[] wordMap = s.buildWordMap();
-
-
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection(), my_sph = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
+				// And the Sphinx connection
+				my_sph.ConnectionString = Defines.myConnectionString;
+				my_sph.Open();
+
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(), sph = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select a.title, a.text from attachment as a where a.listing_id = @id";
+					cmd.CommandText = "select a.attachment_id, a.title, a.text from attachment as a where a.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
+
+					// set up the Sphinx ..
+					sph.Connection = my_sph;
+					sph.CommandText = "SELECT SPHINX_SNIPPETS(@attachment_file, @idx, @kw, true AS load_files, true AS allow_empty);";
+					sph.Parameters.Add(new MySqlParameter("@attachment_file", ""));
+					sph.Parameters.AddWithValue("@idx", Defines.mySphinxIndex);
+					sph.Parameters.AddWithValue("@kw", kw);
 
 					// Run the DB command
 					using(MySqlDataReader r = cmd.ExecuteReader())
 					{
 						while(r.Read())
 						{
-							// We're going to filter the attachment text, to find snippets
-							string aText;
-
 							// And load the data into the attchment
 							attachment a = new attachment {};
-							a.Title = r.GetString(0);
+							a.Title = r.GetString(1);
 
 							// Rarely, we do have a null text field
-							if( r.IsDBNull(1) )
+							if( r.IsDBNull(2) )
 								continue;
 
-							// This is tricky... we know one of our word maps appears here,
-							// so we need to find it
-							aText = SimpleFTS.cleanText(r.GetString(1));
+							// Prepare the snippet
+							int attachment_id = r.GetInt32(0);
 
-							foreach( string phrase in wordMap )
+							sph.Parameters["@attachment_file"].Value = attachment_id + ".txt";
+							sph.Prepare();
+
+							// Pull out the result from the snippet .. if it's empty,
+							// this attachment does not contain anything matching, and we
+							// discard it
+							using(MySqlDataReader ar = sph.ExecuteReader())
 							{
-								// no match?  Ok, next phrase
-								if( !Regex.IsMatch(aText, @"\b" + phrase + @"\b", RegexOptions.IgnoreCase) )
+								// Read the line item
+								ar.Read();
+
+								string atext = ar.GetString(0);
+								if( atext == "" )
 									continue;
 
-								// And we got a match... so let's extract the snippet
-								int wordIndex = Regex.Match(aText, @"\b" + phrase + @"\b", RegexOptions.IgnoreCase).Index;
-//								int wordIndex = aText.IndexOf(phrase, StringComparison.CurrentCultureIgnoreCase);
-								int wordLen;
-								if( wordIndex != -1 )
-								{
-									// we have a match!  Let's get out the snippet
-									wordIndex = (wordIndex >= Defines.snippetBefore) ? wordIndex - Defines.snippetBefore : 0;
-									wordLen = (wordIndex + Defines.snippetAfter > aText.Length) ? aText.Length - wordIndex : Defines.snippetAfter;
-
-									// Let's start at wordIndex and work our way backward...
-									wordIndex = aText.LastIndexOf(" ", wordIndex, StringComparison.CurrentCultureIgnoreCase) + 1;
-
-									// And now start at wordIndex + wordLen and work our way forward
-									wordLen = aText.IndexOf(" ", wordIndex + wordLen, StringComparison.CurrentCultureIgnoreCase) - wordIndex;
-
-									// Now we've got our snippet ..
-									a.Snippet = aText.Substring(wordIndex, wordLen);
-									a.Snippet = Regex.Replace(a.Snippet, @"(^|\s)(" + phrase + @")(\s|$)", " <b>$2</b> ", RegexOptions.IgnoreCase);
-									a.Snippet = "... " + a.Snippet + " ...";
-
-									// Was it an exact match?
-									if( phrase == wordMap[0] )
-										a.exactMatch = true;
-									else
-										a.exactMatch = false;
-
-									// And we're done, we have our snippet
-									adata.Add(a);
-									break;
-								}
+								// And we're done, we have our snippet
+								a.Snippet = atext;
+								adata.Add(a);
 							}
 
 						}

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using SteveHavelka.SimpleFTS;
+using SteveHavelka.SphinxFTS;
 using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
@@ -24,10 +24,10 @@ namespace SearchProcurement.Models
                 return;
 
 			// Instantiate the search object
-			SimpleFTS s = new SimpleFTS();
-			s.kwTable = Defines.myTable;
+			SphinxFTS s = new SphinxFTS();
+			s.kwTable = Defines.mySphinxTable;
 			s.searchUrlSeparator = "";
-			s.prepareWords(kw);
+			s.setWords(kw);
 
 			// Pull out the search data
 			searchString = s.searchString;
@@ -48,7 +48,6 @@ namespace SearchProcurement.Models
 				int[] searchIds = s.search();
 
 				// And filter down to allowed sources
-				searchIds = SearchHelper.filter(searchIds, Defines.mySources);
 				searchCount = searchIds.Length;
 
 				// Load the data from the search IDs

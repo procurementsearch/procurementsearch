@@ -325,6 +325,7 @@ a {
 
 .view-box .snippets dl dd {
     padding-left: .5em;
+    padding-bottom: .5em;
     font-style: italic;
 }
 

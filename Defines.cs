@@ -35,7 +35,8 @@ namespace SearchProcurement
 		public static readonly int[] mySources = All_Sources;
 
 		/* The keyword table I'm using */
-		public const string myTable = "kw_all";
+		public const string mySphinxTable = "search_all";
+		public const string mySphinxIndex = "kw_all";
 
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";

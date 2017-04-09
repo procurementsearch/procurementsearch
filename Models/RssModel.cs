@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-using SteveHavelka.SimpleFTS;
+using SteveHavelka.SphinxFTS;
 using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
@@ -105,9 +105,9 @@ namespace SearchProcurement.Models
 		public searchItem[] byKeyword(string kw)
 		{
 			// Instantiate the search object
-			SimpleFTS s = new SimpleFTS();
-			s.kwTable = Defines.myTable;
-			s.prepareWords(kw);
+			SphinxFTS s = new SphinxFTS();
+			s.kwTable = Defines.mySphinxTable;
+			s.setWords(kw);
 
 			// Run the search
 			int[] searchIds = s.search();
