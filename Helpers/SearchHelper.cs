@@ -51,7 +51,7 @@ namespace SearchProcurement.Helpers
 						item.Title = r.GetString(0);
 						if( !r.IsDBNull(1) ) {
 							item.Description = Library.stripHtml(r.GetString(1));
-							item.Description = item.Description.Substring(0, Math.Min(100, item.Description.Length));
+							item.Description = Library.makeExcerpt(item.Description, 100);
 						} else {
 							item.Description = "";
 						}

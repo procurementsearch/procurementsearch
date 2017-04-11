@@ -8,7 +8,11 @@ namespace SearchProcurement
 	{
 
 
-		// Strip HTML from a string
+        /**
+         * Strip HTML from a string
+         * @param string html The HTML
+         * @return string The text minus the HTML
+         */
 		static public string stripHtml(string html)
 		{
 			html = replace("<script[^>]*?>.*?</script>", " ", html);
@@ -36,6 +40,45 @@ namespace SearchProcurement
 		{
 			return new Regex(@"&#(?<number>\d+);").Replace(stg, delegate(Match m) { return m.Groups["number"].ToString(); });
 		}
+
+
+
+        /**
+         * Generate an excerpt of max length l from the text
+         * @param string stg The source text
+		 * @param int l The maximum length of the excerpt
+         * @return string The excerpted text
+         */
+		static public string makeExcerpt(string stg, int l)
+		{
+			// Does the whole string fit?  Then we're done
+			if( stg.Length <= l )
+				return stg;
+
+			// Remove extraneous whitespace, just in case ..
+			stg = stg.Trim();
+
+			Regex r = new Regex(@"\s");
+			Match m = r.Match(stg, l);
+
+			// Did it find whitespace?
+			if( m.Value == "" ) {
+
+				// No...  so, if the string is 10 letters longer than max, truncate it there
+				if( stg.Length > l + 10 )
+					return stg.Substring(0, l + 10) + " ...";
+				else
+					return stg;
+
+			} else {
+
+				// Yes... so truncate the string at the whitespace
+				return stg.Substring(0, m.Index) + " ...";
+
+			}
+
+		}
+
 
 	}
 
