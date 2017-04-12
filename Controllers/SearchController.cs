@@ -30,6 +30,7 @@ namespace SearchProcurement.Controllers
             ViewBag.searchString = s.searchString;
             ViewBag.searchCount = s.searchCount;
             ViewBag.searchUrl = s.searchUrl;
+            ViewBag.searchUrlEncoded = s.searchUrl.Replace("+", "%2B");
             ViewBag.rssUrl = Defines.RssUrl;
 
             // Update the search results views
