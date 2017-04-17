@@ -1,8 +1,22 @@
 ﻿<div class="view-box">
-    <h2>Viewing @Model.sourceName Procurement Opportunity:</h2>
+    <h2>Viewing @Model.sourceName Opportunity:</h2>
+
+    @if (Model.parentId != 0)
+    {
+    <div class="subtitle">
+        <span class="attention">Project</span>:  <a href="/details/@Model.parentId">@Model.subtitle</a>
+    </div>
+    <div class="title">
+        <span class="attention">Contract:</span> @Model.title
+    </div>
+    }
+    else
+    {
     <div class="title">
         @Model.title
     </div>
+    }
+
     <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
 
     @if (Model.snippets.Length > 0 )
@@ -30,6 +44,20 @@
             }
         </ul>
     </div>
+    }
+
+    @if (Model.subcontracts.Length > 0 )
+    {
+    <div class="subcontracts">
+        Subcontracts:
+        <ul>
+            @foreach (var res in Model.subcontracts)
+            {
+            <li><a target="_blank" href="/details/@res.id">@res.title</a></li>
+            }
+        </ul>
+    </div>
+        
     }
 
     <div class="view-action-steps">

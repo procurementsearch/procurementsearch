@@ -36,6 +36,9 @@ input[type=text] {
     outline: medium none;
 }
 
+.attention {
+    font-weight: bold;
+}
 
 .l-box {
     padding: 2em;
@@ -286,7 +289,12 @@ a {
 }
 
 .view-box .title {
-    font-size: 14pt;
+    font-size: 16pt;
+}
+
+.view-box .subtitle {
+    font-size: 13pt;
+    margin-bottom: .5em;
 }
 
 .view-box iframe {
@@ -299,10 +307,6 @@ a {
 .view-box .view-action-steps {
     line-height: 150%;
     font-size: 14pt;
-}
-
-.view-box .view-action-steps .attention {
-    font-weight: bold;
 }
 
 .view-box .view-action-steps ol {
@@ -329,6 +333,10 @@ a {
     font-style: italic;
 }
 
+
+.view-box .subcontracts {
+    padding-bottom: 1em;
+}
 
 .view-box .attachments {
     padding-bottom: 1em;
