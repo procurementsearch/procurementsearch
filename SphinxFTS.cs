@@ -112,7 +112,7 @@ namespace SteveHavelka.SphinxFTS
 		public int[] search()
 		{
 			/* failsafe */
-			if( words == null || words.Length == 0 )
+			if( words == null || words.Length == 0 || limit == 0 )
 				return null;
 
 			using(MySql.Data.MySqlClient.MySqlConnection my_sph = new MySqlConnection())
@@ -126,25 +126,57 @@ namespace SteveHavelka.SphinxFTS
 				{
 					cmd.Connection = my_sph;
 
-					/* let's get a total possible count */
-                    // select listing_id from search_pdx where query='\\"concrete formwork\\"; groupby=attr:listing_id; limit=20; groupsort=@weight desc; mode=extended;';
-					cmd.CommandText =
-						"SELECT listing_id FROM " + kwTable +
-                        " WHERE query='" + words + "; groupby=attr:listing_id; limit=" + limit + "; offset=" + offset +
-                        "; groupsort=@weight desc; mode=extended;'";
-					cmd.Prepare();
+					// GRR!!  Sphinx Search has a hard-coded limit on the size of data
+					// it can return (similar to mysql_max_packet) in the source of
+					// ha_sphinx.cc, so what we have to do is page through the results
+					// on our own, here, up to the limit requested by the user.
+					//
+					// We'll use a limit of 20 results at a time, to make sure we never
+					// exceed the sphinxse hard-coded limit.
+					int my_limit = 20;
+					int my_offset = offset;
+					List<int> ids = new List<int>();
 
-					/* And read out our data */
-					using(MySqlDataReader r = cmd.ExecuteReader())
+					for(;;)
 					{
-						List<int> ids = new List<int>();
-						while( r.Read() )
+						/* let's get a total possible count */
+						// select listing_id from search_pdx where query='\\"concrete formwork\\"; groupby=attr:listing_id; limit=20; groupsort=@weight desc; mode=extended;';
+						cmd.CommandText =
+							"SELECT listing_id FROM " + kwTable +
+							" WHERE query='" + words + "; groupby=attr:listing_id; limit=" + my_limit + "; offset=" + my_offset +
+							"; groupsort=@weight desc; mode=extended;'";
+						cmd.Prepare();
+
+						// Get the number of results, for the case where this latest paging
+						// through the results returned nothing
+						bool got_results = false;
+
+						/* And read out our data */
+						using(MySqlDataReader r = cmd.ExecuteReader())
 						{
-							ids.Add(Convert.ToInt32(r.GetString(0)));
+							while( r.Read() )
+							{
+								ids.Add(Convert.ToInt32(r.GetString(0)));
+
+								// Did we hit the requested limit while looping?
+								if( ids.Count == limit )
+									break;
+
+								got_results = true;
+
+							}
+
 						}
 
-						/* And we're done */
-						return ids.ToArray();
+						// Did we hit the requested limit after looping?
+						if( ids.Count == limit || got_results == false )
+						{
+							/* Then we're done */
+							return ids.ToArray();
+						}
+
+						// Advance to the next result set
+						my_offset += my_limit;
 
 					}
 

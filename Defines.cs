@@ -24,11 +24,12 @@ namespace SearchProcurement
         public const int OregonDepartmentOfTransportationEBIDS = 15;
         public const int PortlandPublicSchools = 16;
 		public const int Skanska = 17;
+		public const int Bremik = 18;
 
 	    /* site-specific sources */
-		public static readonly int[] All_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17 };
-	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 13, 14, 15, 16 };
-	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16 };
+		public static readonly int[] All_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+	    public static readonly int[] Pdx_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 13, 14, 15, 16, 18 };
+	    public static readonly int[] Oregon_Sources = { 1, 2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 18 };
 		public static readonly int[] Washington_Sources = { 17 };
 
 		/* My sources */
@@ -44,9 +45,6 @@ namespace SearchProcurement
 		public const string RssUrl = "http://ProcurementSearch.com";
 		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
 
-		/* Configurable snippet settings */
-		public const int snippetBefore = 20;
-		public const int snippetAfter = 100;
 	}
 	
 }
