@@ -64,7 +64,7 @@ namespace SearchProcurement.Helpers
 						if( !r.IsDBNull(5) )
 						{
 							item.ParentId = r.GetInt32(5);
-							item.Title = "SUBCONTRACT: " + item.Title;
+							item.Title = DetailsHelper.loadTitle(item.ParentId) + ": " + item.Title;
 						}
 						else
 							item.ParentId = 0;
