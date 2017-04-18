@@ -35,6 +35,7 @@
 
     @if (Model.attachments.Length > 0 )
     {
+    <h2>Bid Documents</h2>
     <div class="attachments">
         <p>This project has the following bid documents.  You may need to log into the project owner's website to review these documents.</p>
         <table class="pure-table pure-table-horizontal">
@@ -60,6 +61,7 @@
 
     @if (Model.subcontracts.Length > 0 )
     {
+    <h2>Subcontracts</h2>
     <div class="subcontracts">
         <p>This project has @Model.subcontracts.Length subcontracting opportunities:</p>
         <ul>
@@ -72,6 +74,7 @@
         
     }
 
+    <h2>About @Model.sourceName</h2>
     <div class="view-action-steps">
         @Html.Raw(Model.actionSteps)
     </div>
