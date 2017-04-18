@@ -145,6 +145,12 @@ namespace SearchProcurement.Models
 							// And save the subcontract details to the details array
 							subcontracts = subs.ToArray();
 
+							// Sort the subcontracts alphabetically
+							Array.Sort(subcontracts, delegate(subDetails a, subDetails b)
+							{
+								return a.title.CompareTo(b.title);
+							});
+
 						}
 						else
 							subcontracts = new subDetails[] {};

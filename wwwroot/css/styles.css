@@ -342,6 +342,14 @@ a {
     padding-bottom: 1em;
 }
 
+.view-box .attachments p {
+    font-size: 13pt;
+}
+
+.view-box .subcontracts p {
+    font-size: 13pt;
+}
+
 .view-box p {
     margin: 1em auto;
 }

@@ -7,7 +7,7 @@
         <span class="attention">Project</span>:  <a href="/details/@Model.parentId">@Model.subtitle</a>
     </div>
     <div class="title">
-        <span class="attention">Contract:</span> @Model.title
+        <span class="attention">Subcontract:</span> @Model.title
     </div>
     }
     else
@@ -36,20 +36,32 @@
     @if (Model.attachments.Length > 0 )
     {
     <div class="attachments">
-        Bid Documents:
-        <ul>
-            @foreach (var res in Model.attachments)
-            {
-            <li><a target="_blank" href="@res.Url">@res.Title</a> (@res.Filetype)</li>
-            }
-        </ul>
+        <p>This project has the following bid documents.  These bid documents describe the overall project as well as any subcontract work the project requires.  You may need to log into the project owner's website to review these documents.</p>
+        <table class="pure-table pure-table-horizontal">
+            <thead>
+                <tr>
+                    <th>Bid Document:</th>
+                    <th>File Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 0;}
+                @foreach (var res in Model.attachments)
+                {
+                <tr @(i == 1 ? Html.Raw("class=\"pure-table-odd\"") : Html.Raw(""))>
+                   <td><a target="_blank" href="@res.Url">@res.Title</a></td><td>@res.Filetype</td>
+                </tr>
+                i = 1 - i;
+                }
+            </tbody>
+        </table>
     </div>
     }
 
     @if (Model.subcontracts.Length > 0 )
     {
     <div class="subcontracts">
-        Subcontracts:
+        <p>This project has @Model.subcontracts.Length subcontracting opportunities:</p>
         <ul>
             @foreach (var res in Model.subcontracts)
             {
