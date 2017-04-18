@@ -26,7 +26,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' order by created desc limit 40) tmp order by created asc";
+					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' order by created desc limit " + Defines.RssLimit + ") tmp order by created asc";
 					cmd.Prepare();
 
 					// Run the DB command
