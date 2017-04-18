@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
 using SteveHavelka.SphinxFTS;
+using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
 {
@@ -25,16 +26,29 @@ namespace SearchProcurement.Models
 		public string redirectUrl;
 	}
 
+	/* Details for subcontracts */
+	public struct subDetails
+	{
+		public int id;
+		public string title;
+	}
+
+
 	public class Details
 	{
 		public string sourceName { get; private set; }
 		public string title { get; private set; }
+		public string subtitle { get; private set; }
 		public int id { get; private set; }
+		public int parentId { get; private set; }
 		public string actionSteps { get; private set; }
 
 		/* The attachments */
 		public attachment[] attachments { get; private set; }
 		public attachment[] snippets { get; private set; }
+
+		/* Subcontracts */
+		public subDetails[] subcontracts { get; private set; }
 
 
 		/**
@@ -64,7 +78,8 @@ namespace SearchProcurement.Models
                         "l.origin_url, " + // 4
                         "l.origin_opportunity_no, " + // 5
                         "l.contact, " + // 6
-                        "s.show_attachments " + // 7
+                        "s.show_attachments, " + // 7
+						"l.listing_parent_id " + // 8
                         "from listing as l left join source as s on l.source_id = s.source_id " +
 	                    "where l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -92,6 +107,13 @@ namespace SearchProcurement.Models
 								Replace("%CONTACT%", r.IsDBNull(6) ? "" : r.GetString(6));
 						}
 
+						// Has a parent ID?  If so...
+						if( !r.IsDBNull(8) )
+						{
+							subtitle = DetailsHelper.loadTitle(r.GetInt32(8));
+							parentId = r.GetInt32(8);
+						}
+
 						// And, get the attachments if the source wants to show them or
 						// if we're showing some matching search terms
 						if( r.GetInt32(7) == 1 )
@@ -103,6 +125,35 @@ namespace SearchProcurement.Models
     						snippets = loadSnippets(my_id, kw);
 						else
 							snippets = new attachment[] {};
+
+
+						// Last, do we have subcontracts?
+						int[] subIds = DetailsHelper.findSubcontractIds(id);
+						if( subIds.Length != 0 )
+						{
+							// Make a list of subcontract titles/ids
+							List<subDetails> subs = new List<subDetails>();
+
+							foreach( int i in subIds )
+							{
+								subDetails sub = new subDetails {};
+								sub.id = i;
+								sub.title = DetailsHelper.loadTitle(i);
+								subs.Add(sub);
+							}
+
+							// And save the subcontract details to the details array
+							subcontracts = subs.ToArray();
+
+							// Sort the subcontracts alphabetically
+							Array.Sort(subcontracts, delegate(subDetails a, subDetails b)
+							{
+								return a.title.CompareTo(b.title);
+							});
+
+						}
+						else
+							subcontracts = new subDetails[] {};
 
 					}
 
@@ -181,7 +232,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select a.title, a.filetype, a.url from attachment as a " +
+					cmd.CommandText = "select a.title, a.filetype, a.url, a.redirect_url from attachment as a " +
 	                    "where a.listing_id = @id and a.is_hidden = 0";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
@@ -194,7 +245,13 @@ namespace SearchProcurement.Models
 							// And load the data into the attchment
 							attachment a = new attachment{};
 							a.Title = r.GetString(0);
-							a.Url = r.IsDBNull(2) ? "" : r.GetString(2);
+
+							// Load the attachment URLs, but make sure we catch redirect URLs first
+							if( !r.IsDBNull(3) )
+								a.Url = r.GetString(3);
+							else
+								a.Url = r.IsDBNull(2) ? "" : r.GetString(2);
+
 							a.Filetype = r.GetString(1);
 							adata.Add(a);
 						}
@@ -293,8 +350,6 @@ namespace SearchProcurement.Models
 			}
 
 		}
-
-
 
 	}
 }

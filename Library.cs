@@ -42,6 +42,20 @@ namespace SearchProcurement
 		}
 
 
+		/**
+		 * Like PHP's nl2br()
+		 * @param string stg The source string
+		 * @return string The br-ified string
+		 */
+		static public string nl2br(string stg)
+		{
+			stg = stg.Replace("\r\n", "<br>");
+			stg = stg.Replace("\n\r", "<br>");
+			stg = stg.Replace("\n", "<br>");
+			stg = stg.Replace("\r", "<br>");
+			return stg;
+		}
+
 
         /**
          * Generate an excerpt of max length l from the text

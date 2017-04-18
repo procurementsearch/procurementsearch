@@ -12,6 +12,7 @@ namespace SearchProcurement.Helpers
         public int SourceId;
         public string SourceName;
 		public DateTimeOffset Created;
+		public int ParentId;
 	}
 
 
@@ -35,7 +36,7 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select l.title, l.description, l.created, l.source_id, s.source_name " +
+					cmd.CommandText = "select l.title, l.description, l.created, l.source_id, s.source_name, l.listing_parent_id " +
                         "from listing as l " +
                         "left join source as s on s.source_id = l.source_id " +
                         "where listing_id = @id";
@@ -58,6 +59,16 @@ namespace SearchProcurement.Helpers
 						item.Created = r.GetDateTime(2);
                         item.SourceId = r.GetInt32(3);
                         item.SourceName = r.GetString(4);
+
+						// And do a little extra for subcontracts
+						if( !r.IsDBNull(5) )
+						{
+							item.ParentId = r.GetInt32(5);
+							item.Title = DetailsHelper.loadTitle(item.ParentId) + ": " + item.Title;
+						}
+						else
+							item.ParentId = 0;
+
 					}
 				}
 			}

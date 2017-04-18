@@ -40,6 +40,11 @@ namespace SearchProcurement.Controllers
                     return View("~/Views/Details/Templates/OdotEBIDS.cshtml");
 
                 // Port of Portland gets a custom template
+                case Defines.Bremik:
+                    ViewBag.contentsFormatted = Library.nl2br(f.contents);
+                    return View("~/Views/Details/Templates/Bremik.cshtml");
+
+                // Port of Portland gets a custom template
                 case Defines.PortOfPortland:
                     ViewBag.contents = f.contents;
                     return View("~/Views/Details/Templates/Portofportland.cshtml");
