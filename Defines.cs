@@ -44,7 +44,7 @@ namespace SearchProcurement
 		public const string RssDescription = "This is a searchable, RSSable database of government contracting opportunities, including cities, counties, regional governments, state-level agencies, and private companies.";
 		public const string RssUrl = "http://ProcurementSearch.com";
 		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
-		public const string RssLimit = 80;
+		public const string RssLimit = "80";
 
 	}
 	
