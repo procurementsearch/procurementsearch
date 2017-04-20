@@ -91,7 +91,7 @@ namespace SteveHavelka.SphinxFTS
 					/* let's get a total possible count */
                     // SELECT COUNT(*) FROM search_pdx WHERE query='\\"concrete formwork\\"; groupby=attr:listing_id; mode=extended;';
 					cmd.CommandText =
-						"SELECT COUNT(*) FROM " + kwTable +
+						"SELECT SQL_NO_CACHE COUNT(*) FROM " + kwTable +
                         " WHERE query='" + words + "; groupby=attr:listing_id; mode=extended;'";
 					cmd.Prepare();
 
@@ -142,7 +142,7 @@ namespace SteveHavelka.SphinxFTS
 						/* let's get a total possible count */
 						// select listing_id from search_pdx where query='\\"concrete formwork\\"; groupby=attr:listing_id; limit=20; groupsort=@weight desc; mode=extended;';
 						cmd.CommandText =
-							"SELECT listing_id FROM " + kwTable +
+							"SELECT SQL_NO_CACHE listing_id FROM " + kwTable +
 							" WHERE query='" + words + "; groupby=attr:listing_id; limit=" + my_limit + "; offset=" + my_offset +
 							"; groupsort=@weight desc; mode=extended;'";
 						cmd.Prepare();
