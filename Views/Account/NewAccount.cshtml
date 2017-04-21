@@ -1,0 +1,198 @@
+
+<div class="view-box">
+    <h1>Setting up your Buyer/PM Account</h1>
+
+    <p>
+        Ready to start listing your contracts, RFPs, and projects on ProcurementSearch.com?
+        You've come to the right place.  If you're an agency buyer and you'd like to post
+        contracts yourself, we offer a self-serve system, so you can list your contracting
+        opportunities to the vendor community.  This is the place to start doing that.
+    </p>
+
+    <p>
+        <span class="attention">Please note:  this account is for buyers,
+        project managers, procurement analysts and managers, and anyone
+        else who wants to post a contract, project, or RFP to ProcurementSearch.com.</span>
+        If you're a vendor looking for opportunities, this is not the place where you'll
+        set up your account.
+    </p>
+
+    <form class="pure-form pure-form-stacked">
+        <fieldset>
+            <legend>About You</legend>
+
+            <p><i>Since you're the person setting up the account, we'd like to know a little about you.</i></p>
+
+            <label for="user_real_name">Your name</label>
+            <input id="user_real_name" class="pure-u-23-24" type="text" name="user_real_name" placeholder="" required>
+            <span class="pure-form-message">This is a required field.</span>
+
+            <label for="user_email_address">Your email address</label>
+            <input id="user_email_address" class="pure-u-23-24" type="text" name="user_email_address" placeholder="" required>
+            <span class="pure-form-message">This is a required field.</span>
+        </fieldset>
+
+        <fieldset>
+            <legend>About Your Agency</legend>
+
+            <label for="agency_name">The name of your agency</label>
+            <input id="agency_name" class="pure-u-23-24" type="text" name="agency_name" placeholder="" required>
+            <span class="pure-form-message">This is a required field.</span>
+
+            <p>
+                What kind of agency do you represent?  <i>Choose carefully.
+                You can't go back and change your agency type after you've
+                set up your account!</i>
+            </p>
+
+            <label for="agency_type_govnp" class="pure-radio">
+                <input id="agency_type_govnp" type="radio" name="agency_type" value="govnp" checked> Government/Non-profit
+            </label>
+            <label for="agency_type_priv" class="pure-radio">
+                <input id="agency_type_priv" type="radio" name="agency_type" value="priv"> Private Sector (General Contractor, etc.)
+            </label>
+
+            <label for="agency_about_text">A few words about your agency</label>
+            <textarea id="agency_about_text" class="pure-u-23-24" name="agency_about_text" rows=5></textarea>
+            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
+
+            <div class="pure-g">
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_url">Your Website</label>
+                    <input id="agency_url" class="pure-u-23-24" type="text" name="agency_url">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_logo">Your Agency Logo</label>
+                    <input id="agency_logo" class="pure-u-23-24" type="file" name="agency_logo">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Agency Contact Information</legend>
+
+            <p><i>This is how vendors will reach your agency if they have questions.</i></p>
+
+            <div class="pure-g">
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_contact_name">Contact Person</label>
+                    <input id="agency_contact_name" class="pure-u-23-24" type="text" name="agency_contact_name" placeholder="">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_contact_email">Contact Email</label>
+                    <input id="agency_contact_email" class="pure-u-23-24" type="text" name="agency_contact_email" placeholder="">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_phone">Phone Number</label>
+                    <input id="agency_phone" class="pure-u-23-24" type="text" name="agency_phone">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label for="agency_fax">Fax Number</label>
+                    <input id="agency_fax" class="pure-u-23-24" type="text" name="agency_fax">
+                </div>
+            </div>
+
+            <p><i>Where is your office physically located?</i></p>
+
+            <div class="pure-g">
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_address_1">Street Address</label>
+                    <input id="agency_fax" class="pure-u-23-24" type="text" name="agency_fax">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_address_2">Street Address 2</label>
+                    <input id="shipping_address_2" class="pure-u-23-24" type="text" name="shipping_address_2">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_city">City</label>
+                    <input id="shipping_city" class="pure-u-23-24" type="text" name="shipping_city">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_stae">State</label>
+                    <input id="shipping_state" class="pure-u-23-24" type="text" name="shipping_state">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_country">Country</label>
+                    <input id="shipping_country" class="pure-u-23-24" type="text" name="shipping_country">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="shipping_postal">Zip/Postal Code</label>
+                    <input id="shipping_postal" class="pure-u-23-24" type="text" name="shipping_postal">
+                </div>
+            </div>
+
+            <p>
+                <i>What is your mailing address?  If it's the same as your physical address, check here.</i>
+                <input type="checkbox" id="billing_same_as_shipping">
+            </p>
+
+            <div class="pure-g">
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_address_1">Street Address</label>
+                    <input id="agency_fax" class="pure-u-23-24" type="text" name="agency_fax">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_address_2">Street Address 2</label>
+                    <input id="billing_address_2" class="pure-u-23-24" type="text" name="billing_address_2">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_city">City</label>
+                    <input id="billing_city" class="pure-u-23-24" type="text" name="billing_city">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_stae">State</label>
+                    <input id="billing_state" class="pure-u-23-24" type="text" name="billing_state">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_country">Country</label>
+                    <input id="billing_country" class="pure-u-23-24" type="text" name="billing_country">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-3">
+                    <label for="billing_postal">Zip/Postal Code</label>
+                    <input id="billing_postal" class="pure-u-23-24" type="text" name="billing_postal">
+                </div>
+            </div>
+
+        </fieldset>
+
+        <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
+
+        <button type="submit" class="pure-button pure-button-primary">Sign Up</button>
+
+    </form>
+
+</div>
+
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    @Html.Partial("Pages-menu")
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>

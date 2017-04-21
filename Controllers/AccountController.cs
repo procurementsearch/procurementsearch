@@ -13,9 +13,9 @@ namespace SearchProcurement.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = "/account")
         {
-            return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = "/" });
+            return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
         }
 
         public async Task Logout()
@@ -25,6 +25,17 @@ namespace SearchProcurement.Controllers
                 RedirectUri = Url.Action("Index", "Home")
             });
             await HttpContext.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+
+        public IActionResult NewAccount()
+        {
+            return View();
         }
 
     }

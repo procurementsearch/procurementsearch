@@ -359,6 +359,13 @@ a {
     font-weight: bold;
 }
 
+.view-box .pure-form fieldset {
+    margin-top: 2em;
+}
+
+.view-box .pure-form fieldset legend {
+    font-size: 16pt;
+}
 
 @media screen and (max-width: 48em) {
     /* small screens */
@@ -374,6 +381,10 @@ a {
     }
 
     .minisearch input[type=text] {
+    }
+
+    .view-box form {
+        margin: 1em 1em;
     }
 
 }
@@ -394,4 +405,9 @@ a {
 
     .minisearch input[type=text] {
     }
+
+    .view-box form {
+        margin: auto 5em;
+    }
+
 }
