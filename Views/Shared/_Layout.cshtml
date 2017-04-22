@@ -12,7 +12,18 @@
           href="http://www.procurementsearch.com/rss">
 
 
-    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/pure-min.css">
+        <link rel="stylesheet" href="~/css/grids-responsive-min.css">
+        <link rel="stylesheet" href="~/css/fonts.css">
+        <link rel="stylesheet" href="~/css/styles.css">
+    </environment>
+
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
     <script type="text/javascript"
             src="http://w.sharethis.com/button/buttons.js"></script>
 
