@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Authentication;
 
+using SearchProcurement.Models;
+
 namespace SearchProcurement.Controllers
 {
     public class AccountController : Controller
@@ -35,7 +37,8 @@ namespace SearchProcurement.Controllers
 
         public IActionResult NewAccount()
         {
-            return View();
+            Account a = new Account();
+            return View(a);
         }
 
     }

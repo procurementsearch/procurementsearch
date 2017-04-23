@@ -119,6 +119,10 @@ input[type=text] {
     color: #008484;
 }
 
+.red {
+    color: #a12;
+}
+
 a {
     color: #666;
 }

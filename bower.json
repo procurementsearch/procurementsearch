@@ -2,9 +2,9 @@
   "name": "SearchProcurement.com",
   "private": true,
   "dependencies": {
-    "zepto": "^1.2.0",
     "Croppie": "croppie#^2.4.1",
     "pgwmodal": "^2.0.0",
+    "jquery": "^3.2.1",
     "parsleyjs": "^2.7.0"
   }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-using SteveHavelka.SphinxFTS;
 using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
