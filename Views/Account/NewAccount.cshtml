@@ -18,18 +18,20 @@
         set up your account.
     </p>
 
-    <form class="pure-form pure-form-stacked" id="account">
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/NewAccountPost">
+    @Html.AntiForgeryToken()
+
         <fieldset>
             <legend>About You</legend>
 
             <p><i>Since you're the person setting up the account, we'd like to know a little about you.</i></p>
 
             <label asp-for="UserRealName"></label>
-            <input asp-for="UserRealName" class="pure-u-23-24" placeholder="" required>
+            <input asp-for="UserRealName" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
             <span class="pure-form-message">This is a required field.</span>
 
             <label asp-for="UserEmailAddress"></label>
-            <input asp-for="UserEmailAddress" class="pure-u-23-24" placeholder="" required>
+            <input asp-for="UserEmailAddress" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true" data-parsley-type="email" data-parsley-remote="/account/checkEmail?email={value}">
             <span class="pure-form-message">This is a required field.</span>
         </fieldset>
 
@@ -37,7 +39,7 @@
             <legend>About Your Agency</legend>
 
             <label asp-for="AgencyName"></label>
-            <input asp-for="AgencyName" class="pure-u-23-24" placeholder="" required>
+            <input asp-for="AgencyName" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
             <span class="pure-form-message">This is a required field.</span>
 
             <p>
@@ -65,7 +67,23 @@
 
                 <div class="pure-u-1 pure-u-md-1-2">
                     <label for="AgencyLogo">Your Agency Logo</label>
-                    <input id="AgencyLogo" class="pure-u-23-24" type="file">
+                    <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
+
+                    <div id="croppie_modal" style="display: none;">
+                        <a class="pure-button pure-button-secondary file-button">
+                            <span>Upload</span>
+                            <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
+                        </a>
+                        <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
+                        <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
+                        <div class="upload-msg">
+                            Upload a logo.  If you need to resize it, you can do so here.
+                        </div>
+                        <div class="upload-demo-wrap">
+                            <div id="croppie"></div>
+                        </div>
+                    </div>
+                    <div id="logo_preview" style="padding: 1em;"></div>
                 </div>
             </div>
         </fieldset>
@@ -122,7 +140,7 @@
 
                 <div class="pure-u-1 pure-u-md-1-3">
                     <label asp-for="ShippingAddress.Country">Country</label>
-                    <input asp-for="ShippingAddress.Country" class="pure-u-23-24">
+                    <select class="pure-u-23-24" asp-for="ShippingAddress.Country" asp-items="Model.Countries"></select>
                 </div>
 
                 <div class="pure-u-1 pure-u-md-1-3">
@@ -159,7 +177,7 @@
 
                 <div class="pure-u-1 pure-u-md-1-3">
                     <label asp-for="BillingAddress.Country">Country</label>
-                    <input asp-for="BillingAddress.Country" class="pure-u-23-24">
+                    <select class="pure-u-23-24" asp-for="BillingAddress.Country" asp-items="Model.Countries"></select>
                 </div>
 
                 <div class="pure-u-1 pure-u-md-1-3">
@@ -172,6 +190,7 @@
 
         <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
 
+        <input type="hidden" name="logo_data">
         <button type="submit" class="pure-button pure-button-primary">Sign Up</button>
 
     </form>
@@ -200,16 +219,92 @@
 
 <script type="text/javascript">
 $(function () {
+
   $('#account').parsley().on('field:validated', function() {
     if (this.validationResult === true) {
-      this.$element.closest('.pure-form-message').removeClass('red');
+      this.$element.nextAll('.pure-form-message').first().removeClass('red');
     } else {
-      this.$element.closest('.pure-form-message').addClass('red');
+      this.$element.nextAll('.pure-form-message').first().addClass('red');
     }
   })
   .on('form:submit', function() {
-    return false; // Don't submit form for this demo
+    // return false; // Don't submit form for this demo
   });
+
+
+  // Billing same as shipping checkbox
+  $('#billing_same_as_shipping').change(function(){
+    if( this.checked ) {
+      $('#BillingAddress_Address1').val($('#ShippingAddress_Address1').val());
+      $('#BillingAddress_Address2').val($('#ShippingAddress_Address2').val());
+      $('#BillingAddress_City').val($('#ShippingAddress_City').val());
+      $('#BillingAddress_State').val($('#ShippingAddress_State').val());
+      $('#BillingAddress_Country').val($('#ShippingAddress_Country').val());
+      $('#BillingAddress_Postal').val($('#ShippingAddress_Postal').val());
+    }
+  });
+
+
+
+  // Set up croppie
+  var $hid = $('#croppie_modal');
+  var $hid_btn = $('#croppie_show');
+  var $hid_remove = $('#logo_modal');
+  var $uploadCrop = $('#croppie').croppie({
+    viewport: {
+      width: 175,
+      height: 175,
+      type: 'circle'
+    },
+    boundary: {
+      width: 200,
+      height: 200
+    }
+  });
+
+  function readFile(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        $uploadCrop.croppie('bind', {
+          url: e.target.result
+        }).then(function(){
+          console.log('jQuery bind complete');
+        });
+      }
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      swal("Sorry - you're browser doesn't support the FileReader API");
+    }
+  }
+
+  $('#croppie_upload').on('change', function () { readFile(this); });
+  $('.croppie_save').on('click', function (ev) {
+    $uploadCrop.croppie('result', {
+      type: 'base64',
+      size: 'viewport'
+    }).then(function (resp) {
+      $('#logo_preview').empty().append('<p>Uploaded logo:</p><img src="' + resp + '">');
+      $('input[name=logo_data]').val(resp);
+      $hid.toggle();
+      $hid_btn.toggle();
+    });
+  });
+
+  $('#croppie_show').on('click', function () {
+    $hid.toggle();
+    $hid_btn.toggle();
+    $uploadCrop.croppie('bind');
+  });
+
+  $('#croppie_remove').on('click', function(){
+    $uploadCrop.croppie('bind', { url: ''});
+    $('#logo_preview').empty();
+    $('input[name=logo_data]').val('');
+    $hid.toggle();
+    $hid_btn.toggle();
+  });
+
 });
 
 </script>

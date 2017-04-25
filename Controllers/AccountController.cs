@@ -41,5 +41,25 @@ namespace SearchProcurement.Controllers
             return View(a);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult NewAccountPost(Account account)
+        {
+            // So we have a valid model in account now...  Let's just save it
+            // and bump them to their account page
+            account.AgencyLogo = HttpContext.Request.Form["logo_data"];
+            account.add();
+            return Content("OK");
+        }
+
+
+
+        public IActionResult checkEmail(string email)
+        {
+            // Just check to see if the email exists, and return a good/bad status code as needed
+            return Account.emailExists(email) ? StatusCode(418) : StatusCode(200);
+        }
+
     }
 }
