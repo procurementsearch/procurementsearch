@@ -39,6 +39,12 @@ namespace SearchProcurement
 		public const string mySphinxTable = "search_all";
 		public const string mySphinxIndex = "kw_all";
 
+		/* The dreamobjects access and secret keys */
+		public const string s3AccessKey = "hF0qM1vBICnpZeGF_oC5";
+        public const string s3SecretKey = "G-u6q1uEsAJRiNgJx2kfGTFyfoWc2ltyO3YlJqo3";
+		public const string s3Bucket = "procurementsearch-dev";
+		public const string s3LogoPath = "agency_logos";
+
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";
 		public const string RssDescription = "This is a searchable, RSSable database of government contracting opportunities, including cities, counties, regional governments, state-level agencies, and private companies.";

@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http;
-
+using Amazon;
+using Amazon.S3;
 
 using SearchProcurement.Helpers;
 
@@ -43,16 +45,11 @@ namespace SearchProcurement
         public void ConfigureServices(IServiceCollection services)
         {
             // Add authentication services
-            services.AddAuthentication(
-                options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
-
-            // Add framework services.
+            services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddMvc();
-
-            // Add functionality to inject IOptions<T>
             services.AddOptions();
-
-            // Add the Auth0 Settings object so it can be injected
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonS3>();
             services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
         }
 
@@ -123,8 +120,25 @@ namespace SearchProcurement
                 // Configure the Claims Issuer to be Auth0
                 ClaimsIssuer = "Auth0",
 
+                // Saves tokens to the AuthenticationProperties
+                SaveTokens = true,
+
                 Events = new OpenIdConnectEvents
                 {
+                    OnTicketReceived = context =>
+                    {
+                        // Get the ClaimsIdentity
+                        var identity = context.Principal.Identity as ClaimsIdentity;
+                        if (identity != null)
+                        {
+                            // Add the Name ClaimType. This is required if we want User.Identity.Name to actually return something!
+                            if (!context.Principal.HasClaim(c => c.Type == ClaimTypes.Name) &&
+                                identity.HasClaim(c => c.Type == "name"))
+                                identity.AddClaim(new Claim(ClaimTypes.Name, identity.FindFirst("name").Value));
+                        }
+
+                        return Task.CompletedTask;
+                    },
                     // handle the logout redirection 
                     OnRedirectToIdentityProviderForSignOut = (context) =>
                     {
@@ -152,8 +166,10 @@ namespace SearchProcurement
             };
             options.Scope.Clear();
             options.Scope.Add("openid");
+            options.Scope.Add("name");
+            options.Scope.Add("email");
+            options.Scope.Add("picture");
             app.UseOpenIdConnectAuthentication(options);
-
 
             // And set up our routes
             app.UseMvc(routes =>

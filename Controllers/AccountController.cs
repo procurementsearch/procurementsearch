@@ -1,8 +1,12 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Http.Features;
+using Amazon;
+using Amazon.S3;
 
 using SearchProcurement.Models;
 
@@ -10,6 +14,20 @@ namespace SearchProcurement.Controllers
 {
     public class AccountController : Controller
     {
+
+        IAmazonS3 S3Client { get; set; }
+
+        /**
+         * Constructor
+         */
+        public AccountController(IAmazonS3 s3Client)
+        {
+            // Dependency-inject the s3 client
+            this.S3Client = s3Client;
+        }
+
+
+
         public IActionResult Index()
         {
             return View();
@@ -49,7 +67,13 @@ namespace SearchProcurement.Controllers
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
             account.AgencyLogo = HttpContext.Request.Form["logo_data"];
-            account.add();
+            account.add(HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+            IEnumerable c = User.Claims;
+
+            foreach (var claim in User.Claims)
+            {
+                var x = claim.Type;
+            }
             return Content("OK");
         }
 
