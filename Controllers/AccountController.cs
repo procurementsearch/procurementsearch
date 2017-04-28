@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Amazon;
@@ -53,6 +54,7 @@ namespace SearchProcurement.Controllers
         }
 
 
+        [Authorize]
         public IActionResult NewAccount()
         {
             Account a = new Account();
@@ -60,6 +62,7 @@ namespace SearchProcurement.Controllers
         }
 
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult NewAccountPost(Account account)
@@ -79,6 +82,7 @@ namespace SearchProcurement.Controllers
 
 
 
+        [Authorize]
         public IActionResult checkEmail(string email)
         {
             // Just check to see if the email exists, and return a good/bad status code as needed
