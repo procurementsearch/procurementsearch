@@ -48,8 +48,8 @@ namespace SearchProcurement
             services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddMvc();
             services.AddOptions();
-            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            services.AddAWSService<IAmazonS3>();
+//            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+//            services.AddAWSService<IAmazonS3>();
             services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
         }
 

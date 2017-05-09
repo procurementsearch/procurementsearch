@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +17,35 @@ namespace SearchProcurement.Controllers
     public class AccountController : Controller
     {
 
-        IAmazonS3 S3Client { get; set; }
+//        IAmazonS3 S3Client { get; set; }
 
         /**
          * Constructor
          */
-        public AccountController(IAmazonS3 s3Client)
+        public AccountController(/*IAmazonS3 s3Client*/)
         {
             // Dependency-inject the s3 client
-            this.S3Client = s3Client;
+            //this.S3Client = s3Client;
         }
 
 
 
         public IActionResult Index()
         {
-            return View();
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Nope, send 'em to the new account page
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Yep, they're good, they can stay here
+            Account a = new Account();
+            a.loadByAgencyIdentifier(uniq);
+
+            ViewBag.nameidentifier = uniq;
+            return View(a);
+
         }
 
         public IActionResult Login(string returnUrl = "/account")
@@ -54,9 +68,21 @@ namespace SearchProcurement.Controllers
         }
 
 
+
+
+
+
         [Authorize]
         public IActionResult NewAccount()
         {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Yep, send 'em to their account page
+            if( Account.isKnownAgency(uniq) )
+                return Redirect("/account");
+
+            // Yep, they're good, they can stay here
             Account a = new Account();
             return View(a);
         }
@@ -67,17 +93,19 @@ namespace SearchProcurement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult NewAccountPost(Account account)
         {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Yep, send 'em to their account page
+            if( Account.isKnownAgency(uniq) )
+                return Redirect("/account");
+
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
             account.AgencyLogo = HttpContext.Request.Form["logo_data"];
-            account.add(HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
-            IEnumerable c = User.Claims;
+            account.add(uniq, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
 
-            foreach (var claim in User.Claims)
-            {
-                var x = claim.Type;
-            }
-            return Content("OK");
+            return View();
         }
 
 
@@ -87,6 +115,20 @@ namespace SearchProcurement.Controllers
         {
             // Just check to see if the email exists, and return a good/bad status code as needed
             return Account.emailExists(email) ? StatusCode(418) : StatusCode(200);
+        }
+
+
+        /**
+         * Return the name identifier from the claim.  If we're logged in via auth0,
+         * we'll alwys have this and it will be unique for every auth0 user.
+         * @return string The name identifier
+         */
+        private string readNameIdentifier()
+        {
+            return User.Claims.
+                Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").
+                Select(v => v.Value).
+                FirstOrDefault();
         }
 
     }
