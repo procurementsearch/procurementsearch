@@ -93,7 +93,9 @@ namespace SearchProcurement
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true
+                AutomaticChallenge = true,
+                LoginPath = new PathString("/account/login"),
+                LogoutPath = new PathString("/account/logout")
             });
 
             // Add the OIDC middleware

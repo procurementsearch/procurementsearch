@@ -88,6 +88,25 @@ namespace SearchProcurement.Controllers
         }
 
 
+
+        /**
+         * If someone hits /account/NewAccountPost as a GET request,
+         * just redirect them to /account.  That shouldn't ever happen,
+         * and there's nothing we can sensibly do with it.
+         */
+        [Authorize]
+        [HttpGet]
+        [ActionName("NewAccountPost")]
+        public IActionResult NewAccountNonPost(Account account)
+        {
+            return Redirect("/account");
+        }
+
+
+
+        /**
+         * The POST endpoint for adding new accounts.
+         */
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
