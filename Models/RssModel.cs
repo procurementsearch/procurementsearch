@@ -16,14 +16,14 @@ namespace SearchProcurement.Models
 		public searchItem[] latest()
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' order by created desc limit " + Defines.RssLimit + ") tmp order by created asc";
@@ -62,14 +62,14 @@ namespace SearchProcurement.Models
 		public searchItem[] bySource(int source)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' and source_id = @id order by created desc limit 40) tmp order by created asc";

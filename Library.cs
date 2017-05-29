@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MySql.Data.MySqlClient;
 
 
 namespace SearchProcurement
@@ -8,6 +10,23 @@ namespace SearchProcurement
 
 	static class Library
 	{
+		/**
+		 * Get the last insert ID from MariaDB
+		 * @param dbh The DB handle
+		 * @return integer The insert ID
+		 */
+		static public int lastInsertId(MySqlConnection dbh)
+		{
+			using(MySqlCommand cmd = new MySqlCommand())
+			{
+				cmd.Connection = dbh;
+				cmd.CommandText = "SELECT LAST_INSERT_ID()";
+
+				// Get the new agency ID
+				return Convert.ToInt32(cmd.ExecuteScalar());
+			}
+
+		}
 
 
         /**

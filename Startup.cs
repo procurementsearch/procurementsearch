@@ -192,10 +192,6 @@ namespace SearchProcurement
                     template: "search",
                     defaults: new { controller = "Search", action = "Index" });
                 routes.MapRoute(
-                    name: "Post RFPs",
-                    template: "post",
-                    defaults: new { controller = "Post", action = "Index" });
-                routes.MapRoute(
                     name: "Rss with Search",
                     template: "rss/kw={kw}",
                     defaults: new { controller = "Rss", action = "Index" });

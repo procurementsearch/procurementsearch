@@ -60,14 +60,14 @@ namespace SearchProcurement.Models
 			id = my_id;
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select s.source_name, " + // 0
@@ -171,14 +171,14 @@ namespace SearchProcurement.Models
 		public frameDetails loadFrameData()
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select l.source_id, l.contents, l.raw_contents, l.origin_url, s.redirect_url_suffix " +
@@ -221,14 +221,14 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select a.title, a.filetype, a.url, a.redirect_url from attachment as a " +
@@ -277,7 +277,7 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection(), my_sph = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(), my_sph = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
@@ -288,7 +288,7 @@ namespace SearchProcurement.Models
 				my_sph.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(), sph = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand(), sph = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select a.attachment_id, a.title, a.text from attachment as a where a.listing_id = @id";

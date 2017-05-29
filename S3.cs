@@ -16,11 +16,19 @@ namespace SearchProcurement.AWS
         {
             // Set up the configuration object and the client
             config = new AmazonS3Config();
-            config.ServiceURL = "https://objects-us-west-1.dream.io/";
+            config.ServiceURL = Defines.s3ServiceUrl;
             config.ForcePathStyle = true;
             s3Client = new AmazonS3Client(Defines.s3AccessKey, Defines.s3SecretKey, config);
         }
 
+
+        /**
+         * Upload a file from disk to an s3 bucket
+         * @param filePath The path to the file on disk
+         * @param s3Bucket The s3 bucket to upload to
+         * @param newName The name to assign to the uploaded file, once it's uploaded
+         * @return string The full URL to the file after it has been uploaded
+         */
         public string UploadFile(string filePath, string s3Bucket, string newName)
         {
             TransferUtility up = new TransferUtility(s3Client);
@@ -32,9 +40,17 @@ namespace SearchProcurement.AWS
             up.Upload(upreq);
 
             // Return the object URL
-            return config.ServiceURL + "/" + s3Bucket + "/" + newName;
+            return config.ServiceURL + (config.ServiceURL[config.ServiceURL.Length - 1] == '/' ? "" : "/") + s3Bucket + "/" + newName;
         }
 
+
+        /**
+         * Upload a buffer of bytes to an s3 bucket
+         * @param buffer The data to store
+         * @param s3Bucket The s3 bucket to upload to
+         * @param newName The name to assign to the uploaded file, once it's uploaded
+         * @return string The full URL to the object after it has been uploaded
+         */
         public string UploadBuffer(byte[] buffer, string s3Bucket, string newName)
         {
             MemoryStream m = new MemoryStream();
@@ -49,7 +65,24 @@ namespace SearchProcurement.AWS
             up.Upload(upreq);
 
             // Return the object URL
-            return config.ServiceURL + "/" + s3Bucket + "/" + newName;
+            return config.ServiceURL + (config.ServiceURL[config.ServiceURL.Length - 1] == '/' ? "" : "/") + s3Bucket + "/" + newName;
+        }
+
+
+        /**
+         * Delete an object from an s3 bucket
+         * @param s3Bucket The s3 bucket to delete from
+         * @param name The name of the object to delete
+         * @return none
+         */
+        public void Delete(string s3Bucket, string name)
+        {
+            DeleteObjectRequest d = new DeleteObjectRequest();
+            d.BucketName = s3Bucket;
+            d.Key = name;
+
+            // And, delete the object
+            s3Client.DeleteObjectAsync(d);
         }
 
     }

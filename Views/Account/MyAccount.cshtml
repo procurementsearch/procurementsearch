@@ -1,24 +1,14 @@
 @model SearchProcurement.Models.Account
 
 <div class="view-box">
-    <h1>Setting up your Buyer/PM Account</h1>
+    <h1>Your Buyer/PM Account</h1>
 
-    <p>
-        Ready to start listing your contracts, RFPs, and projects on ProcurementSearch.com?
-        You've come to the right place.  If you're an agency buyer and you'd like to post
-        contracts yourself, we offer a self-serve system, so you can list your contracting
-        opportunities to the vendor community.  This is the place to start doing that.
-    </p>
+    @if( ViewBag.message != null && ViewBag.message != "" )
+    {
+        <div class="message">@ViewBag.message</div>
+    }
 
-    <p>
-        <span class="attention">Please note:  this account is for buyers,
-        project managers, procurement analysts and managers, and anyone
-        else who wants to post a contract, project, or RFP to ProcurementSearch.com.</span>
-        If you're a vendor looking for opportunities, this is not the place where you'll
-        set up your account.
-    </p>
-
-    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/NewAccountPost">
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/MyAccount">
     @Html.AntiForgeryToken()
 
         <fieldset>
@@ -43,17 +33,9 @@
             <span class="pure-form-message">This is a required field.</span>
 
             <p>
-                What kind of agency do you represent?  <i>Choose carefully.
-                You can't go back and change your agency type after you've
-                set up your account!</i>
+                You're registered as a <b>@(Model.AgencyType == SearchProcurement.Models.AgencyTypes.GovernmentNP ? "Government/Non-profit" : "Private Sector")</b>
+                agency.  If you think this is incorrect, please call us at 503-395-5303.
             </p>
-
-            <label asp-for="AgencyType" class="pure-radio">
-                <input asp-for="AgencyType" id="AgencyType_government_np" type="radio" value="government_np" checked> Government/Non-profit
-            </label>
-            <label asp-for="AgencyType" class="pure-radio">
-                <input asp-for="AgencyType" id="AgencyType_private" type="radio" value="private"> Private Sector (General Contractor, etc.)
-            </label>
 
             <label asp-for="AgencyAboutText"></label>
             <textarea asp-for="AgencyAboutText" class="pure-u-23-24" rows=5></textarea>
@@ -71,7 +53,7 @@
 
                     <div id="croppie_modal" style="display: none;">
                         <a class="pure-button pure-button-secondary file-button">
-                            <span>Upload</span>
+                            <span>Choose a file</span>
                             <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
                         </a>
                         <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
@@ -83,7 +65,13 @@
                             <div id="croppie"></div>
                         </div>
                     </div>
-                    <div id="logo_preview" style="padding: 1em;"></div>
+                    <div id="logo_preview" style="padding: 1em;">
+                    @if ( !String.IsNullOrEmpty(Model.AgencyLogo) )
+                    {
+                    <p id="oldLogo">Uploaded logo:</p><img src="@Model.AgencyLogo">
+                    }
+                    </div>
+                    <input type="hidden" name="removeOldLogo" id="removeOldLogo" value="0">
                 </div>
             </div>
         </fieldset>
@@ -188,10 +176,8 @@
 
         </fieldset>
 
-        <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
-
-        <input type="hidden" name="logo_data">
-        <button type="submit" class="pure-button pure-button-primary">Sign Up</button>
+        <input type="hidden" name="logoData">
+        <button type="submit" class="pure-button pure-button-primary">Update your information</button>
 
     </form>
 
@@ -285,7 +271,8 @@ $(function () {
       size: 'viewport'
     }).then(function (resp) {
       $('#logo_preview').empty().append('<p>Uploaded logo:</p><img src="' + resp + '">');
-      $('input[name=logo_data]').val(resp);
+      $('input[name=logoData]').val(resp);
+      $('input[name=removeOldLogo]').val('0');
       $hid.toggle();
       $hid_btn.toggle();
     });
@@ -300,7 +287,8 @@ $(function () {
   $('#croppie_remove').on('click', function(){
     $uploadCrop.croppie('bind', { url: ''});
     $('#logo_preview').empty();
-    $('input[name=logo_data]').val('');
+    $('input[name=logoData]').val('');
+    $('input[name=removeOldLogo]').val('1');
     $hid.toggle();
     $hid_btn.toggle();
   });

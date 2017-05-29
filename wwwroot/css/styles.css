@@ -296,6 +296,9 @@ a {
     font-weight: 600;
 }
 
+.account-content {
+    
+}
 
 .view-box h2 {
     font-size: 17pt;
@@ -380,6 +383,13 @@ a {
 
 .view-box .pure-form fieldset legend {
     font-size: 16pt;
+}
+
+.view-box .message {
+    padding: 1em;
+    background-color: #ccc;
+    color: #a12;
+    border: solid thin #4B4642;
 }
 
 @media screen and (max-width: 48em) {

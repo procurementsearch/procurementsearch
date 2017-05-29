@@ -15,14 +15,14 @@ namespace SearchProcurement.Helpers
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "insert into searchlog (search, results, created, ip_addr) values (@kw, @count, now(), @ip_addr)";
@@ -60,14 +60,14 @@ namespace SearchProcurement.Helpers
             DateTime my_date = DateTime.Today;
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select count(*) from detailslog where year = @y and month = @m and listing_id = @id";
@@ -117,14 +117,14 @@ namespace SearchProcurement.Helpers
 		private static void incrementCounter(int id, string which)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					// Which one are we incrementing?
 					which = "accesses_" + which;

@@ -41,7 +41,7 @@ namespace SearchProcurement.Controllers
 
             // Yep, they're good, they can stay here
             Account a = new Account();
-            a.loadByAgencyIdentifier(uniq);
+            a.loadDataByAgencyIdentifier(uniq);
 
             ViewBag.nameidentifier = uniq;
             return View(a);
@@ -66,6 +66,89 @@ namespace SearchProcurement.Controllers
         {
             return View();
         }
+
+
+
+
+        [Authorize]
+        public IActionResult NewRFP()
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Never seen 'em before?  They shouldn't be here
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Yep, they're good, they can start an RFP
+            return View();
+        }
+
+
+
+
+
+        [Authorize]
+        public IActionResult MyAccount()
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Never seen 'em before?  They shouldn't be here
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Yep, they're good, they can stay here
+            Account a = new Account();
+            a.loadDataByAgencyIdentifier(uniq);
+            return View(a);
+        }
+
+
+
+        /**
+         * The POST endpoint for updating an existing account.
+         */
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("MyAccount")]
+        public IActionResult MyAccountPost(Account account)
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // So we have a valid model in account now...  Let's just save it
+            // and bump them to their account page
+            account.loadIdByAgencyIdentifier(uniq);
+            account.update();
+
+            // Did we get a new logo?
+            if( HttpContext.Request.Form["logoData"] != "" )
+            {
+                // Remove the old one first
+                if( !string.IsNullOrEmpty(account.AgencyLogo) )
+                    account.removeLogo();
+
+                // And save the new logo to s3
+                account.saveLogo(HttpContext.Request.Form["logoData"]);
+            }
+            else if( HttpContext.Request.Form["removeOldLogo"] == "1" )
+            {
+                // Remove the old logo as requested
+                if( !string.IsNullOrEmpty(account.AgencyLogo) )
+                    account.removeLogo();
+            }
+
+            // And show the account
+            ViewBag.message = "I've saved your information!";
+            return View(account);
+        }
+
+
+
 
 
 
@@ -121,8 +204,8 @@ namespace SearchProcurement.Controllers
 
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            account.AgencyLogo = HttpContext.Request.Form["logo_data"];
             account.add(uniq, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+            account.saveLogo(HttpContext.Request.Form["logoData"]);
 
             return View();
         }
@@ -132,8 +215,27 @@ namespace SearchProcurement.Controllers
         [Authorize]
         public IActionResult checkEmail(string email)
         {
-            // Just check to see if the email exists, and return a good/bad status code as needed
-            return Account.emailExists(email) ? StatusCode(418) : StatusCode(200);
+            // Do we have a logged-in user, maybe updating their email?
+            // If so, then their own email shouldn't match as an existing email...
+            string uniq = readNameIdentifier();
+            if( Account.isKnownAgency(uniq) )
+            {
+                // Yep, they're good, they can stay here
+                Account a = new Account();
+                a.loadDataByAgencyIdentifier(uniq);
+
+                // Saving the same email?  Then we pass the email-in-use check..
+                if( a.UserEmailAddress == email )
+                    return StatusCode(200);
+                else
+                    // New email?  Then check if the email exists, and return a good/bad status code as needed
+                    return Account.emailExists(email) ? StatusCode(418) : StatusCode(200);
+
+            }
+            else
+                // Just check to see if the email exists, and return a good/bad status code as needed
+                return Account.emailExists(email) ? StatusCode(418) : StatusCode(200);
+
         }
 
 

@@ -13,21 +13,51 @@
         <p>
             These are your current RFPs.  When an RFP closes, or when you manually disable it, it moves from this table to the inactive RFP table below.
         </p>
+        <p>
+            &raquo; <a href="/account/newRFP">Start a new RFP</a>
+        </p>
         <table class="pure-table pure-table-horizontal">
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Status</th>
                     <th>Close Date</th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                   <td><a target="_blank" href="/account/editRfp?id=1">My Nice RFP</a></td><td>4/2/1978</td><td><a href="">Clone</a> <a href="">Disable</a> <a href="">Close Now</a></td>
+                    <td><a target="_blank" href="/account/editRfp?id=1">My Nice RFP</a></td>
+                    <td>Open</td>
+                    <td>4/2/1978</td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="/account/editRfp?id=1">My in-progress RFP</a></td>
+                    <td>In-progress</td>
+                    <td>4/2/1978</td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
-
 
         <h2>Historical RFPs - 1 ended</h2>
         <p>
@@ -37,13 +67,31 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Status</th>
                     <th>Close Date</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                   <td><a target="_blank" href="/account/editRfp?id=1">My Nice RFP</a></td><td>4/2/1978</td><td><a href="">Clone</a></td>
+                    <td>
+                        <a target="_blank" href="/account/editRfp?id=1">My closed RFP</a>
+                    </td>
+                    <td>Closed</td>
+                    <td>4/2/1978</td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a target="_blank" href="/account/editRfp?id=1">My canceled RFP</a>
+                    </td>
+                    <td>Canceled</td>
+                    <td>4/2/1978</td>
+                    <td style="text-align: center;">
+                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                    </td>
                 </tr>
             </tbody>
         </table>

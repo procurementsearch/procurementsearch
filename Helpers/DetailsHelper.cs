@@ -12,14 +12,14 @@ namespace SearchProcurement.Helpers
 		public static string loadTitle(int id)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select l.title " +
@@ -42,14 +42,14 @@ namespace SearchProcurement.Helpers
 		public static int[] findSubcontractIds(int id)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select l.listing_id " +

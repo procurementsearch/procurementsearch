@@ -26,14 +26,14 @@ namespace SearchProcurement.Helpers
 			item.Id = id;
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select l.title, l.description, l.created, l.source_id, s.source_name, l.listing_parent_id " +
@@ -90,14 +90,14 @@ namespace SearchProcurement.Helpers
             List<int> ids = new List<int>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select listing_id from listing where source_id = @id and status='open'";
@@ -134,14 +134,14 @@ namespace SearchProcurement.Helpers
         public static string loadSourceName(int id)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select source_name from source where source_id = @id";
@@ -171,14 +171,14 @@ namespace SearchProcurement.Helpers
 				return new int[0];
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select listing_id from listing where listing_id in (" +

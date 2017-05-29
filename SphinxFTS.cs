@@ -77,14 +77,14 @@ namespace SteveHavelka.SphinxFTS
 			if( words == null || words.Length == 0 )
 				return 0;
 
-			using(MySql.Data.MySqlClient.MySqlConnection my_sph = new MySqlConnection())
+			using(MySqlConnection my_sph = new MySqlConnection())
 			{
 				// create the DB connection
 			    my_sph.ConnectionString = Defines.myConnectionString;
 			    my_sph.Open();
 
 				/* Our database command */
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_sph;
 
@@ -115,14 +115,14 @@ namespace SteveHavelka.SphinxFTS
 			if( words == null || words.Length == 0 || limit == 0 )
 				return null;
 
-			using(MySql.Data.MySqlClient.MySqlConnection my_sph = new MySqlConnection())
+			using(MySqlConnection my_sph = new MySqlConnection())
 			{
 				// create the DB connection
 			    my_sph.ConnectionString = Defines.myConnectionString;
 			    my_sph.Open();
 
 				/* Our database command */
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_sph;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,14 +12,14 @@ using SearchProcurement.Helpers;
 namespace SearchProcurement.Models
 {
     /* The address struct */
-	public struct Address
+	public class Address
 	{
-		public string Address1;
-		public string Address2;
-		public string City;
-		public string State;
-		public string Country;
-        public string Postal;
+		public string Address1 { get; set; }
+		public string Address2 { get; set; }
+		public string City { get; set; }
+		public string State { get; set; }
+		public string Country { get; set; }
+        public string Postal { get; set; }
 	}
 
     public enum AgencyTypes
@@ -76,14 +77,14 @@ namespace SearchProcurement.Models
         public static bool isKnownAgency(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select count(*) " +
@@ -100,47 +101,81 @@ namespace SearchProcurement.Models
 
 
 
+
+
         /**
-         * Load the account by the unique identifier key.
+         * Load the account ID by the unique identifier key.
          * @param uniq The unique identifier
-         * @return bool Do we have this identifier in our database?
+         * @return int The agency ID
          */
-        public void loadByAgencyIdentifier(string uniq)
+        public void loadIdByAgencyIdentifier(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT a.agency_id " +
+                        "FROM agency AS a " +
+                        "LEFT JOIN agency_login AS al ON al.agency_id = a.agency_id " +
+                        "WHERE al.uniqueidentifier = @uniq";
+					cmd.Parameters.AddWithValue("@uniq", uniq);
+
+					// Run the DB command
+					AgencyId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
+
+
+        /**
+         * Load the account by the unique identifier key.
+         * @param uniq The unique identifier
+         * @return bool Do we have this identifier in our database?
+         */
+        public void loadDataByAgencyIdentifier(string uniq)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "SELECT agency_name, " + // 0
-                        "agency_type, " + // 1
-                        "user_real_name, " + // 2
-                        "user_email_address, " + // 3
-                        "agency_contact_name, " + // 4
-                        "agency_contact_email, " + // 5
-                        "agency_url, " + // 6
-                        "agency_logo_url, " + // 7
-                        "agency_phone, " + // 8
-                        "agency_fax, " + // 9
-                        "agency_about_text, " + // 10
-                        "billing_address_1, " + // 11
-                        "billing_address_2, " + // 12
-                        "billing_city, " + // 13
-                        "billing_state, " + // 14
-                        "billing_country, " + // 15
-                        "billing_postal, " + // 16
-                        "shipping_address_1, " + // 17
-                        "shipping_address_2, " + // 18
-                        "shipping_city, " + // 19
-                        "shipping_state, " + // 20
-                        "shipping_country, " + // 21
-                        "shipping_postal " + // 22
+                        "agency_type, " +                      // 1
+                        "user_real_name, " +                   // 2
+                        "user_email_address, " +               // 3
+                        "agency_contact_name, " +              // 4
+                        "agency_contact_email, " +             // 5
+                        "agency_url, " +                       // 6
+                        "agency_logo_url, " +                  // 7
+                        "agency_phone, " +                     // 8
+                        "agency_fax, " +                       // 9
+                        "agency_about_text, " +                // 10
+                        "billing_address_1, " +                // 11
+                        "billing_address_2, " +                // 12
+                        "billing_city, " +                     // 13
+                        "billing_state, " +                    // 14
+                        "billing_country, " +                  // 15
+                        "billing_postal, " +                   // 16
+                        "shipping_address_1, " +               // 17
+                        "shipping_address_2, " +               // 18
+                        "shipping_city, " +                    // 19
+                        "shipping_state, " +                   // 20
+                        "shipping_country, " +                 // 21
+                        "shipping_postal " +                   // 22
                         "FROM agency AS a " +
                         "LEFT JOIN agency_login AS al ON al.agency_id = a.agency_id " +
                         "WHERE al.uniqueidentifier = @uniq";
@@ -205,14 +240,14 @@ namespace SearchProcurement.Models
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO agency " +
@@ -222,32 +257,32 @@ namespace SearchProcurement.Models
                         "shipping_address_1, shipping_address_2, shipping_city, shipping_state, shipping_country, shipping_postal, " +
                         "created, created_ipaddr, updated) VALUES (" +
                         "@a1, @a2, @a3, @a4, @a5, @a6, " +
-                        "@a7, @a9, @a10, @a11, " +
+                        "@a7, @a8, @a9, @a10, @a11, " +
                         "@a12, @a13, @a14, @a15, @a16, @a17, " +
-                        "@a18, @a19, @a20, @a21, @a22, @a23, " +
+                        "@a18, @a19, @a20, @a21, @a22, " +
                         "now(), @ip_addr, now())";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
-					cmd.Parameters.AddWithValue("@a2", AgencyType);
+					cmd.Parameters.AddWithValue("@a2", AgencyType == AgencyTypes.GovernmentNP ? "government_np" : "private");
 					cmd.Parameters.AddWithValue("@a3", UserRealName);
 					cmd.Parameters.AddWithValue("@a4", UserEmailAddress);
 					cmd.Parameters.AddWithValue("@a5", AgencyContactName);
 					cmd.Parameters.AddWithValue("@a6", AgencyContactEmail);
 					cmd.Parameters.AddWithValue("@a7", AgencyUrl);
-					cmd.Parameters.AddWithValue("@a9", AgencyPhone);
-					cmd.Parameters.AddWithValue("@a10", AgencyFax);
-					cmd.Parameters.AddWithValue("@a11", AgencyAboutText);
-					cmd.Parameters.AddWithValue("@a12", BillingAddress.Address1);
-					cmd.Parameters.AddWithValue("@a13", BillingAddress.Address2);
-					cmd.Parameters.AddWithValue("@a14", BillingAddress.City);
-					cmd.Parameters.AddWithValue("@a15", BillingAddress.State);
-					cmd.Parameters.AddWithValue("@a16", BillingAddress.Country);
-					cmd.Parameters.AddWithValue("@a17", BillingAddress.Postal);
-					cmd.Parameters.AddWithValue("@a18", ShippingAddress.Address1);
-					cmd.Parameters.AddWithValue("@a19", ShippingAddress.Address2);
-					cmd.Parameters.AddWithValue("@a20", ShippingAddress.City);
-					cmd.Parameters.AddWithValue("@a21", ShippingAddress.State);
-					cmd.Parameters.AddWithValue("@a22", ShippingAddress.Country);
-					cmd.Parameters.AddWithValue("@a23", ShippingAddress.Postal);
+					cmd.Parameters.AddWithValue("@a8", AgencyPhone);
+					cmd.Parameters.AddWithValue("@a9", AgencyFax);
+					cmd.Parameters.AddWithValue("@a10", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a11", BillingAddress.Address1);
+					cmd.Parameters.AddWithValue("@a12", BillingAddress.Address2);
+					cmd.Parameters.AddWithValue("@a13", BillingAddress.City);
+					cmd.Parameters.AddWithValue("@a14", BillingAddress.State);
+					cmd.Parameters.AddWithValue("@a15", BillingAddress.Country);
+					cmd.Parameters.AddWithValue("@a16", BillingAddress.Postal);
+					cmd.Parameters.AddWithValue("@a17", ShippingAddress.Address1);
+					cmd.Parameters.AddWithValue("@a18", ShippingAddress.Address2);
+					cmd.Parameters.AddWithValue("@a19", ShippingAddress.City);
+					cmd.Parameters.AddWithValue("@a20", ShippingAddress.State);
+					cmd.Parameters.AddWithValue("@a21", ShippingAddress.Country);
+					cmd.Parameters.AddWithValue("@a22", ShippingAddress.Postal);
 					cmd.Parameters.AddWithValue("@ip_addr", ip_addr ?? "");
 
 					// Run the DB command
@@ -258,17 +293,10 @@ namespace SearchProcurement.Models
 
 
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT LAST_INSERT_ID()";
-
-                    // Get the new agency ID
-                    AgencyId = Convert.ToInt32(cmd.ExecuteScalar());
-                }
+                AgencyId = Library.lastInsertId(my_dbh);
 
 				// Save the agency unique auth0 identifier
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO agency_login " +
@@ -282,44 +310,195 @@ namespace SearchProcurement.Models
 
                 }
 
+            }
 
-                // Parse out the image data, and get ready to commit it to DreamObjects
-                byte[] decodedLogo;
-                byte[] decodedLogoMd5;
-                if( AgencyLogo.IndexOf("data:image/png;base64,") == 0 )
-                {
-                    // Decode the logo, and get an mp3 for the s3 file name
-                    decodedLogo = Convert.FromBase64String( AgencyLogo.Replace("data:image/png;base64,", ""));
+            return true;
 
-                    // And get the md5dum for the logo
-                    using (IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.MD5))
-                    {
-                        hasher.AppendData(decodedLogo);
-                        hasher.AppendData(Encoding.ASCII.GetBytes(UserEmailAddress));
-                        decodedLogoMd5 = hasher.GetHashAndReset();
+        }
 
-                        // And upload the logo to S3
-                        SearchProcurement.AWS.S3 s = new SearchProcurement.AWS.S3();
-                        AgencyLogo = s.UploadBuffer(decodedLogo, Defines.s3Bucket, Defines.s3LogoPath + "/" + decodedLogoMd5 + ".png");
 
-                    }
 
-                }
 
-				// And save the agency logo to the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+
+        /**
+         * Update the account
+         */
+        public bool update()
+        {
+
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "UPDATE agency SET agency_logo_url = @url WHERE agency_id = @id";
-                    cmd.Parameters.AddWithValue("@url", AgencyLogo);
-                    cmd.Parameters.AddWithValue("@id", AgencyId);
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
+					cmd.CommandText = "UPDATE agency SET " +
+                        "agency_name=@a1, " +
+                        "user_real_name=@a2, " +
+                        "user_email_address=@a3, " +
+                        "agency_contact_name=@a4, " +
+                        "agency_contact_email=@a5, " +
+                        "agency_url=@a6, " +
+                        "agency_phone=@a7, " +
+                        "agency_fax=@a8, " +
+                        "agency_about_text=@a9, " +
+                        "billing_address_1=@a10, " +
+                        "billing_address_2=@a11, " +
+                        "billing_city=@a12, " +
+                        "billing_state=@a13, " +
+                        "billing_country=@a14, " +
+                        "billing_postal=@a15, " +
+                        "shipping_address_1=@a16, " +
+                        "shipping_address_2=@a17, " +
+                        "shipping_city=@a18, " +
+                        "shipping_state=@a19, " +
+                        "shipping_country=@a20, " +
+                        "shipping_postal=@a21, " +
+                        "updated=NOW() " +
+                        "WHERE agency_id=@id";
+					cmd.Parameters.AddWithValue("@a1", AgencyName);
+					cmd.Parameters.AddWithValue("@a2", UserRealName);
+					cmd.Parameters.AddWithValue("@a3", UserEmailAddress);
+					cmd.Parameters.AddWithValue("@a4", AgencyContactName);
+					cmd.Parameters.AddWithValue("@a5", AgencyContactEmail);
+					cmd.Parameters.AddWithValue("@a6", AgencyUrl);
+					cmd.Parameters.AddWithValue("@a7", AgencyPhone);
+					cmd.Parameters.AddWithValue("@a8", AgencyFax);
+					cmd.Parameters.AddWithValue("@a9", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a10", BillingAddress.Address1);
+					cmd.Parameters.AddWithValue("@a11", BillingAddress.Address2);
+					cmd.Parameters.AddWithValue("@a12", BillingAddress.City);
+					cmd.Parameters.AddWithValue("@a13", BillingAddress.State);
+					cmd.Parameters.AddWithValue("@a14", BillingAddress.Country);
+					cmd.Parameters.AddWithValue("@a15", BillingAddress.Postal);
+					cmd.Parameters.AddWithValue("@a16", ShippingAddress.Address1);
+					cmd.Parameters.AddWithValue("@a17", ShippingAddress.Address2);
+					cmd.Parameters.AddWithValue("@a18", ShippingAddress.City);
+					cmd.Parameters.AddWithValue("@a19", ShippingAddress.State);
+					cmd.Parameters.AddWithValue("@a20", ShippingAddress.Country);
+					cmd.Parameters.AddWithValue("@a21", ShippingAddress.Postal);
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't update the agency");
+
                 }
 
             }
 
             return true;
+
+        }
+
+
+
+
+        /**
+         * Add a logo to an agency, uploading it to DreamObjects/S3 in the process
+         * @param string The logo, base 64 encoded
+         * @return bool Success?
+         */
+        public void saveLogo(string encodedLogo)
+        {
+            // Parse out the image data, and get ready to commit it to DreamObjects
+            byte[] decodedLogo;
+            string decodedLogoMd5;
+
+            if( encodedLogo.IndexOf("data:image/png;base64,") == 0 )
+            {
+                // Decode the logo, and get an mp3 for the s3 file name
+                decodedLogo = Convert.FromBase64String( encodedLogo.Replace("data:image/png;base64,", ""));
+
+                // And get the md5dum for the logo
+                using (IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.MD5))
+                {
+                    hasher.AppendData(decodedLogo);
+                    hasher.AppendData(Encoding.ASCII.GetBytes(UserEmailAddress));
+                    decodedLogoMd5 = BitConverter.ToString(hasher.GetHashAndReset()).Replace("-", "");
+
+                    // And upload the logo to S3
+                    SearchProcurement.AWS.S3 s = new SearchProcurement.AWS.S3();
+                    
+                    Console.WriteLine(Defines.s3Bucket);
+                    Console.WriteLine(Defines.s3LogoPath + "/" + decodedLogoMd5 + ".png");
+
+                    AgencyLogo = s.UploadBuffer(decodedLogo, Defines.s3Bucket, Defines.s3LogoPath + "/" + decodedLogoMd5 + ".png");
+
+                }
+
+                // Set up the database connection, there has to be a better way!
+                using(MySqlConnection my_dbh = new MySqlConnection())
+                {
+                    // Open the DB connection
+                    my_dbh.ConnectionString = Defines.myConnectionString;
+                    my_dbh.Open();
+
+                    // And save the agency logo to the database
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = my_dbh;
+                        cmd.CommandText = "UPDATE agency SET agency_logo_url = @url WHERE agency_id = @id";
+                        cmd.Parameters.AddWithValue("@url", AgencyLogo);
+                        cmd.Parameters.AddWithValue("@id", AgencyId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+
+                }
+
+
+            }
+            else
+                throw new System.ArgumentException("Not base 64-encoded image!!");
+
+
+        }
+
+
+
+
+        /**
+         * Remove the logo from an agency
+         * @return none
+         */
+        public void removeLogo()
+        {
+            // Make sure we have a logo to delete...
+            if( AgencyLogo != "" )
+            {
+                // Set up the database connection, there has to be a better way!
+                using(MySqlConnection my_dbh = new MySqlConnection())
+                {
+                    // Open the DB connection
+                    my_dbh.ConnectionString = Defines.myConnectionString;
+                    my_dbh.Open();
+
+                    // And save the agency logo to the database
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = my_dbh;
+                        cmd.CommandText = "UPDATE agency SET agency_logo_url = NULL WHERE agency_id = @id";
+                        cmd.Parameters.AddWithValue("@id", AgencyId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+
+                }
+
+                // And, delete the object from s3.  First, get the object name from the logo URL
+                string objectName = AgencyLogo.Split('/').Last();
+
+                // And upload the logo to S3
+                SearchProcurement.AWS.S3 s = new SearchProcurement.AWS.S3();
+                s.Delete(Defines.s3Bucket, objectName);
+
+            }
 
         }
 
@@ -334,14 +513,14 @@ namespace SearchProcurement.Models
         public static bool emailExists(string email)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySql.Data.MySqlClient.MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
 				// Open the DB connection
 				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select count(*) " +

@@ -40,6 +40,7 @@ namespace SearchProcurement
 		public const string mySphinxIndex = "kw_all";
 
 		/* The dreamobjects access and secret keys */
+		public const string s3ServiceUrl = "https://objects-us-west-1.dream.io/";
 		public const string s3AccessKey = "hF0qM1vBICnpZeGF_oC5";
         public const string s3SecretKey = "G-u6q1uEsAJRiNgJx2kfGTFyfoWc2ltyO3YlJqo3";
 		public const string s3Bucket = "procurementsearch-dev";
