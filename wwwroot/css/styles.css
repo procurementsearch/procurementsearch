@@ -15,6 +15,9 @@ html, body { /* for sticky footer */
     min-height: 65px;
 }
 
+.button-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
+}
 
 body {
     color: #555;
@@ -127,18 +130,6 @@ a {
     color: #666;
 }
 
-.file-button {
-    position: relative;
-}
-
-.file-button input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-}
 
 .content-box p {
     font-size: 10.5pt;
@@ -390,6 +381,26 @@ a {
     background-color: #ccc;
     color: #a12;
     border: solid thin #4B4642;
+}
+
+
+/* Used on account setup */
+.file-button {
+    position: relative;
+}
+
+.file-button input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+/* Used on listing setup */
+#fileupload {
+    margin: 0;
 }
 
 @media screen and (max-width: 48em) {
