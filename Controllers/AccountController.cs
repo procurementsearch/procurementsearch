@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
+using Stripe;
 using Amazon;
 using Amazon.S3;
 
 using SearchProcurement.Models;
+using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
@@ -64,23 +66,6 @@ namespace SearchProcurement.Controllers
 
         public IActionResult AccessDenied()
         {
-            return View();
-        }
-
-
-
-
-        [Authorize]
-        public IActionResult NewRFP()
-        {
-            // Have we seen this unique identifier before?
-            string uniq = readNameIdentifier();
-
-            // Never seen 'em before?  They shouldn't be here
-            if( !Account.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
-
-            // Yep, they're good, they can start an RFP
             return View();
         }
 
@@ -172,26 +157,13 @@ namespace SearchProcurement.Controllers
 
 
 
-        /**
-         * If someone hits /account/NewAccountPost as a GET request,
-         * just redirect them to /account.  That shouldn't ever happen,
-         * and there's nothing we can sensibly do with it.
-         */
-        [Authorize]
-        [HttpGet]
-        [ActionName("NewAccountPost")]
-        public IActionResult NewAccountNonPost(Account account)
-        {
-            return Redirect("/account");
-        }
-
-
 
         /**
          * The POST endpoint for adding new accounts.
          */
         [Authorize]
         [HttpPost]
+        [ActionName("NewAccount")]
         [ValidateAntiForgeryToken]
         public IActionResult NewAccountPost(Account account)
         {
@@ -205,10 +177,119 @@ namespace SearchProcurement.Controllers
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
             account.add(uniq, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
-            account.saveLogo(HttpContext.Request.Form["logoData"]);
+            if( !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"]) )
+                account.saveLogo(HttpContext.Request.Form["logoData"]);
 
             return View();
         }
+
+
+
+
+
+        [Authorize]
+        public IActionResult NewListing()
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Yep, they're good, they can start an RFP
+            Account a = new Account();
+            a.loadDataByAgencyIdentifier(uniq);
+            return View(a);
+
+        }
+
+
+
+        /**
+         * Process a Stripe token to charge a credit card when someone
+         * purchases a single RFP.
+         */
+        [Authorize]
+        public IActionResult ChargeSingle(string stripeEmail, string stripeToken)
+        {
+            return Charge(ListingTypes.Single, stripeEmail, stripeToken);
+        }
+
+
+        /**
+         * Process a Stripe token to charge a credit card when someone
+         * purchases an umbrella RFP.
+         */
+        [Authorize]
+        public IActionResult ChargeUmbrella(string stripeEmail, string stripeToken)
+        {
+            return Charge(ListingTypes.Umbrella, stripeEmail, stripeToken);
+        }
+
+
+
+
+        /**
+         * Process a Stripe token to charge a credit card when someone
+         * purchases an umbrella RFP.
+         */
+        public IActionResult Charge(string listingType, string stripeEmail, string stripeToken)
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+
+            // Never seen 'em before?  They shouldn't be here
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Yep, they're good, they can stay here
+            Account a = new Account();
+            a.loadDataByAgencyIdentifier(uniq);
+
+            // Now, process the Stripe customer and charge
+            var customers = new StripeCustomerService();
+            var charges = new StripeChargeService();
+
+            var customer = customers.Create(new StripeCustomerCreateOptions {
+                Email = stripeEmail,
+                SourceToken = stripeToken
+            });
+
+            var charge = charges.Create(new StripeChargeCreateOptions {
+                Amount = Decimal.ToInt32(Price.loadPrice(a.AgencyType, listingType) * 100),
+                Description = "",
+                Currency = "usd",
+                CustomerId = customer.Id
+            });
+
+            // OK!  They've paid, so let's give them a payment token
+            // for the listing they've just paid for
+            a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
+
+            return Redirect("/account/SetupListing");
+        }
+
+
+
+
+
+        [Authorize]
+        public IActionResult SetupListing()
+        {
+            // Have we seen this unique identifier before?
+            string uniq = readNameIdentifier();
+            if( !Account.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            Listing l = new Listing();
+            l.Title = "Test";
+            l.OpenDate = new DateTime(2017, 5, 10);
+            
+            return View(l);
+        }
+
+
+
+
 
 
 

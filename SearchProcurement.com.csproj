@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.0.1" />
     <PackageReference Include="MySql.Data.Core" Version="7.0.4-IR-191" />
+    <PackageReference Include="Stripe.net" Version="9.0.0" />
     <PackageReference Include="WilderMinds.RssSyndication" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="1.1.1" />

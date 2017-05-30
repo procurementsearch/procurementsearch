@@ -70,7 +70,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select s.source_name, " + // 0
+					cmd.CommandText = "SELECT s.source_name, " + // 0
                         "l.title, " + // 1
                         "s.action_steps_text, " + // 2
 	                    "l.origin_id, " + // 3
@@ -79,8 +79,8 @@ namespace SearchProcurement.Models
                         "l.contact, " + // 6
                         "s.show_attachments, " + // 7
 						"l.listing_parent_id " + // 8
-                        "from listing as l left join source as s on l.source_id = s.source_id " +
-	                    "where l.listing_id = @id";
+                        "FROM listing AS l LEFT JOIN source AS s ON l.source_id = s.source_id " +
+	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -181,9 +181,9 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select l.source_id, l.contents, l.raw_contents, l.origin_url, s.redirect_url_suffix " +
-                        "from listing as l left join source as s on l.source_id = s.source_id " +
-                        "where listing_id = @id";
+					cmd.CommandText = "SELECT l.source_id, l.contents, l.raw_contents, l.origin_url, s.redirect_url_suffix " +
+                        "FROM listing AS l LEFT JOIN source AS s ON l.source_id = s.source_id " +
+                        "WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -231,8 +231,8 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select a.title, a.filetype, a.url, a.redirect_url from attachment as a " +
-	                    "where a.listing_id = @id and a.is_hidden = 0";
+					cmd.CommandText = "SELECT a.title, a.filetype, a.url, a.redirect_url FROM attachment AS a " +
+	                    "WHERE a.listing_id = @id AND a.is_hidden = 0";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -291,7 +291,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand(), sph = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select a.attachment_id, a.title, a.text from attachment as a where a.listing_id = @id";
+					cmd.CommandText = "SELECT a.attachment_id, a.title, a.text FROM attachment AS a WHERE a.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 

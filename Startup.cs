@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Stripe;
 using Amazon;
 using Amazon.S3;
 
@@ -51,6 +52,7 @@ namespace SearchProcurement
 //            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
 //            services.AddAWSService<IAmazonS3>();
             services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +89,8 @@ namespace SearchProcurement
             // Make sure we can serve up the static content
             app.UseStaticFiles();
 
-
+            // Add the Stripe configuration
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 
             // Add the cookie middleware
             app.UseCookieAuthentication(new CookieAuthenticationOptions

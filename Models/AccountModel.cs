@@ -22,13 +22,6 @@ namespace SearchProcurement.Models
         public string Postal { get; set; }
 	}
 
-    public enum AgencyTypes
-    {
-        [Display(Name="Government/Non-profit")]
-        GovernmentNP,
-        [Display(Name="Private Sector (General Contractor, etc.)")]
-        Private
-    }
 
 	public class Account {
 
@@ -41,7 +34,7 @@ namespace SearchProcurement.Models
         [Display(Name="The name of your agency")]
         public string AgencyName { get; set; }
 
-        public AgencyTypes AgencyType { get; set; }
+        public string AgencyType { get; set; }
         [Display(Name="A few words about your agency")]
         public string AgencyAboutText { get; set; }
         [Display(Name="Your Website")]
@@ -191,7 +184,7 @@ namespace SearchProcurement.Models
         
                             // Store the agency data
                             AgencyName = r.GetString(0);
-                            AgencyType = r.GetString(1) == "government_np" ? AgencyTypes.GovernmentNP : AgencyTypes.Private;
+                            AgencyType = r.GetString(1);
                             UserRealName = r.GetString(2);
                             UserEmailAddress = r.GetString(3);
                             AgencyContactName = r.IsDBNull(4) ? null : r.GetString(4);
@@ -262,7 +255,7 @@ namespace SearchProcurement.Models
                         "@a18, @a19, @a20, @a21, @a22, " +
                         "now(), @ip_addr, now())";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
-					cmd.Parameters.AddWithValue("@a2", AgencyType == AgencyTypes.GovernmentNP ? "government_np" : "private");
+					cmd.Parameters.AddWithValue("@a2", AgencyType);
 					cmd.Parameters.AddWithValue("@a3", UserRealName);
 					cmd.Parameters.AddWithValue("@a4", UserEmailAddress);
 					cmd.Parameters.AddWithValue("@a5", AgencyContactName);
@@ -505,6 +498,52 @@ namespace SearchProcurement.Models
 
 
 
+
+        /**
+         * Add a payment token and register it to this account
+         * @param listingType The type of listing they've paid for
+         * @return none
+         */
+        public void addPaymentToken(string listingType, decimal amount, string stripeToken)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "INSERT INTO agency_payment_token " +
+                        "(agency_id, token_type, amount_paid, stripe_token, created) " +
+                        "VALUES " +
+                        "(@agency_id, @type, @amt, @token, NOW())";
+					cmd.Parameters.AddWithValue("@agency_id", AgencyId);
+                    cmd.Parameters.AddWithValue("@type", listingType);
+                    cmd.Parameters.AddWithValue("@amt", amount);
+                    cmd.Parameters.AddWithValue("@token", stripeToken);
+					cmd.Prepare();
+
+					// Run the DB command, and we're done
+                    cmd.ExecuteScalar();
+
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
         /**
          * Check to see if this email address exists in the agency table
          * @param email The email to check
@@ -523,9 +562,9 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select count(*) " +
-                        "from agency as a " +
-                        "where user_email_address = @e";
+					cmd.CommandText = "SELECT COUNT(*) " +
+                        "FROM agency AS a " +
+                        "WHERE user_email_address = @e";
 					cmd.Parameters.AddWithValue("@e", email);
 					cmd.Prepare();
 

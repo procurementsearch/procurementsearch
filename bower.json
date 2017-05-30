@@ -4,6 +4,7 @@
   "dependencies": {
     "Croppie": "croppie#^2.4.1",
     "jquery": "^3.2.1",
-    "parsleyjs": "^2.7.0"
+    "parsleyjs": "^2.7.0",
+    "datetimepicker": "^2.5.4"
   }
 }

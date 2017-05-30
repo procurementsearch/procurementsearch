@@ -1,47 +1,47 @@
-@model SearchProcurement.Models.Account
+@model SearchProcurement.Models.Listing
 
 <div class="view-box">
-    <h1>Starting a new RFP</h1>
+    <h1>Setting up your RFP</h1>
 
-    <div>You have unlimited posting to these states: OR, WA.</div>
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">
+    @Html.AntiForgeryToken()
 
-    <div class="pure-g">
-        <div class="pure-u-1 pure-u-md-1-2">
-            <p>Post a contract with a single scope of work.</p>
-            <p>You can still attach as many documents as you need.</p>
-            <p>Your cost: $197 ($97)</p>
+        <fieldset>
+            <legend>RFP Information</legend>
 
-            <form action="/your-server-side-code" method="POST">
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
-                data-amount="197.00"
-                data-name="Steve Havelka Software LLC"
-                data-description="Posting an RFP"
-                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                data-locale="auto">
-            </script>
-            </form>
-        </div>
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
+            <span class="pure-form-message">This is a required field.</span>
 
-        <div class="pure-u-1 pure-u-md-1-2">
-            <p>Post a contract with multiple scopes of work.</p>
-            <p>Each scope of work will refer back to the parent contract.</p>
-            <p>Your cost: $497 ($797)</p>
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="pure-u-23-24" rows=5></textarea>
+            <span class="pure-form-message">This is a required field.</span>
 
-            <form action="/your-server-side-code" method="POST">
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
-                data-amount="497.00"
-                data-name="Steve Havelka Software LLC"
-                data-description="Posting an RFP with subcontracts"
-                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                data-locale="auto">
-            </script>
-            </form>
-        </div>
-    </div>
+            <div class="pure-g">
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label asp-for="OpenDate"></label>
+                    <input asp-for="OpenDate" class="pure-u-23-24">
+                </div>
+
+                <div class="pure-u-1 pure-u-md-1-2">
+                    <label asp-for="CloseDate"></label>
+                    <input asp-for="CloseDate" class="pure-u-23-24">
+                </div>
+            </div>
+
+            <label asp-for="Contact"></label>
+            <textarea asp-for="Contact" class="pure-u-23-24" rows=3></textarea>
+            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
+
+            <label asp-for="ActionSteps"></label>
+            <textarea asp-for="ActionSteps" class="pure-u-23-24" rows=5></textarea>
+            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
+        </fieldset>
+
+        <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>
+
+        <button type="submit" class="pure-button pure-button-primary">Add Listing</button>
+    </form>
 
 </div>
 
