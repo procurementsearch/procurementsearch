@@ -281,9 +281,6 @@ namespace SearchProcurement.Controllers
                 return Redirect("/account/NewAccount");
 
             Listing l = new Listing();
-            l.Title = "Test";
-            l.OpenDate = new DateTime(2017, 5, 10);
-            
             return View(l);
         }
 

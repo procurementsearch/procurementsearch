@@ -20,12 +20,12 @@
             <div class="pure-g">
                 <div class="pure-u-1 pure-u-md-1-2">
                     <label asp-for="OpenDate"></label>
-                    <input asp-for="OpenDate" class="pure-u-23-24">
+                    <input asp-for="OpenDate" value="@(Model.OpenDate == DateTime.MinValue ? "" : Model.OpenDate.ToString("M/d/yy HH:mm"))" class="pure-u-23-24">
                 </div>
 
                 <div class="pure-u-1 pure-u-md-1-2">
                     <label asp-for="CloseDate"></label>
-                    <input asp-for="CloseDate" class="pure-u-23-24">
+                    <input asp-for="CloseDate" value="@(Model.CloseDate == DateTime.MinValue ? "" : Model.CloseDate.ToString("M/d/yyyy HH:mm"))" class="pure-u-23-24">
                 </div>
             </div>
 
@@ -67,92 +67,9 @@
 
 <script type="text/javascript">
 $(function () {
-
-  $('#account').parsley().on('field:validated', function() {
-    if (this.validationResult === true) {
-      this.$element.nextAll('.pure-form-message').first().removeClass('red');
-    } else {
-      this.$element.nextAll('.pure-form-message').first().addClass('red');
-    }
-  })
-  .on('form:submit', function() {
-    // return false; // Don't submit form for this demo
+  $('#OpenDate, #CloseDate').datetimepicker({
+    format: 'm/d/y H:i'
   });
-
-
-  // Billing same as shipping checkbox
-  $('#billing_same_as_shipping').change(function(){
-    if( this.checked ) {
-      $('#BillingAddress_Address1').val($('#ShippingAddress_Address1').val());
-      $('#BillingAddress_Address2').val($('#ShippingAddress_Address2').val());
-      $('#BillingAddress_City').val($('#ShippingAddress_City').val());
-      $('#BillingAddress_State').val($('#ShippingAddress_State').val());
-      $('#BillingAddress_Country').val($('#ShippingAddress_Country').val());
-      $('#BillingAddress_Postal').val($('#ShippingAddress_Postal').val());
-    }
-  });
-
-
-
-  // Set up croppie
-  var $hid = $('#croppie_modal');
-  var $hid_btn = $('#croppie_show');
-  var $hid_remove = $('#logo_modal');
-  var $uploadCrop = $('#croppie').croppie({
-    viewport: {
-      width: 175,
-      height: 175,
-      type: 'circle'
-    },
-    boundary: {
-      width: 200,
-      height: 200
-    }
-  });
-
-  function readFile(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $uploadCrop.croppie('bind', {
-          url: e.target.result
-        }).then(function(){
-          console.log('jQuery bind complete');
-        });
-      }
-      reader.readAsDataURL(input.files[0]);
-    } else {
-      swal("Sorry - you're browser doesn't support the FileReader API");
-    }
-  }
-
-  $('#croppie_upload').on('change', function () { readFile(this); });
-  $('.croppie_save').on('click', function (ev) {
-    $uploadCrop.croppie('result', {
-      type: 'base64',
-      size: 'viewport'
-    }).then(function (resp) {
-      $('#logo_preview').empty().append('<p>Uploaded logo:</p><img src="' + resp + '">');
-      $('input[name=logoData]').val(resp);
-      $hid.toggle();
-      $hid_btn.toggle();
-    });
-  });
-
-  $('#croppie_show').on('click', function () {
-    $hid.toggle();
-    $hid_btn.toggle();
-    $uploadCrop.croppie('bind');
-  });
-
-  $('#croppie_remove').on('click', function(){
-    $uploadCrop.croppie('bind', { url: ''});
-    $('#logo_preview').empty();
-    $('input[name=logoData]').val('');
-    $hid.toggle();
-    $hid_btn.toggle();
-  });
-
 });
 
 </script>
