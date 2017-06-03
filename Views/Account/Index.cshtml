@@ -6,22 +6,24 @@
     <h2>
         @Model.AgencyName
     </h2>
-    <p class="account-nav"><a href="/account/MyAccount">Edit my account</a></p>
+    <p>
+        <a class="pure-button button-small pure-button-primary" href="/account/newListing">Set up a new RFP</a>
+        <a class="pure-button button-small" href="/account/myAccount">Edit my account</a>
+        <a class="pure-button button-small" href="/account/logout">Log out</a>
+    </p>
 
     <div class="my-rfps">
-        <h2>Current RFPs - 1 open, 1 disabled</h2>
+        <h2>Active Listings</h2>
         <p>
             These are your current RFPs.  When an RFP closes, or when you manually disable it, it moves from this table to the inactive RFP table below.
         </p>
-        <p>
-            &raquo; <a href="/account/NewListing">Set up a new RFP</a>
-        </p>
-        <table class="pure-table pure-table-horizontal">
+        <table class="pure-table pure-table-horizontal pure-table-striped">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Status</th>
                     <th>Close Date</th>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -33,13 +35,16 @@
                     <td>Open</td>
                     <td>4/2/1978</td>
                     <td style="text-align: center;">
-                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="" class="pure-button button-xsmall" alt="Edit RFP"><img src="/images/icons/database_edit.png"><br>Edit</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                        <a href="" class="pure-button button-xsmall" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+                        <a href="" class="pure-button button-xsmall" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" class="pure-button button-xsmall" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
                     </td>
                 </tr>
                 <tr>
@@ -47,19 +52,22 @@
                     <td>In-progress</td>
                     <td>4/2/1978</td>
                     <td style="text-align: center;">
-                        <a href="" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="" class="pure-button button-xsmall" alt="Edit RFP"><img src="/images/icons/database_edit.png"><br>Edit</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                        <a href="" class="pure-button button-xsmall" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+                        <a href="" class="pure-button button-xsmall" alt="Disable RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Disable</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="" class="pure-button button-xsmall" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <h2>Historical RFPs - 1 ended</h2>
+        <h2>Inactive Listings</h2>
         <p>
             These are your inactive RFPs.  You can't reopen any of these, but you can clone one and open a new RFP.
         </p>

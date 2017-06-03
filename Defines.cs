@@ -53,6 +53,13 @@ namespace SearchProcurement
 		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
 		public const string RssLimit = "80";
 
+
+		/* Key names for session data */
+		public static class SessionKeys
+		{
+			public const string LocationId = "locId";
+		}
+
 	}
 	
 }

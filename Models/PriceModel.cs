@@ -10,7 +10,7 @@ namespace SearchProcurement.Models
 	public class Price
 	{
 
-		public static decimal loadPrice(string agency_type, string listing_type)
+		public static decimal loadPrice(string agencyType, string listingType)
 		{
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection())
@@ -24,8 +24,8 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "SELECT price FROM price WHERE agency_type = @a AND listing_type = @l";
-					cmd.Parameters.AddWithValue("@a", agency_type);
-					cmd.Parameters.AddWithValue("@l", listing_type);
+					cmd.Parameters.AddWithValue("@a", agencyType);
+					cmd.Parameters.AddWithValue("@l", listingType);
 					cmd.Prepare();
                     return Convert.ToDecimal(cmd.ExecuteScalar());
                 }

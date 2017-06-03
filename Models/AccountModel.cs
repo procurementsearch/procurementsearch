@@ -129,6 +129,81 @@ namespace SearchProcurement.Models
 
 
         /**
+         * Does this location have a payment token (unlimited, or unused
+         * one-time use) to the specified state?
+         * @param int locId The location ID
+         * @return bool Can they post here?
+         */
+        public bool hasAvailablePaymentToken(int locId)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT COUNT(*) " +
+                        "FROM agency_payment_token " +
+                        "WHERE agency_id = @id " +
+                        "AND ((location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()) " +
+                        "OR (location_id IS NULL AND token_type = 'single_use' AND token_used = 0))";
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+					cmd.Parameters.AddWithValue("@locId", locId);
+
+					// Run the DB command
+					return Convert.ToBoolean(cmd.ExecuteScalar());
+                }
+            }
+
+        }
+
+
+
+        /**
+         * Add a payment token and register it to this account
+         * @param listingType The type of listing they've paid for
+         * @return none
+         */
+        public void addPaymentToken(string listingType, decimal amount, string stripeToken)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "INSERT INTO agency_payment_token " +
+                        "(agency_id, token_type, listing_type, amount_paid, stripe_token, created) " +
+                        "VALUES " +
+                        "(@agency_id, 'single_use', @type, @amt, @token, NOW())";
+					cmd.Parameters.AddWithValue("@agency_id", AgencyId);
+                    cmd.Parameters.AddWithValue("@type", listingType);
+                    cmd.Parameters.AddWithValue("@amt", amount);
+                    cmd.Parameters.AddWithValue("@token", stripeToken);
+					cmd.Prepare();
+
+					// Run the DB command, and we're done
+                    cmd.ExecuteScalar();
+
+                }
+            }
+        }
+
+
+
+
+
+        /**
          * Load the account by the unique identifier key.
          * @param uniq The unique identifier
          * @return bool Do we have this identifier in our database?
@@ -494,50 +569,6 @@ namespace SearchProcurement.Models
             }
 
         }
-
-
-
-
-
-        /**
-         * Add a payment token and register it to this account
-         * @param listingType The type of listing they've paid for
-         * @return none
-         */
-        public void addPaymentToken(string listingType, decimal amount, string stripeToken)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
-			{
-				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "INSERT INTO agency_payment_token " +
-                        "(agency_id, token_type, amount_paid, stripe_token, created) " +
-                        "VALUES " +
-                        "(@agency_id, @type, @amt, @token, NOW())";
-					cmd.Parameters.AddWithValue("@agency_id", AgencyId);
-                    cmd.Parameters.AddWithValue("@type", listingType);
-                    cmd.Parameters.AddWithValue("@amt", amount);
-                    cmd.Parameters.AddWithValue("@token", stripeToken);
-					cmd.Prepare();
-
-					// Run the DB command, and we're done
-                    cmd.ExecuteScalar();
-
-                }
-            }
-        }
-
-
-
-
-
 
 
 

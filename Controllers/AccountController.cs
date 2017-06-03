@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Stripe;
@@ -188,7 +189,7 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        public IActionResult NewListing()
+        public IActionResult NewListing(int? locId)
         {
             // Have we seen this unique identifier before?
             string uniq = readNameIdentifier();
@@ -197,8 +198,26 @@ namespace SearchProcurement.Controllers
 
             // Yep, they're good, they can start an RFP
             Account a = new Account();
+            a.loadIdByAgencyIdentifier(uniq);
             a.loadDataByAgencyIdentifier(uniq);
-            return View(a);
+
+            // Did we get a location ID?
+            if( locId != null )
+            {
+                // They can post here--let's let them
+                if( a.hasAvailablePaymentToken(locId.Value) )
+                {
+                    // Save the location for the redirect
+                    HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
+
+                    // And send them to the listing setup page
+                    return Redirect("/account/setupListing");
+                }
+                else
+                    return View("NewListingPay", a);  // Nope, need to pay first
+            }
+            else
+                return View(a);
 
         }
 
@@ -209,9 +228,9 @@ namespace SearchProcurement.Controllers
          * purchases a single RFP.
          */
         [Authorize]
-        public IActionResult ChargeSingle(string stripeEmail, string stripeToken)
+        public IActionResult ChargeSimple(string stripeEmail, string stripeToken)
         {
-            return Charge(ListingTypes.Single, stripeEmail, stripeToken);
+            return Charge(ListingTypes.Simple, stripeEmail, stripeToken);
         }
 
 
@@ -265,7 +284,7 @@ namespace SearchProcurement.Controllers
             // for the listing they've just paid for
             a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
 
-            return Redirect("/account/SetupListing");
+            return Redirect("/account/setupListing");
         }
 
 
@@ -273,15 +292,69 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        public IActionResult SetupListing()
+        public IActionResult SetupListing(int? listingId)
         {
             // Have we seen this unique identifier before?
             string uniq = readNameIdentifier();
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
-            Listing l = new Listing();
-            return View(l);
+
+            // Is this a new listing?  If it is, we need to verify
+            // the payment token..
+            if( listingId == null )
+            {
+                Account a = new Account();
+                a.loadIdByAgencyIdentifier(uniq);
+
+                // Make sure they've selected a location Id
+                int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+                if( locId == null )
+                    return Redirect("/account/newListing");
+
+                // If they can't post here, send them to the payment screen
+                if( !a.hasAvailablePaymentToken(locId.Value) )
+                    return Redirect("/account/newListing?locId=" + locId.Value);
+
+                // OK, they've picked a location and they've paid for it ..
+                Listing l = new Listing();
+
+                // Get the item
+                ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
+                TempData["locId"] = locId.Value;
+
+                return View(l);
+
+            }
+            else
+            {
+                // They're editing an existing listing .. let's load it before
+                // showing the view
+                Listing l = new Listing();
+                return View(l);
+            }
+
+        }
+
+
+        [Authorize]
+        public IActionResult SaveUpload()
+        {
+            // Since these upload requests are going to be initiated by the
+            // javascript uploader, we shouldn't ever get unauthenticated
+            // accounts trying to upload, but let's make sure we silently
+            // drop the requests if that happens...
+            string uniq = readNameIdentifier();
+            if( !Account.isKnownAgency(uniq) )
+                return StatusCode(401);
+
+            // OK, let's add the file path, name, info, etc., to the session.
+            // When the user saves their RFP, that's when we'll start uploading
+            // these to S3, extract the text, etc.
+
+
+
+            return View();
         }
 
 

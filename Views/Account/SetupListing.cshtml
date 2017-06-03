@@ -1,4 +1,6 @@
-@model SearchProcurement.Models.Listing
+@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+@model Listing
 
 <div class="view-box">
     <h1>Setting up your RFP</h1>
@@ -56,6 +58,23 @@
             <!-- The container for the uploaded files -->
             <div id="files" class="files"></div>
 
+        </fieldset>
+
+        <fieldset>
+            <legend>Geographic Distribution</legend>
+            <p>
+                Your listing is set to appear in <b>@ViewBag.listingLocation</b>.
+                If you'd like your listing to appear in a regional subsite, as well,
+                go ahead and pick it here.  (You can only pick one.)
+            </p>
+
+            <ul>
+                <li><input type="radio" name="location_id" value=""> <i>No regional subsite</i></li>
+            @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
+            {
+                <li><input type="radio" name="location_id" value="@loc.LocationId"> @loc.LocationName</li>
+            }
+            </ul>
         </fieldset>
 
         <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>

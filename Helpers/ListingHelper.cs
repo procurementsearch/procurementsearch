@@ -3,7 +3,7 @@ namespace SearchProcurement.Helpers
 
     public static class ListingTypes
     {
-        public const string Single = "single";
+        public const string Simple = "simple";
         public const string Umbrella = "umbrella";
     }
 

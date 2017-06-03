@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -48,6 +49,8 @@ namespace SearchProcurement
             // Add authentication services
             services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddOptions();
 //            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
 //            services.AddAWSService<IAmazonS3>();
@@ -88,6 +91,9 @@ namespace SearchProcurement
 */
             // Make sure we can serve up the static content
             app.UseStaticFiles();
+
+            // And the session
+            app.UseSession();
 
             // Add the Stripe configuration
             StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);

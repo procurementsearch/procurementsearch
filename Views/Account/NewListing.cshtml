@@ -1,48 +1,27 @@
 @using SearchProcurement.Models
-@model Account
+@using SearchProcurement.Helpers
 
 <div class="view-box">
     <h1>Starting a new RFP</h1>
 
-    <div>You have unlimited posting to these states: OR, WA.</div>
+    <h2>First, let's pick a geographical region.</h2>
+    <p>
+        Before we go any further, please select the state where this project will appear.
+        You'll be able to pick a city or region later, too.  This is just to get us started.
+    </p>
 
-    <div class="pure-g">
-        <div class="pure-u-1 pure-u-md-1-2">
-            <p>Post a contract with a single scope of work.</p>
-            <p>You can still attach as many documents as you need.</p>
-            <p>Your cost: $@Price.loadPrice(Model.AgencyType, "single")</p>
+    <h2>Available states:</h2>
 
-            <form action="/account/ChargeSingle" method="POST">
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
-                data-amount="@(Price.loadPrice(Model.AgencyType, "single") * 100)"
-                data-name="Steve Havelka Software LLC"
-                data-description="Posting an RFP"
-                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                data-locale="auto">
-            </script>
-            </form>
-        </div>
+    @foreach (var loc in LocationHelper.getAvailableStates())
+    {
+        <p><a href="/account/newListing?locId=@loc.LocationId" class="pure-button button-small">@loc.LocationName</a></p>
+    }
 
-        <div class="pure-u-1 pure-u-md-1-2">
-            <p>Post a contract with multiple scopes of work.</p>
-            <p>Each scope of work will refer back to the parent contract.</p>
-            <p>Your cost: $@Price.loadPrice(Model.AgencyType, "umbrella")</p>
-
-            <form action="/account/ChargeUmbrella" method="POST">
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
-                data-amount="@(Price.loadPrice(Model.AgencyType, "umbrella") * 100)"
-                data-name="Steve Havelka Software LLC"
-                data-description="Posting an RFP with subcontracts"
-                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                data-locale="auto">
-            </script>
-            </form>
-        </div>
-    </div>
+    <p>
+        If your agency doesn't have an unlimited posting account in the state you choose, you'll be
+        asked to pay on the next screen.  If that's the case, now would be a good time to find your
+        p-card.  You won't be able to continue without it.
+    </p>
 
 </div>
 
