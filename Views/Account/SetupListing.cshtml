@@ -70,10 +70,10 @@
 
             <ul>
                 <li><input type="radio" name="location_id" value=""> <i>No regional subsite</i></li>
-            @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
-            {
+                @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
+                {
                 <li><input type="radio" name="location_id" value="@loc.LocationId"> @loc.LocationName</li>
-            }
+                }
             </ul>
         </fieldset>
 
@@ -114,19 +114,24 @@ $(function () {
 
   // And the file drag/drop utility
   $('#fileupload').fileupload({
-      url: '/account/FileDrop',
+      url: '/account/saveUpload',
       dataType: 'json',
       done: function (e, data) {
+          console.log("DONE:");
+          console.log(data);
           $.each(data.result.files, function (index, file) {
               $('<p/>').text(file.name).appendTo('#files');
           });
       },
       progressall: function (e, data) {
+          console.log("PROGRESS:");
+          console.log(data);
           var progress = parseInt(data.loaded / data.total * 100, 10);
           $('#progress .progress-bar').css(
               'width',
               progress + '%'
           );
+          console.log(progress);
       }
   }).prop('disabled', !$.support.fileInput)
       .parent().addClass($.support.fileInput ? undefined : 'disabled');

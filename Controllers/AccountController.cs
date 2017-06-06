@@ -2,12 +2,15 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 using Stripe;
 using Amazon;
 using Amazon.S3;
@@ -21,12 +24,17 @@ namespace SearchProcurement.Controllers
     {
 
 //        IAmazonS3 S3Client { get; set; }
+        private IHostingEnvironment _environment;
+
 
         /**
          * Constructor
          */
-        public AccountController(/*IAmazonS3 s3Client*/)
+        public AccountController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
         {
+            // Inject the IHostingEnvironment
+            _environment = environment;
+
             // Dependency-inject the s3 client
             //this.S3Client = s3Client;
         }
@@ -35,10 +43,8 @@ namespace SearchProcurement.Controllers
 
         public IActionResult Index()
         {
-            // Have we seen this unique identifier before?
+            // Have we seen this unique identifier before?  If no, send them to the new account page
             string uniq = readNameIdentifier();
-
-            // Nope, send 'em to the new account page
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
@@ -77,10 +83,8 @@ namespace SearchProcurement.Controllers
         [Authorize]
         public IActionResult MyAccount()
         {
-            // Have we seen this unique identifier before?
-            string uniq = readNameIdentifier();
-
             // Never seen 'em before?  They shouldn't be here
+            string uniq = readNameIdentifier();
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
@@ -144,10 +148,8 @@ namespace SearchProcurement.Controllers
         [Authorize]
         public IActionResult NewAccount()
         {
-            // Have we seen this unique identifier before?
+            // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = readNameIdentifier();
-
-            // Yep, send 'em to their account page
             if( Account.isKnownAgency(uniq) )
                 return Redirect("/account");
 
@@ -168,10 +170,8 @@ namespace SearchProcurement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult NewAccountPost(Account account)
         {
-            // Have we seen this unique identifier before?
+            // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = readNameIdentifier();
-
-            // Yep, send 'em to their account page
             if( Account.isKnownAgency(uniq) )
                 return Redirect("/account");
 
@@ -253,12 +253,10 @@ namespace SearchProcurement.Controllers
          */
         public IActionResult Charge(string listingType, string stripeEmail, string stripeToken)
         {
-            // Have we seen this unique identifier before?
+            // Have we seen this unique identifier before?  If not, they shouldn't be submitting a payment token at all
             string uniq = readNameIdentifier();
-
-            // Never seen 'em before?  They shouldn't be here
             if( !Account.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
+                return StatusCode(401);
 
             // Yep, they're good, they can stay here
             Account a = new Account();
@@ -309,6 +307,9 @@ namespace SearchProcurement.Controllers
 
                 // Make sure they've selected a location Id
                 int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+                // REMOVE THE FOLLOWING !!!
+                locId = 1;
+                // REMOVE THE PRECEDING !!!
                 if( locId == null )
                     return Redirect("/account/newListing");
 
@@ -337,24 +338,48 @@ namespace SearchProcurement.Controllers
         }
 
 
+
         [Authorize]
-        public IActionResult SaveUpload()
+        [HttpPost]
+        [DisableFormValueModelBinding]
+        public async Task<IActionResult> SaveUpload()
         {
-            // Since these upload requests are going to be initiated by the
-            // javascript uploader, we shouldn't ever get unauthenticated
-            // accounts trying to upload, but let's make sure we silently
-            // drop the requests if that happens...
-            string uniq = readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
-                return StatusCode(401);
+            int uploadSize;
+            string uploadFilename;
+            FormValueProvider formModel;
+            using (var stream = System.IO.File.Create("/tmp/saveme"))
+            {
+                formModel = await Request.StreamFile(stream);
+                uploadSize = Convert.ToInt32(stream.Length);
+                uploadFilename = formModel.GetValue("uploadFilename").ToString();
+            }
 
-            // OK, let's add the file path, name, info, etc., to the session.
-            // When the user saves their RFP, that's when we'll start uploading
-            // these to S3, extract the text, etc.
+            // var viewModel = new MyViewModel();
+            // var bindingSuccessful = await TryUpdateModelAsync(viewModel, prefix: "", valueProvider: formModel);
+            // if (!bindingSuccessful)
+            // {
+            //     if (!ModelState.IsValid)
+            //     {
+            //         return BadRequest(ModelState);
+            //     }
+            // }
+            // return Ok(viewModel);
+            UploadFiles myFiles = new UploadFiles
+            {
+                files = new UploadFile []
+                {
+                    new UploadFile
+                    {
+                        name = uploadFilename,
+                        type = "application/x-desktop",
+                        size = uploadSize,
+                        error = ""
+                    }
+                }
+            };
 
+            return Json(myFiles);
 
-
-            return View();
         }
 
 
@@ -395,7 +420,7 @@ namespace SearchProcurement.Controllers
          * we'll alwys have this and it will be unique for every auth0 user.
          * @return string The name identifier
          */
-        private string readNameIdentifier()
+        protected internal string readNameIdentifier()
         {
             return User.Claims.
                 Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").
