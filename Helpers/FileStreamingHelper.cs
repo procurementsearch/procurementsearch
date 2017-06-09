@@ -19,8 +19,9 @@ namespace SearchProcurement.Helpers
     {
         public string name;
         public string type;
-        public int size;
+        public long size;
         public string error;
+        public string uploadId;
     }
 
     public struct UploadFiles
@@ -62,10 +63,6 @@ namespace SearchProcurement.Helpers
                             Select(v => v.Value).
                             FirstOrDefault();
                         uploadFilename = uploadFilename.Substring(1, uploadFilename.Length - 2);
-                        Console.WriteLine("***************");
-                        Console.WriteLine("Got here: ");
-                        Console.WriteLine(uploadFilename);
-                        Console.WriteLine("***************");
                         formAccumulator.Append("uploadFilename", uploadFilename);
 
                         await section.Body.CopyToAsync(targetStream);

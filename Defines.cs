@@ -46,6 +46,9 @@ namespace SearchProcurement
 		public const string s3Bucket = "procurementsearch-dev";
 		public const string s3LogoPath = "agency_logos";
 
+		/* The on-server storage path(s) */
+		public const string UploadStoragePath = "/tmp/my_files";
+
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";
 		public const string RssDescription = "This is a searchable, RSSable database of government contracting opportunities, including cities, counties, regional governments, state-level agencies, and private companies.";
@@ -58,6 +61,7 @@ namespace SearchProcurement
 		public static class SessionKeys
 		{
 			public const string LocationId = "locId";
+			public const string Files = "myFiles";
 		}
 
 	}

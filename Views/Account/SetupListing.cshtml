@@ -3,13 +3,13 @@
 @model Listing
 
 <div class="view-box">
-    <h1>Setting up your RFP</h1>
+    <h1>Setting up your RFP/ITB</h1>
 
     <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">
     @Html.AntiForgeryToken()
 
         <fieldset>
-            <legend>RFP Information</legend>
+            <legend>RFP/ITB Information</legend>
 
             <label asp-for="Title"></label>
             <input asp-for="Title" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
@@ -30,6 +30,10 @@
                     <input asp-for="CloseDate" value="@(Model.CloseDate == DateTime.MinValue ? "" : Model.CloseDate.ToString("M/d/yyyy HH:mm"))" class="pure-u-23-24">
                 </div>
             </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Optional Information</legend>
 
             <label asp-for="Contact"></label>
             <textarea asp-for="Contact" class="pure-u-23-24" rows=3></textarea>
@@ -68,18 +72,22 @@
                 go ahead and pick it here.  (You can only pick one.)
             </p>
 
-            <ul>
-                <li><input type="radio" name="location_id" value=""> <i>No regional subsite</i></li>
-                @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
-                {
-                <li><input type="radio" name="location_id" value="@loc.LocationId"> @loc.LocationName</li>
-                }
-            </ul>
+            <label for="no-region" class="pure-radio">
+                <input id="no-region" type="radio" name="location_id" value=""> <i>No regional subsite</i>
+            </label>
+            @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
+            {
+            <label for="region-@loc.LocationId" class="pure-radio">
+                <input id="region-@loc.LocationId" type="radio" name="location_id" value="@loc.LocationId">
+                @loc.LocationName
+            </label>
+            }
         </fieldset>
 
         <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>
 
         <button type="submit" class="pure-button pure-button-primary">Add Listing</button>
+        <button type="submit" class="pure-button button-secondary">Save for Later</button>
     </form>
 
 </div>
@@ -120,7 +128,24 @@ $(function () {
           console.log("DONE:");
           console.log(data);
           $.each(data.result.files, function (index, file) {
-              $('<p/>').text(file.name).appendTo('#files');
+              var a = $('<a>', {
+                  text: 'remove',
+                  href: '#',
+                  click: function(e) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      var that = this;
+                      $.ajax('/account/RemoveUpload?id=' + file.uploadId, {
+                          success: function(e) {
+                              // If the server says we've removed that file, remove the file from the list
+                              $(this).parent().remove();
+                          }.bind(that)
+                      });
+                  }
+              });
+              a.addClass('pure-button button-xsmall');
+              var p = $('<p/>').text(file.name + ' - ').append(a);
+              p.appendTo('#files');
           });
       },
       progressall: function (e, data) {

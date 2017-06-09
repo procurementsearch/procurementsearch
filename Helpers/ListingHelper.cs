@@ -11,6 +11,8 @@ namespace SearchProcurement.Helpers
     {
         public string DocumentName;
         public string FileName;
+        public string MimeType;
+        public long Size;
         public string Url;
     }
 

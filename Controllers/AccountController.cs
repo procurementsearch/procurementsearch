@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Stripe;
 using Amazon;
 using Amazon.S3;
+using Newtonsoft.Json;
 
 using SearchProcurement.Models;
 using SearchProcurement.Helpers;
@@ -344,15 +347,62 @@ namespace SearchProcurement.Controllers
         [DisableFormValueModelBinding]
         public async Task<IActionResult> SaveUpload()
         {
-            int uploadSize;
-            string uploadFilename;
+            Attachment myFile = new Attachment {};
             FormValueProvider formModel;
-            using (var stream = System.IO.File.Create("/tmp/saveme"))
+
+            // Get a GUID for naming the file temporarily
+            Guid myUploadId = Guid.NewGuid();
+            string uploadTempFile = Path.GetTempFileName();
+
+            using (var stream = System.IO.File.Create(uploadTempFile))
             {
                 formModel = await Request.StreamFile(stream);
-                uploadSize = Convert.ToInt32(stream.Length);
-                uploadFilename = formModel.GetValue("uploadFilename").ToString();
             }
+
+
+            // OK, we've got a file.  Let's copy it to the on-server temp storage
+            myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
+            myFile.FileName = myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
+            System.IO.File.Copy(uploadTempFile, Defines.UploadStoragePath + "/" + myFile.FileName);
+
+            // And get the file size
+            FileInfo f = new FileInfo(Defines.UploadStoragePath + "/" + myFile.FileName);
+            myFile.Size = f.Length;
+
+            // And now, do we already have some files for this session?  If so, let's get them
+            string sessionFilesJson;
+            List<Attachment> sessionFiles;
+
+            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+            if( sessionFilesJson != null )
+                sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
+            else
+                sessionFiles = new List<Attachment>();
+
+            // Add this file to the list
+            sessionFiles.Add(myFile);
+
+            // Save the list of files back to the session
+            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(sessionFiles.ToArray()));
+
+            // And send the file data back
+            UploadFiles myFiles = new UploadFiles
+            {
+                files = new UploadFile []
+                {
+                    new UploadFile
+                    {
+                        name = myFile.DocumentName,
+                        type = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(myFile.DocumentName)),
+                        size = myFile.Size,
+                        error = "",
+                        uploadId = myUploadId.ToString()
+                    }
+                }
+            };
+
+            return Json(myFiles);
+
 
             // var viewModel = new MyViewModel();
             // var bindingSuccessful = await TryUpdateModelAsync(viewModel, prefix: "", valueProvider: formModel);
@@ -364,22 +414,6 @@ namespace SearchProcurement.Controllers
             //     }
             // }
             // return Ok(viewModel);
-            UploadFiles myFiles = new UploadFiles
-            {
-                files = new UploadFile []
-                {
-                    new UploadFile
-                    {
-                        name = uploadFilename,
-                        type = "application/x-desktop",
-                        size = uploadSize,
-                        error = ""
-                    }
-                }
-            };
-
-            return Json(myFiles);
-
         }
 
 
