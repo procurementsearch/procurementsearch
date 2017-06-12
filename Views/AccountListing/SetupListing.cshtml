@@ -73,12 +73,12 @@
             </p>
 
             <label for="no-region" class="pure-radio">
-                <input id="no-region" type="radio" name="location_id" value=""> <i>No regional subsite</i>
+                <input id="no-region" type="radio" name="second_location_id" value="" checked> <i>No regional subsite</i>
             </label>
             @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
             {
             <label for="region-@loc.LocationId" class="pure-radio">
-                <input id="region-@loc.LocationId" type="radio" name="location_id" value="@loc.LocationId">
+                <input id="region-@loc.LocationId" type="radio" name="second_location_id" value="@loc.LocationId">
                 @loc.LocationName
             </label>
             }
@@ -86,8 +86,8 @@
 
         <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>
 
-        <button type="submit" class="pure-button pure-button-primary">Add Listing</button>
-        <button type="submit" class="pure-button button-secondary">Save for Later</button>
+        <button type="submit" name="action" value="add_listing" class="pure-button pure-button-primary">Add Listing</button>
+        <button type="submit" name="action" value="save_for_later" class="pure-button button-secondary">Save for Later</button>
     </form>
 
 </div>

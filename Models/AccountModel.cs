@@ -25,7 +25,7 @@ namespace SearchProcurement.Models
 
 	public class Account {
 
-        int AgencyId;
+        public int AgencyId;
 
         [Display(Name="Your name")]
         public string UserRealName { get; set; }

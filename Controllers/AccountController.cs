@@ -47,7 +47,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Index()
         {
             // Have we seen this unique identifier before?  If no, send them to the new account page
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
@@ -87,7 +87,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccount()
         {
             // Never seen 'em before?  They shouldn't be here
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
@@ -109,7 +109,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccountPost(Account account)
         {
             // Have we seen this unique identifier before?
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( !Account.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
@@ -152,7 +152,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccount()
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( Account.isKnownAgency(uniq) )
                 return Redirect("/account");
 
@@ -174,7 +174,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccountPost(Account account)
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( Account.isKnownAgency(uniq) )
                 return Redirect("/account");
 
@@ -189,245 +189,12 @@ namespace SearchProcurement.Controllers
 
 
 
-
-
-        [Authorize]
-        public IActionResult NewListing(int? locId)
-        {
-            // Have we seen this unique identifier before?
-            string uniq = readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
-
-            // Yep, they're good, they can start an RFP
-            Account a = new Account();
-            a.loadIdByAgencyIdentifier(uniq);
-            a.loadDataByAgencyIdentifier(uniq);
-
-            // Did we get a location ID?
-            if( locId != null )
-            {
-                // They can post here--let's let them
-                if( a.hasAvailablePaymentToken(locId.Value) )
-                {
-                    // Save the location for the redirect
-                    HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
-
-                    // And send them to the listing setup page
-                    return Redirect("/account/setupListing");
-                }
-                else
-                    return View("NewListingPay", a);  // Nope, need to pay first
-            }
-            else
-                return View(a);
-
-        }
-
-
-
-        /**
-         * Process a Stripe token to charge a credit card when someone
-         * purchases a single RFP.
-         */
-        [Authorize]
-        public IActionResult ChargeSimple(string stripeEmail, string stripeToken)
-        {
-            return Charge(ListingTypes.Simple, stripeEmail, stripeToken);
-        }
-
-
-        /**
-         * Process a Stripe token to charge a credit card when someone
-         * purchases an umbrella RFP.
-         */
-        [Authorize]
-        public IActionResult ChargeUmbrella(string stripeEmail, string stripeToken)
-        {
-            return Charge(ListingTypes.Umbrella, stripeEmail, stripeToken);
-        }
-
-
-
-
-        /**
-         * Process a Stripe token to charge a credit card when someone
-         * purchases an umbrella RFP.
-         */
-        public IActionResult Charge(string listingType, string stripeEmail, string stripeToken)
-        {
-            // Have we seen this unique identifier before?  If not, they shouldn't be submitting a payment token at all
-            string uniq = readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
-                return StatusCode(401);
-
-            // Yep, they're good, they can stay here
-            Account a = new Account();
-            a.loadDataByAgencyIdentifier(uniq);
-
-            // Now, process the Stripe customer and charge
-            var customers = new StripeCustomerService();
-            var charges = new StripeChargeService();
-
-            var customer = customers.Create(new StripeCustomerCreateOptions {
-                Email = stripeEmail,
-                SourceToken = stripeToken
-            });
-
-            var charge = charges.Create(new StripeChargeCreateOptions {
-                Amount = Decimal.ToInt32(Price.loadPrice(a.AgencyType, listingType) * 100),
-                Description = "",
-                Currency = "usd",
-                CustomerId = customer.Id
-            });
-
-            // OK!  They've paid, so let's give them a payment token
-            // for the listing they've just paid for
-            a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
-
-            return Redirect("/account/setupListing");
-        }
-
-
-
-
-
-        [Authorize]
-        public IActionResult SetupListing(int? listingId)
-        {
-            // Have we seen this unique identifier before?
-            string uniq = readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
-
-
-            // Is this a new listing?  If it is, we need to verify
-            // the payment token..
-            if( listingId == null )
-            {
-                Account a = new Account();
-                a.loadIdByAgencyIdentifier(uniq);
-
-                // Make sure they've selected a location Id
-                int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
-                // REMOVE THE FOLLOWING !!!
-                locId = 1;
-                // REMOVE THE PRECEDING !!!
-                if( locId == null )
-                    return Redirect("/account/newListing");
-
-                // If they can't post here, send them to the payment screen
-                if( !a.hasAvailablePaymentToken(locId.Value) )
-                    return Redirect("/account/newListing?locId=" + locId.Value);
-
-                // OK, they've picked a location and they've paid for it ..
-                Listing l = new Listing();
-
-                // Get the item
-                ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
-                TempData["locId"] = locId.Value;
-
-                return View(l);
-
-            }
-            else
-            {
-                // They're editing an existing listing .. let's load it before
-                // showing the view
-                Listing l = new Listing();
-                return View(l);
-            }
-
-        }
-
-
-
-        [Authorize]
-        [HttpPost]
-        [DisableFormValueModelBinding]
-        public async Task<IActionResult> SaveUpload()
-        {
-            Attachment myFile = new Attachment {};
-            FormValueProvider formModel;
-
-            // Get a GUID for naming the file temporarily
-            Guid myUploadId = Guid.NewGuid();
-            string uploadTempFile = Path.GetTempFileName();
-
-            using (var stream = System.IO.File.Create(uploadTempFile))
-            {
-                formModel = await Request.StreamFile(stream);
-            }
-
-
-            // OK, we've got a file.  Let's copy it to the on-server temp storage
-            myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
-            myFile.FileName = myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
-            System.IO.File.Copy(uploadTempFile, Defines.UploadStoragePath + "/" + myFile.FileName);
-
-            // And get the file size
-            FileInfo f = new FileInfo(Defines.UploadStoragePath + "/" + myFile.FileName);
-            myFile.Size = f.Length;
-
-            // And now, do we already have some files for this session?  If so, let's get them
-            string sessionFilesJson;
-            List<Attachment> sessionFiles;
-
-            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
-            if( sessionFilesJson != null )
-                sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-            else
-                sessionFiles = new List<Attachment>();
-
-            // Add this file to the list
-            sessionFiles.Add(myFile);
-
-            // Save the list of files back to the session
-            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(sessionFiles.ToArray()));
-
-            // And send the file data back
-            UploadFiles myFiles = new UploadFiles
-            {
-                files = new UploadFile []
-                {
-                    new UploadFile
-                    {
-                        name = myFile.DocumentName,
-                        type = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(myFile.DocumentName)),
-                        size = myFile.Size,
-                        error = "",
-                        uploadId = myUploadId.ToString()
-                    }
-                }
-            };
-
-            return Json(myFiles);
-
-
-            // var viewModel = new MyViewModel();
-            // var bindingSuccessful = await TryUpdateModelAsync(viewModel, prefix: "", valueProvider: formModel);
-            // if (!bindingSuccessful)
-            // {
-            //     if (!ModelState.IsValid)
-            //     {
-            //         return BadRequest(ModelState);
-            //     }
-            // }
-            // return Ok(viewModel);
-        }
-
-
-
-
-
-
-
         [Authorize]
         public IActionResult checkEmail(string email)
         {
             // Do we have a logged-in user, maybe updating their email?
             // If so, then their own email shouldn't match as an existing email...
-            string uniq = readNameIdentifier();
+            string uniq = this.readNameIdentifier();
             if( Account.isKnownAgency(uniq) )
             {
                 // Yep, they're good, they can stay here
@@ -448,19 +215,6 @@ namespace SearchProcurement.Controllers
 
         }
 
-
-        /**
-         * Return the name identifier from the claim.  If we're logged in via auth0,
-         * we'll alwys have this and it will be unique for every auth0 user.
-         * @return string The name identifier
-         */
-        protected internal string readNameIdentifier()
-        {
-            return User.Claims.
-                Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").
-                Select(v => v.Value).
-                FirstOrDefault();
-        }
 
     }
 }

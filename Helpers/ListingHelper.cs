@@ -14,6 +14,7 @@ namespace SearchProcurement.Helpers
         public string MimeType;
         public long Size;
         public string Url;
+        public string Guid;
     }
 
 }
