@@ -52,11 +52,11 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
+            if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
             // Yep, they're good, they can start an RFP
-            Account a = new Account();
+            Agency a = new Agency();
             a.loadIdByAgencyIdentifier(uniq);
             a.loadDataByAgencyIdentifier(uniq);
 
@@ -89,7 +89,7 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
-            if( !Account.isKnownAgency(uniq) )
+            if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
 
@@ -97,7 +97,7 @@ namespace SearchProcurement.Controllers
             // the payment token..
             if( listingId == null )
             {
-                Account a = new Account();
+                Agency a = new Agency();
                 a.loadIdByAgencyIdentifier(uniq);
 
                 // Make sure they've selected a location Id
@@ -114,6 +114,24 @@ namespace SearchProcurement.Controllers
 
                 // OK, they've picked a location and they've paid for it ..
                 Listing l = new Listing();
+
+                // Flush out any old session files from this session, in case they
+                // started and clicked away from a previous listing
+                string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+                if( sessionFilesJson != null )
+                {
+                    // Delete any unsaved uploaded files
+                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
+                    foreach (Attachment att in sessionFiles)
+                    {
+                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + att.FileName);
+                    }
+
+                    // And empty the session files list
+                    HttpContext.Session.SetString(Defines.SessionKeys.Files, null);
+
+                }
+
 
                 // Get the item
                 ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
@@ -143,13 +161,13 @@ namespace SearchProcurement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SetupListingPost(Listing listing)
         {
-            // Have we seen this unique identifier before?  If so, send 'em to their account page
+            // Have we seen this unique identifier before?  If not, they really shouldn't be here
             string uniq = this.readNameIdentifier();
-            if( Account.isKnownAgency(uniq) )
-                return Redirect("/account");
+            if( !Agency.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
 
             // They have an account ..
-            Account a = new Account();
+            Agency a = new Agency();
             a.loadIdByAgencyIdentifier(uniq);
 
             listing.AgencyId = a.AgencyId;
@@ -161,15 +179,32 @@ namespace SearchProcurement.Controllers
             );
 
             // And set the location and, if requested, secondary location
+            HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, 1);
             listing.addLocationById(HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId).Value);
 
             if( HttpContext.Request.Form["secondary_location_id"] != "" )
                 listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
 
-            return View("SetupListingDone");
+            // And add the attachments
+            string sessionFilesJson;
+            List<Attachment> sessionFiles;
+
+            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+            if( sessionFilesJson != null )
+                sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
+            else
+                sessionFiles = new List<Attachment>();
+
+            foreach (Attachment att in sessionFiles)
+            {
+                // Add the attachment
+                Attachment myAtt = att;
+                myAtt.RedirectUrl = HttpContext.Request.Form["redir-" + myAtt.Guid];
+                listing.addAttachment(myAtt);
+            }
+
+            return View();
         }
-
-
 
 
 
@@ -198,11 +233,14 @@ namespace SearchProcurement.Controllers
             // OK, we've got a file.  Let's copy it to the on-server temp storage
             myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
             myFile.FileName = myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
-            System.IO.File.Copy(uploadTempFile, Defines.UploadStoragePath + "/" + myFile.FileName);
+
+            // Copy the file to the staging area and delete the uploaded file
+            string myFilePath = Defines.UploadStoragePath + "/" + myFile.FileName;
+            System.IO.File.Copy(uploadTempFile, myFilePath);
+            System.IO.File.Delete(uploadTempFile);
 
             // And get the file size
-            FileInfo f = new FileInfo(Defines.UploadStoragePath + "/" + myFile.FileName);
-            myFile.Size = f.Length;
+            FileInfo f = new FileInfo(myFilePath);
 
             // And save the GUID
             myFile.Guid = myUploadId.ToString();
@@ -232,7 +270,7 @@ namespace SearchProcurement.Controllers
                     {
                         name = myFile.DocumentName,
                         type = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(myFile.DocumentName)),
-                        size = myFile.Size,
+                        size = f.Length,
                         error = "",
                         uploadId = myFile.Guid
                     }
@@ -241,17 +279,6 @@ namespace SearchProcurement.Controllers
 
             return Json(myFiles);
 
-
-            // var viewModel = new MyViewModel();
-            // var bindingSuccessful = await TryUpdateModelAsync(viewModel, prefix: "", valueProvider: formModel);
-            // if (!bindingSuccessful)
-            // {
-            //     if (!ModelState.IsValid)
-            //     {
-            //         return BadRequest(ModelState);
-            //     }
-            // }
-            // return Ok(viewModel);
         }
 
 
@@ -279,6 +306,7 @@ namespace SearchProcurement.Controllers
                     // Yes! We're done!
                     sessionFiles.Remove(myFile);
                     System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+                    System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName + "-text");
                     break;
                 }
             }

@@ -23,7 +23,7 @@ namespace SearchProcurement.Models
 	}
 
 
-	public class Account {
+	public class Agency {
 
         public int AgencyId;
 
@@ -570,6 +570,32 @@ namespace SearchProcurement.Models
 
         }
 
+
+
+
+
+
+
+
+
+        /**
+         * Load up active listings
+         * @return array The active listings
+         */
+        public Listing[] getActiveListings()
+        {
+            return Listing.loadListings(AgencyId, new[]{"inprogress", "waiting", "open"});
+        }
+
+
+        /**
+         * Load up inactive listings
+         * @return array The active listings
+         */
+        public Listing[] getInactiveListings()
+        {
+            return Listing.loadListings(AgencyId, new[]{"closed", "canceled", "disabled"});
+        }
 
 
 

@@ -109,8 +109,11 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT location_name, location_id FROM location WHERE location_parent_id = @id ORDER BY location_name ASC";
-                    cmd.Parameters.AddWithValue("@id", locId);
+					cmd.CommandText = "SELECT location_name, location_id FROM location AS l " +
+                        "LEFT JOIN location_location_join AS lj " +
+                        "ON l.location_id = lj.child_location_id " +
+                        "WHERE lj.parent_location_id = @locId ORDER BY location_name ASC;";
+                    cmd.Parameters.AddWithValue("@locId", locId);
 					cmd.Prepare();
 
 					// Run the DB command

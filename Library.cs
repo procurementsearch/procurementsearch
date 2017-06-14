@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -30,6 +31,69 @@ namespace SearchProcurement
 			}
 
 		}
+
+
+		/**
+		 * Try to get the text from a document
+		 * @param string file The file
+		 * @return string The text
+		 */
+		static public string getTextFromDocument(string file)
+		{
+			// Get the filetype
+			string filetype = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(file));
+			string text = "";
+
+			ProcessStartInfo psi = new ProcessStartInfo();
+	        psi.UseShellExecute = true;
+	        psi.RedirectStandardOutput = true;
+
+			bool needs_exec = false;
+
+			// What type of file is it?
+			switch(filetype)
+			{
+				case "application/pdf":
+					psi.FileName = "pdftotext";
+					psi.Arguments = "-q \"" + file + "\" -";
+					needs_exec = true;
+					break;
+				case "application/msword":
+				case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+				case "application/vnd.openxmlformats-officedocument.wordprocessingml.template":
+				case "application/vnd.ms-word.document.macroEnabled.12":
+				case "application/vnd.ms-word.template.macroEnabled.12":
+					psi.FileName = "wvHtml";
+					psi.Arguments = "\"" + file + "\" -";
+					needs_exec = true;
+					break;
+				case "text/plain":
+					text = File.ReadAllText(file);
+					break;
+				default:
+					break;
+			}
+
+			// Did we need to run something?
+			if( needs_exec )
+			{
+				// Yes, run the command
+				Process proc = new Process
+		        {
+		            StartInfo = psi
+		        };
+		        proc.Start();
+
+				// And capture its output
+				text = proc.StandardOutput.ReadToEnd();
+				proc.WaitForExit();
+			}
+
+			// And we're done
+			return text;
+
+		}
+
 
 
         /**

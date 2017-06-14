@@ -37,11 +37,9 @@
 
             <label asp-for="Contact"></label>
             <textarea asp-for="Contact" class="pure-u-23-24" rows=3></textarea>
-            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
 
             <label asp-for="ActionSteps"></label>
             <textarea asp-for="ActionSteps" class="pure-u-23-24" rows=5></textarea>
-            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
         </fieldset>
 
         <fieldset>
@@ -60,8 +58,17 @@
                 <div class="progress-bar progress-bar-success"></div>
             </div>
             <!-- The container for the uploaded files -->
-            <div id="files" class="files"></div>
-
+            <table class="pure-table pure-table-striped">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Set attachment download URL? (optional)</th>
+                        <th>
+                    </tr>
+                </thead>
+                <tbody id="files" class="files">
+                </tbody>
+            </table>
         </fieldset>
 
         <fieldset>
@@ -144,8 +151,11 @@ $(function () {
                   }
               });
               a.addClass('pure-button button-xsmall');
-              var p = $('<p/>').text(file.name + ' - ').append(a);
-              p.appendTo('#files');
+              var name = $('<td/>').text(file.name);
+              var redir = $('<td><input class="small" id="redir-' + file.uploadId + '"></td>');
+              var rem = $('<td/>').append(a);
+              var row = $('<tr>').append(name).append(redir).append(rem);
+              row.appendTo('#files');
           });
       },
       progressall: function (e, data) {

@@ -87,8 +87,6 @@ namespace SearchProcurement.Helpers
          */
         public static int[] findBySourceId(int id)
 		{
-            List<int> ids = new List<int>();
-
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection())
 			{
@@ -107,6 +105,8 @@ namespace SearchProcurement.Helpers
 					// Run the DB command
 					using(MySqlDataReader r = cmd.ExecuteReader())
 					{
+			            List<int> ids = new List<int>();
+
 						while(r.Read())
 						{
                             ids.Add(r.GetInt32(0));

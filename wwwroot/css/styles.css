@@ -15,6 +15,10 @@ html, body { /* for sticky footer */
     min-height: 65px;
 }
 
+.small {
+    font-size: 85%;
+}
+
 /* Some styles on Pure buttons */
 .button-xsmall {
     font-size: 70%;
