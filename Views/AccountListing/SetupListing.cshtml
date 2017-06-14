@@ -1,5 +1,6 @@
 @using SearchProcurement.Models
 @using SearchProcurement.Helpers
+@using System.Linq
 @model Listing
 
 <div class="view-box">
@@ -7,6 +8,11 @@
 
     <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">
     @Html.AntiForgeryToken()
+    @if (@Model.ListingId != 0)
+    {
+        <input type="hidden" name="id" value="@ViewBag.id">
+    }
+
 
         <fieldset>
             <legend>RFP/ITB Information</legend>
@@ -80,12 +86,12 @@
             </p>
 
             <label for="no-region" class="pure-radio">
-                <input id="no-region" type="radio" name="second_location_id" value="" checked> <i>No regional subsite</i>
+                <input id="no-region" type="radio" name="secondary_location_id" value="" @((Model.SecondaryLocationIds == null || Model.SecondaryLocationIds.Length == 0) ? "checked" : "")> <i>No regional subsite</i>
             </label>
-            @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(TempData["locId"])))
+            @foreach (var loc in LocationHelper.getRegionsForState(Convert.ToInt32(ViewBag.locId)))
             {
             <label for="region-@loc.LocationId" class="pure-radio">
-                <input id="region-@loc.LocationId" type="radio" name="second_location_id" value="@loc.LocationId">
+                <input id="region-@loc.LocationId" type="radio" name="secondary_location_id" value="@loc.LocationId" @((Model.SecondaryLocationIds != null && Array.IndexOf(Model.SecondaryLocationIds, loc.LocationId) != -1) ? "checked" : "")>
                 @loc.LocationName
             </label>
             }
@@ -93,8 +99,17 @@
 
         <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>
 
+        @if (@Model.ListingId == 0)
+        {
         <button type="submit" name="action" value="add_listing" class="pure-button pure-button-primary">Add Listing</button>
         <button type="submit" name="action" value="save_for_later" class="pure-button button-secondary">Save for Later</button>
+        }
+        else
+        {
+        <button type="submit" name="action" value="addendum" class="pure-button pure-button-primary">Save as Addendum</button>
+        <button type="submit" name="action" value="revision" class="pure-button button-secondary">Save as Revision</button>
+        <button type="submit" name="action" value="cancel" class="pure-button button-secondary">Cancel editing</button>
+        }
     </form>
 
 </div>

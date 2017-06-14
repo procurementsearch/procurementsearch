@@ -84,18 +84,17 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/setupListing", Name = "Account")]
-        public IActionResult SetupListing(int? listingId)
+        [Route("/Account/setupListing")]
+        public IActionResult SetupListing(int? id)
         {
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
-
             // Is this a new listing?  If it is, we need to verify
             // the payment token..
-            if( listingId == null )
+            if( id == null )
             {
                 Agency a = new Agency();
                 a.loadIdByAgencyIdentifier(uniq);
@@ -104,6 +103,7 @@ namespace SearchProcurement.Controllers
                 int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
                 // REMOVE THE FOLLOWING !!!
                 locId = 1;
+                HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, 1);
                 // REMOVE THE PRECEDING !!!
                 if( locId == null )
                     return Redirect("/account/newListing");
@@ -132,10 +132,9 @@ namespace SearchProcurement.Controllers
 
                 }
 
-
                 // Get the item
                 ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
-                TempData["locId"] = locId.Value;
+                ViewBag.locId = locId.Value;
 
                 return View(l);
 
@@ -145,6 +144,13 @@ namespace SearchProcurement.Controllers
                 // They're editing an existing listing .. let's load it before
                 // showing the view
                 Listing l = new Listing();
+                l.loadById(id.Value);
+
+                // Get the item top-level location ID
+                ViewBag.locId = l.PrimaryLocationId;
+                ViewBag.listingLocation = LocationHelper.getNameForId(l.PrimaryLocationId);
+                ViewBag.id = id.Value;
+
                 return View(l);
             }
 
@@ -159,49 +165,74 @@ namespace SearchProcurement.Controllers
         [HttpPost]
         [Route("/Account/setupListing")]
         [ValidateAntiForgeryToken]
-        public IActionResult SetupListingPost(Listing listing)
+        public IActionResult SetupListingPost(int? id, Listing listing)
         {
             // Have we seen this unique identifier before?  If not, they really shouldn't be here
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
-            // They have an account ..
-            Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(uniq);
-
-            listing.AgencyId = a.AgencyId;
-
-            // Add the listing with the assigned status
-            listing.add(
-                HttpContext.Request.Form["action"] == "add_listing" ? ListingStatus.AddNow : ListingStatus.SaveForLater,
-                HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
-            );
-
-            // And set the location and, if requested, secondary location
-            HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, 1);
-            listing.addLocationById(HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId).Value);
-
-            if( HttpContext.Request.Form["secondary_location_id"] != "" )
-                listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
-
-            // And add the attachments
-            string sessionFilesJson;
-            List<Attachment> sessionFiles;
-
-            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
-            if( sessionFilesJson != null )
-                sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-            else
-                sessionFiles = new List<Attachment>();
-
-            foreach (Attachment att in sessionFiles)
+            // Are we adding, or updating?
+            if( id == null )
             {
-                // Add the attachment
-                Attachment myAtt = att;
-                myAtt.RedirectUrl = HttpContext.Request.Form["redir-" + myAtt.Guid];
-                listing.addAttachment(myAtt);
+                // No ID means it's a new listing
+                Agency a = new Agency();
+                a.loadIdByAgencyIdentifier(uniq);
+
+                listing.AgencyId = a.AgencyId;
+
+                // Add the listing with the assigned status
+                listing.add(
+                    HttpContext.Request.Form["action"] == "add_listing" ? ListingStatus.AddNow : ListingStatus.SaveForLater,
+                    HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
+                );
+
+                // And set the location
+                listing.addLocationById(HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId).Value);
+
+                // And, if requested, secondary location
+                if( !string.IsNullOrEmpty(HttpContext.Request.Form["secondary_location_id"]) )
+                    listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
+
+                // And add the attachments
+                string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+                if( sessionFilesJson != null )
+                {
+                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
+                    foreach (Attachment att in sessionFiles)
+                    {
+                        // Add the attachment
+                        Attachment myAtt = att;
+                        myAtt.RedirectUrl = HttpContext.Request.Form["redir-" + myAtt.Guid];
+                        listing.addAttachment(myAtt);
+                    }
+                }
+
             }
+            else
+            {
+                // They are saving an existing listing
+                listing.ListingId = id.Value;
+                listing.loadLocations();
+
+                // Remove the old location listing and save the new one
+                if( listing.SecondaryLocationIds.Length != 0 )
+                {
+                    foreach (int myId in listing.SecondaryLocationIds)
+                        listing.removeLocationById(myId);
+                }
+
+                // Save the new one only if we've actually set a new one
+                if( !string.IsNullOrEmpty(HttpContext.Request.Form["secondary_location_id"]) )
+                {
+                    listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
+                }
+
+            }
+
+            // Empty out the session data
+            HttpContext.Session.Remove(Defines.SessionKeys.LocationId);
+            HttpContext.Session.Remove(Defines.SessionKeys.Files);
 
             return View();
         }
@@ -306,7 +337,6 @@ namespace SearchProcurement.Controllers
                     // Yes! We're done!
                     sessionFiles.Remove(myFile);
                     System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
-                    System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName + "-text");
                     break;
                 }
             }

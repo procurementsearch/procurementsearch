@@ -69,6 +69,10 @@ namespace SearchProcurement.Models
         // The bid documents
         public Attachment[] BidDocuments { get; set; }
 
+        // The listing geographical regions
+        public int PrimaryLocationId { get; set; }
+        public int[] SecondaryLocationIds { get; set; }
+
 
 
         /**
@@ -155,6 +159,40 @@ namespace SearchProcurement.Models
 
 
 
+        /**
+         * Remove a listing from a location
+         * @param int locId The location ID
+         * @return none
+         */
+        public void removeLocationById(int locId)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "DELETE FROM location_listing_join " +
+                        "WHERE location_id = @l1 AND listing_id = @l2";
+					cmd.Parameters.AddWithValue("@l1", locId);
+					cmd.Parameters.AddWithValue("@l2", ListingId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't remove the listing from the location");
+
+                }
+            }
+        }
+
+
+
+
 
         /**
          * Add an attachment to a listing
@@ -191,6 +229,149 @@ namespace SearchProcurement.Models
                 }
             }
         }
+
+
+
+
+
+
+
+        /**
+         * Load a single listing by listing ID
+         * @param int id The listing ID
+         * @return none
+         */
+        public void loadById(int id)
+        {
+            // Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT source_id, " +
+                        "title, " +
+                        "description, " +
+                        "open_date, " +
+                        "close_date, " +
+                        "contact, " +
+                        "action_steps, " +
+                        "status " +
+                        "FROM listing WHERE listing_id = @id";
+					cmd.Parameters.AddWithValue("@id", id);
+
+					// Run the DB command
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+                        // Do we have any rows here?
+                        if( r.HasRows )
+                        {
+                            // Yes!  Ok!  Let's go!
+                            r.Read();
+                            AgencyId = r.GetInt32(0);
+                            Title = r.GetString(1);
+                            Description = r.IsDBNull(2) ? "" : r.GetString(2);
+                            OpenDate = r.IsDBNull(3) ? new DateTime() : r.GetDateTime(3);
+                            CloseDate = r.IsDBNull(4) ? new DateTime() : r.GetDateTime(4);
+                            Contact = r.IsDBNull(5) ? "" : r.GetString(5);
+                            ActionSteps = r.IsDBNull(6) ? "" : r.GetString(6);
+                            Status = r.GetString(7);
+                        }
+                        else
+                            throw new System.ArgumentException("Couldn't find the requested listing!");
+
+                    }
+
+                }
+
+                // And next, set the listing ID
+                ListingId = id;
+
+				// Pull the listing locations out of the database
+                loadLocations();
+
+                // And pull out the attachments
+
+            }
+        }
+
+
+
+
+
+
+        /**
+         * Load the location IDs
+         * @return none
+         */
+        public void loadLocations()
+        {
+            // Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the listing locations out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+                    // Now pull out the locations for this entry .. first, pull out just the state.
+                    // Everyone will have a state.
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT l.location_id FROM location_listing_join AS lj " +
+                        "LEFT JOIN location AS l ON lj.location_id = l.location_id " +
+                        "WHERE lj.listing_id = @id AND l.location_type = 'State'";
+					cmd.Parameters.AddWithValue("@id", ListingId);
+
+                    // And execute the query
+                    PrimaryLocationId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    // A failsafe
+                    if( PrimaryLocationId == 0 )
+                        throw new System.ArgumentException("Couldn't find the requested listing!");
+                }
+
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+                    // Now pull out the locations for this entry .. first, pull out just the state.
+                    // Everyone will have a state.
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT l.location_id FROM location_listing_join AS lj " +
+                        "LEFT JOIN location AS l ON lj.location_id = l.location_id " +
+                        "WHERE lj.listing_id = @id AND l.location_type <> 'State'";
+					cmd.Parameters.AddWithValue("@id", ListingId);
+
+                    // And execute the query
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+                        // Do we have any rows here?  Then we have additional locations (by design,
+                        // at least right now, only one additional location)
+                        if( r.HasRows )
+                        {
+                            List <int>ids = new List<int>();
+
+                            while( r.Read() )
+                                ids.Add(r.GetInt32(0));
+
+                            // And assign the IDs to the location ID array
+                            SecondaryLocationIds = ids.ToArray();
+                        }
+                        else
+                            // Initialize an empty list
+                            SecondaryLocationIds = new int[] {};
+                    }
+                }
+            }
+        }
+
+
+
 
 
 
