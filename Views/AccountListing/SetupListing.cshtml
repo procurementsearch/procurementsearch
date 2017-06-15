@@ -69,13 +69,24 @@
                     <tr>
                         <th>File</th>
                         <th>Set attachment download URL? (optional)</th>
-                        <th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="files" class="files">
+                @if (Model.BidDocuments != null)
+                {
+                @foreach (Attachment a in Model.BidDocuments)
+                {
+                    <tr>
+                        <td>@a.DocumentName</td>
+                        <td><input class="small" name="redir-@a.Guid" value="@a.RedirectUrl"></td>
+                        <td><a class="pure-button button-xsmall" data-guid="@a.Guid" href="#">remove</a></td>
+                    </tr>
+                }
+                }
                 </tbody>
             </table>
-        </fieldset>
+         </fieldset>
 
         <fieldset>
             <legend>Geographic Distribution</legend>
@@ -143,6 +154,28 @@ $(function () {
   });
 
   // And the file drag/drop utility
+  var removeUpload = function(e, a, uploadId) {
+      e.stopPropagation();
+      e.preventDefault();
+      $.ajax('/account/RemoveUpload?id=' + uploadId, {
+          success: function() {
+              // If the server says we've removed that file, remove the file from the list
+              $(a).closest('tr').remove();
+          }
+      });
+  };
+
+  // Do we need to pre-load the remove links for some upload buttons?
+  @if (Model.BidDocuments != null)
+  {
+  <text>
+  $('#files a').each(function(idx, el) {
+    var uploadId = $(el).data('guid');
+    $(el).click(function(e) { removeUpload(e, el, uploadId); });
+  });
+  </text>
+  }
+
   $('#fileupload').fileupload({
       url: '/account/saveUpload',
       dataType: 'json',
@@ -153,21 +186,11 @@ $(function () {
               var a = $('<a>', {
                   text: 'remove',
                   href: '#',
-                  click: function(e) {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      var that = this;
-                      $.ajax('/account/RemoveUpload?id=' + file.uploadId, {
-                          success: function(e) {
-                              // If the server says we've removed that file, remove the file from the list
-                              $(this).parent().remove();
-                          }.bind(that)
-                      });
-                  }
+                  click: function(e) { removeUpload(e, a, file.uploadId) }
               });
               a.addClass('pure-button button-xsmall');
               var name = $('<td/>').text(file.name);
-              var redir = $('<td><input class="small" id="redir-' + file.uploadId + '"></td>');
+              var redir = $('<td><input class="small" name="redir-' + file.uploadId + '"></td>');
               var rem = $('<td/>').append(a);
               var row = $('<tr>').append(name).append(redir).append(rem);
               row.appendTo('#files');

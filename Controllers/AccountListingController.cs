@@ -146,6 +146,14 @@ namespace SearchProcurement.Controllers
                 Listing l = new Listing();
                 l.loadById(id.Value);
 
+                // Go through the attachments and assign a GUID to each of them
+                for (int i = 0; i < l.BidDocuments.Length; i++)
+                    l.BidDocuments[i].Guid = Guid.NewGuid().ToString();
+
+                // Now save these files to the session, so we can remove
+                // them by GUID
+                HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
+
                 // Get the item top-level location ID
                 ViewBag.locId = l.PrimaryLocationId;
                 ViewBag.listingLocation = LocationHelper.getNameForId(l.PrimaryLocationId);

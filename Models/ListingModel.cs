@@ -32,12 +32,13 @@ namespace SearchProcurement.Models
 
     public struct Attachment
     {
+        public int AttachmentId;
         public string DocumentName;
         public string FileName;
         public string Url;
         public string RedirectUrl;
         public string Guid;
-       public int IsStaged;
+        public int IsStaged;
     }
 
 
@@ -296,6 +297,7 @@ namespace SearchProcurement.Models
                 loadLocations();
 
                 // And pull out the attachments
+                loadAttachments();
 
             }
         }
@@ -370,6 +372,64 @@ namespace SearchProcurement.Models
             }
         }
 
+
+
+
+
+
+        /**
+         * Load the attachments
+         * @return none
+         */
+        public void loadAttachments()
+        {
+            // Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the listing locations out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+                    // Now pull out the locations for this entry .. first, pull out just the state.
+                    // Everyone will have a state.
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT attachment_id, title, url, redirect_url "+
+                        "FROM attachment WHERE listing_id = @id";
+					cmd.Parameters.AddWithValue("@id", ListingId);
+
+                    // And execute the query
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+                        // Do we have any rows here?  Then we have additional locations (by design,
+                        // at least right now, only one additional location)
+                        if( r.HasRows )
+                        {
+                            List <Attachment>atts = new List<Attachment>();
+
+                            while( r.Read() )
+                            {
+                                atts.Add(new Attachment
+                                {
+                                    AttachmentId = r.GetInt32(0),
+                                    DocumentName = r.GetString(1),
+                                    Url = r.IsDBNull(2) ? "" : r.GetString(2),
+                                    RedirectUrl = r.IsDBNull(3) ? "" : r.GetString(3)
+                                });
+                            }
+
+                            // And assign the IDs to the location ID array
+                            BidDocuments = atts.ToArray();
+                        }
+                        else
+                            // Initialize an empty list
+                            BidDocuments = new Attachment[] {};
+                    }
+                }
+            }
+        }
 
 
 
