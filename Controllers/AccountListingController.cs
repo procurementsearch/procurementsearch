@@ -13,11 +13,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-using Stripe;
-using Amazon;
-using Amazon.S3;
 using Newtonsoft.Json;
 
+using SearchProcurement.AWS;
 using SearchProcurement.Models;
 using SearchProcurement.Helpers;
 
@@ -236,6 +234,32 @@ namespace SearchProcurement.Controllers
                     listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
                 }
 
+                // And save new attachments, if we have any new attachments
+                string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+                if( sessionFilesJson != null )
+                {
+                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
+                    foreach (Attachment att in sessionFiles)
+                    {
+                        string redirectUrl = HttpContext.Request.Form["redir-" + att.Guid];
+
+                        // If it hasn't got an ID, we want to save it
+                        if( att.AttachmentId == 0 )
+                        {
+                            // Add the attachment
+                            Attachment myAtt = att;
+                            myAtt.RedirectUrl = redirectUrl;
+                            listing.addAttachment(myAtt);
+                        }
+                        else
+                        {
+                            // Otherwise, just update its redirect URL
+                            AttachmentHelper.updateRedirectUrl(att.AttachmentId, redirectUrl);
+                        }
+                    }
+                }
+
+
             }
 
             // Empty out the session data
@@ -272,6 +296,8 @@ namespace SearchProcurement.Controllers
             // OK, we've got a file.  Let's copy it to the on-server temp storage
             myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
             myFile.FileName = myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
+            myFile.Url = Defines.UploadStorageUrl + myFile.FileName;
+            myFile.IsStaged = true;
 
             // Copy the file to the staging area and delete the uploaded file
             string myFilePath = Defines.UploadStoragePath + "/" + myFile.FileName;
@@ -325,8 +351,8 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/removeUpload")]
-        public IActionResult RemoveUpload(string id)
+        [Route("/Account/removeAttachment")]
+        public IActionResult RemoveAttachment(string id)
         {
             // And now, do we already have some files for this session?  If so, let's get them
             string sessionFilesJson;
@@ -344,7 +370,41 @@ namespace SearchProcurement.Controllers
                 {
                     // Yes! We're done!
                     sessionFiles.Remove(myFile);
-                    System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+
+                    // Are we deleting from the filesystem, S3, ...?
+                    if( myFile.AttachmentId != 0 )
+                    {
+                        // Is this an upload for a listing that we haven't yet saved?  If so,
+                        // this document will have its filename set, because we just saved that
+                        // from the previous upload action.
+                        // If this is an upload from a listing we've already saved, however,
+                        // the filename won't be set, because we're not storing that in the database ..
+                        // or not as such, anyway.  Once it's in the DB, we store it as the
+                        // deletion identifier, because it could refer either to a file on disk
+                        // or to an S3 object.
+                        // So there are three possible conditions for a file, that we're removing ..
+                        // Just uploaded, listing not saved- the file is on disk, name is in the session
+                        // Uploaded and previously saved- the file is on disk, name is not in the session
+                        // Uploaded and moved to S3- the file is not on disk, name is not in session
+                        string del = AttachmentHelper.getDeletionIdentifier(myFile.AttachmentId);
+                        if( myFile.IsStaged )
+                            // Has an ID, is staged, it's still on disk, but we don't have its name handy
+                            System.IO.File.Delete(Defines.UploadStoragePath + "/" + del);
+                        else
+                        {
+                            // Has an ID, not staged, it's been moved to S3
+                            S3 s3 = new S3();
+                            s3.Delete(Defines.s3Bucket, Defines.s3AttachmentPath + "/" + del);
+                        }
+
+                        // And remove the attachment from the database
+                        AttachmentHelper.deleteById(myFile.AttachmentId);
+
+                    }
+                    else
+                        // No ID, so we do have its name handy
+                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+
                     break;
                 }
             }

@@ -45,9 +45,11 @@ namespace SearchProcurement
         public const string s3SecretKey = "G-u6q1uEsAJRiNgJx2kfGTFyfoWc2ltyO3YlJqo3";
 		public const string s3Bucket = "procurementsearch-dev";
 		public const string s3LogoPath = "agency_logos";
+		public const string s3AttachmentPath = "bid_documents";
 
 		/* The on-server storage path(s) */
 		public const string UploadStoragePath = "/tmp/my_files";
+		public const string UploadStorageUrl = "http://files.procurementsearch.com";
 
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";

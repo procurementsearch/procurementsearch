@@ -38,7 +38,7 @@ namespace SearchProcurement.Models
         public string Url;
         public string RedirectUrl;
         public string Guid;
-        public int IsStaged;
+        public bool IsStaged;
     }
 
 
@@ -214,14 +214,15 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO attachment " +
-                        "(listing_id, title, filetype, url, redirect_url, is_staged) " +
+                        "(listing_id, title, filetype, url, redirect_url, deletion_identifier, is_staged) " +
                         "VALUES " +
-                        "(@l1, @l2, @l3, @l4, @l5, 1)";
+                        "(@l1, @l2, @l3, @l4, @l5, @l6, 1)";
 					cmd.Parameters.AddWithValue("@l1", ListingId);
 					cmd.Parameters.AddWithValue("@l2", a.DocumentName);
 					cmd.Parameters.AddWithValue("@l3", MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(a.FileName)));
 					cmd.Parameters.AddWithValue("@l4", a.Url);
 					cmd.Parameters.AddWithValue("@l5", a.RedirectUrl);
+					cmd.Parameters.AddWithValue("@l6", a.FileName);
 
 					// Run the DB command
                     if( cmd.ExecuteNonQuery() == 0 )
@@ -396,7 +397,7 @@ namespace SearchProcurement.Models
                     // Now pull out the locations for this entry .. first, pull out just the state.
                     // Everyone will have a state.
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT attachment_id, title, url, redirect_url "+
+					cmd.CommandText = "SELECT attachment_id, title, url, redirect_url, is_staged "+
                         "FROM attachment WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", ListingId);
 
@@ -416,7 +417,8 @@ namespace SearchProcurement.Models
                                     AttachmentId = r.GetInt32(0),
                                     DocumentName = r.GetString(1),
                                     Url = r.IsDBNull(2) ? "" : r.GetString(2),
-                                    RedirectUrl = r.IsDBNull(3) ? "" : r.GetString(3)
+                                    RedirectUrl = r.IsDBNull(3) ? "" : r.GetString(3),
+                                    IsStaged = Convert.ToBoolean(r.GetInt32(4))
                                 });
                             }
 

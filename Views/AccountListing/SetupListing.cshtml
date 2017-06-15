@@ -157,7 +157,7 @@ $(function () {
   var removeUpload = function(e, a, uploadId) {
       e.stopPropagation();
       e.preventDefault();
-      $.ajax('/account/RemoveUpload?id=' + uploadId, {
+      $.ajax('/account/RemoveAttachment?id=' + uploadId, {
           success: function() {
               // If the server says we've removed that file, remove the file from the list
               $(a).closest('tr').remove();
