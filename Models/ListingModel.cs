@@ -29,6 +29,12 @@ namespace SearchProcurement.Models
         public const string Closed = "closed";
     }
 
+    public static class ListingUpdateMode
+    {
+        public const string Addendum = "addendum";
+        public const string Revision = "revision";
+    }
+
 
     public struct Attachment
     {
@@ -231,6 +237,84 @@ namespace SearchProcurement.Models
                 }
             }
         }
+
+
+
+
+
+
+        /**
+         * Update the listing
+         */
+        public bool update(string updateMode)
+        {
+            // Is this an addendum?  If it is, we need to capture the differences
+            // across the five watched fields:  close_date, title, description,
+            // contents, contact
+            if( updateMode == ListingUpdateMode.Addendum )
+            {
+                // OK!
+                Listing old = new Listing();
+                old.loadById(ListingId);
+
+                if( old.CloseDate != CloseDate )
+                    ListingHelper.logAddendum(ListingId, "close_date", old.CloseDate.ToString(), CloseDate.ToString());
+                if( old.Title != Title )
+                    ListingHelper.logAddendum(ListingId, "title", old.Title, Title);
+                if( old.Description != Description )
+                    ListingHelper.logAddendum(ListingId, "description", old.Description, Description);
+                if( old.Contact != Contact )
+                    ListingHelper.logAddendum(ListingId, "contact", old.Contact, Contact);
+
+            }
+
+
+
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE listing SET " +
+                        "open_date=@l1, " +
+                        "close_date=@l2, " +
+                        "title=@l3, " +
+                        "description=@l4, " +
+                        "contents=@l5, " +
+                        "contact=@l6, " +
+                        "action_steps=@l7, " +
+                        "status=@l8 " +
+                        "WHERE listing_id=@id";
+					cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l3", Title);
+					cmd.Parameters.AddWithValue("@l4", Description);
+					cmd.Parameters.AddWithValue("@l5", Title + "\n" + Description);
+					cmd.Parameters.AddWithValue("@l6", Contact);
+					cmd.Parameters.AddWithValue("@l7", ActionSteps);
+					cmd.Parameters.AddWithValue("@l8", Status);
+                    cmd.Parameters.AddWithValue("@id", ListingId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't update the listing");
+
+                }
+
+            }
+
+            return true;
+
+        }
+
+
+
 
 
 

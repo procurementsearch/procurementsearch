@@ -110,10 +110,11 @@
 
         <p>That's it!  That's all we need to set up your listing on ProcurementSearch.com.</p>
 
-        @if (@Model.ListingId == 0)
+        @if (@Model.ListingId == 0 || @Model.Status == ListingStatus.SaveForLater )
         {
-        <button type="submit" name="action" value="add_listing" class="pure-button pure-button-primary">Add Listing</button>
+        <button type="submit" name="action" value="publish_now" class="pure-button pure-button-primary">Publish Now</button>
         <button type="submit" name="action" value="save_for_later" class="pure-button button-secondary">Save for Later</button>
+        <button type="submit" name="action" value="cancel" class="pure-button button-secondary">Cancel editing</button>
         }
         else
         {

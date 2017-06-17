@@ -99,10 +99,6 @@ namespace SearchProcurement.Controllers
 
                 // Make sure they've selected a location Id
                 int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
-                // REMOVE THE FOLLOWING !!!
-                locId = 1;
-                HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, 1);
-                // REMOVE THE PRECEDING !!!
                 if( locId == null )
                     return Redirect("/account/newListing");
 
@@ -178,6 +174,14 @@ namespace SearchProcurement.Controllers
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
+            // Which button did they click on?
+            string action = HttpContext.Request.Form["action"];
+
+            // Cancel!
+            if( action == "cancel" )
+                return Redirect("/account");
+
+
             // Are we adding, or updating?
             if( id == null )
             {
@@ -189,7 +193,7 @@ namespace SearchProcurement.Controllers
 
                 // Add the listing with the assigned status
                 listing.add(
-                    HttpContext.Request.Form["action"] == "add_listing" ? ListingStatus.AddNow : ListingStatus.SaveForLater,
+                    HttpContext.Request.Form["action"] == "publish_now" ? ListingStatus.Open : ListingStatus.SaveForLater,
                     HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
                 );
 
@@ -219,6 +223,11 @@ namespace SearchProcurement.Controllers
             {
                 // They are saving an existing listing
                 listing.ListingId = id.Value;
+
+                // First, update the listing itself
+                listing.update(action == "addendum" ? ListingUpdateMode.Addendum : ListingUpdateMode.Revision);
+
+                // Then, update the listing secondary location
                 listing.loadLocations();
 
                 // Remove the old location listing and save the new one
