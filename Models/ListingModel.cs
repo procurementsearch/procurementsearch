@@ -21,8 +21,8 @@ namespace SearchProcurement.Models
 
     public static class ListingStatus
     {
-        public const string AddNow = "waiting";
-        public const string SaveForLater = "inprogress";
+        public const string Draft = "draft";
+        public const string Published = "published";
         public const string Open = "open";
         public const string Disabled = "disabled";
         public const string Canceled = "canceled";
@@ -79,6 +79,39 @@ namespace SearchProcurement.Models
         // The listing geographical regions
         public int PrimaryLocationId { get; set; }
         public int[] SecondaryLocationIds { get; set; }
+
+
+        /**
+         * Return the agency ID for a listing
+         * @return int The agency ID
+         */
+        public int getAgencyId()
+        {
+            // Failsafe
+            if( ListingId == 0 )
+                throw new System.Exception("No listing ID means no whiskey!");
+
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT agency_id FROM listing " +
+                        "WHERE listing_id = @id";
+					cmd.Parameters.AddWithValue("@id", ListingId);
+
+					// Run the DB command
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
 
 
 

@@ -174,6 +174,9 @@ namespace SearchProcurement.Controllers
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
+            Agency a = new Agency();
+            a.loadIdByAgencyIdentifier(uniq);
+
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
 
@@ -186,14 +189,11 @@ namespace SearchProcurement.Controllers
             if( id == null )
             {
                 // No ID means it's a new listing
-                Agency a = new Agency();
-                a.loadIdByAgencyIdentifier(uniq);
-
                 listing.AgencyId = a.AgencyId;
 
                 // Add the listing with the assigned status
                 listing.add(
-                    HttpContext.Request.Form["action"] == "publish_now" ? ListingStatus.Open : ListingStatus.SaveForLater,
+                    action == "draft" ? ListingStatus.Draft : ListingStatus.Published,
                     HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
                 );
 
@@ -221,11 +221,42 @@ namespace SearchProcurement.Controllers
             }
             else
             {
-                // They are saving an existing listing
+                // Be sure to set the old listing ID, since the model binding doesn't
+                // catch this
                 listing.ListingId = id.Value;
 
-                // First, update the listing itself
-                listing.update(action == "addendum" ? ListingUpdateMode.Addendum : ListingUpdateMode.Revision);
+                // A failsafe, in case they're trying to be tricky
+                if( listing.getAgencyId() != a.AgencyId )
+                    return Redirect("/account");  // This should never happen!
+
+
+                // They are saving an existing listing, so we have a somewhat complicated
+                // scheme for determining its status:
+                // Draft -> Save as draft // Publish now
+                // Published, not live -> Save as draft // Save as revision
+                // Published, live -> Save as addendum // Save as revision
+                string updateMode = "";
+
+                if( listing.Status == ListingStatus.Draft || listing.Status == ListingStatus.Published )
+                {
+                    if( action == "draft" )
+                        listing.Status = ListingStatus.Draft;
+                    else
+                        listing.Status = ListingStatus.Published;
+                    updateMode = ListingUpdateMode.Revision;
+                }
+                else
+                {
+                    // If it's not a draft and it's not in published mode, it's got to be an open listing
+                    listing.Status = ListingStatus.Open;
+                    if( action == "revision" )
+                        updateMode = ListingUpdateMode.Revision;
+                    else
+                        updateMode = ListingUpdateMode.Addendum;
+                }
+
+                // And, update!
+                listing.update(updateMode);
 
                 // Then, update the listing secondary location
                 listing.loadLocations();
