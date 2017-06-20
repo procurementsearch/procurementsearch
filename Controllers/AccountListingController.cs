@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using Newtonsoft.Json;
 
-using SearchProcurement.AWS;
 using SearchProcurement.Models;
 using SearchProcurement.Helpers;
 
@@ -248,7 +247,7 @@ namespace SearchProcurement.Controllers
                 else
                 {
                     // If it's not a draft and it's not in published mode, it's got to be an open listing
-                    listing.Status = ListingStatus.Open;
+                    listing.Status = ListingHelper.getStatus(listing.ListingId);
                     if( action == "revision" )
                         updateMode = ListingUpdateMode.Revision;
                     else
@@ -274,6 +273,9 @@ namespace SearchProcurement.Controllers
                     listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
                 }
 
+                // OK!  Now, this is a little tricky, saving out the addenda...
+                string[] oldTitles = AttachmentHelper.getAttachmentTitles(listing.ListingId);
+
                 // And save new attachments, if we have any new attachments
                 string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
                 if( sessionFilesJson != null )
@@ -293,12 +295,34 @@ namespace SearchProcurement.Controllers
                         }
                         else
                         {
-                            // Otherwise, just update its redirect URL
-                            AttachmentHelper.updateRedirectUrl(att.AttachmentId, redirectUrl);
+                            // Or...possibly...delete it
+                            if( att.ToDelete )
+                            {
+                                // Remove the file attachment
+                                AttachmentHelper.removeAttachmentFile(
+                                    att.IsStaged,
+                                    AttachmentHelper.getDeletionIdentifier(att.AttachmentId)
+                                );
+                                AttachmentHelper.deleteById(att.AttachmentId);
+                            }
+                            else
+                                // Otherwise, just update its redirect URL
+                                AttachmentHelper.updateRedirectUrl(att.AttachmentId, redirectUrl);
                         }
                     }
                 }
 
+                // Continuing the attachment diffing...
+                string[] newTitles = AttachmentHelper.getAttachmentTitles(listing.ListingId);
+                if( updateMode == ListingUpdateMode.Addendum )
+                {
+                    // Get the difference, to see if we've changed the attachment list
+                    string[] diff = oldTitles.Except(newTitles).Union(newTitles.Except(oldTitles)).ToArray();
+
+                    // Yes?  We have?  OK, note it
+                    if( diff.Length > 0 )
+                        ListingHelper.logAddendum(listing.ListingId, "attachments", String.Join("\n", oldTitles), String.Join("\n", newTitles));
+                }
 
             }
 
@@ -408,46 +432,24 @@ namespace SearchProcurement.Controllers
                 // Is this the one?
                 if( myFile.Guid == id )
                 {
-                    // Yes! We're done!
-                    sessionFiles.Remove(myFile);
-
-                    // Are we deleting from the filesystem, S3, ...?
-                    if( myFile.AttachmentId != 0 )
+                    // Are we deleting an attachment that hasn't yet been saved
+                    // to a listing?  If so, we can just remove the file itself, and
+                    // remove the file from our attachment listing..
+                    if( myFile.AttachmentId == 0 )
                     {
-                        // Is this an upload for a listing that we haven't yet saved?  If so,
-                        // this document will have its filename set, because we just saved that
-                        // from the previous upload action.
-                        // If this is an upload from a listing we've already saved, however,
-                        // the filename won't be set, because we're not storing that in the database ..
-                        // or not as such, anyway.  Once it's in the DB, we store it as the
-                        // deletion identifier, because it could refer either to a file on disk
-                        // or to an S3 object.
-                        // So there are three possible conditions for a file, that we're removing ..
-                        // Just uploaded, listing not saved- the file is on disk, name is in the session
-                        // Uploaded and previously saved- the file is on disk, name is not in the session
-                        // Uploaded and moved to S3- the file is not on disk, name is not in session
-                        string del = AttachmentHelper.getDeletionIdentifier(myFile.AttachmentId);
-                        if( myFile.IsStaged )
-                            // Has an ID, is staged, it's still on disk, but we don't have its name handy
-                            System.IO.File.Delete(Defines.UploadStoragePath + "/" + del);
-                        else
-                        {
-                            // Has an ID, not staged, it's been moved to S3
-                            S3 s3 = new S3();
-                            s3.Delete(Defines.s3Bucket, Defines.s3AttachmentPath + "/" + del);
-                        }
-
-                        // And remove the attachment from the database
-                        AttachmentHelper.deleteById(myFile.AttachmentId);
-
+                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+                        sessionFiles.Remove(myFile);
                     }
                     else
-                        // No ID, so we do have its name handy
-                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+                        // Otherwise, mark it for deletion when they save their changes
+                        myFile.ToDelete = true;
 
                     break;
                 }
             }
+
+            // Save the list of files back to the session
+            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(sessionFiles.ToArray()));
 
             return StatusCode(200);
         }

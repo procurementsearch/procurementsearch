@@ -36,7 +36,7 @@ namespace SearchProcurement.Models
     }
 
 
-    public struct Attachment
+    public class Attachment
     {
         public int AttachmentId;
         public string DocumentName;
@@ -45,6 +45,7 @@ namespace SearchProcurement.Models
         public string RedirectUrl;
         public string Guid;
         public bool IsStaged;
+        public bool ToDelete;
     }
 
 
@@ -102,7 +103,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT agency_id FROM listing " +
+					cmd.CommandText = "SELECT source_id FROM listing " +
                         "WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", ListingId);
 

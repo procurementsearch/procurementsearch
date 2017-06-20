@@ -61,5 +61,34 @@ namespace SearchProcurement.Helpers
 			}
 		}
 
+
+
+
+        /**
+         * Get the listing status
+         * @param int listId The listing ID
+         * @return string Listing status
+         */
+		public static string getStatus(int listId)
+		{
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT status FROM listing WHERE listing_id = @id";
+					cmd.Parameters.AddWithValue("@id",listId);
+					cmd.Prepare();
+                    return Convert.ToString(cmd.ExecuteScalar());
+                }
+            }
+		}
+
 	}
 }
