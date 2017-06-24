@@ -74,8 +74,14 @@ namespace SearchProcurement.Models
         // The listing status
         public string Status;
 
+        // The listing type - simple or umbrella?
+        public string Type;
+
         // The bid documents
         public Attachment[] BidDocuments { get; set; }
+
+        // Does the listing have sublistings?  If so, stick 'em here.
+        public Listing[] Sublistings { get; set; }
 
         // The listing geographical regions
         public int PrimaryLocationId { get; set; }
@@ -122,7 +128,7 @@ namespace SearchProcurement.Models
          * @param string ip_addr The remote IP adding this listing
          * @return none
          */
-        public void add(string status, string ip_addr)
+        public void add(string status, string type, string ip_addr)
         {
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection())
@@ -136,10 +142,10 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO listing " +
-                        "(listing_type, source_id, open_date, close_date, title, description, " +
-                        "contents, contact, action_steps, status, created, created_ip_addr) VALUES (" +
+                        "(source_id, open_date, close_date, title, description, contents, " +
+                        "contact, action_steps, status, listing_type, created, created_ip_addr) VALUES (" +
                         "'rfp', @l1, @l2, @l3, @l4, @l5, " +
-                        "@l6, @l7, @l8, @l9, now(), @ip_addr)";
+                        "@l6, @l7, @l8, @l9, @l10, now(), @ip_addr)";
 					cmd.Parameters.AddWithValue("@l1", AgencyId);
 					cmd.Parameters.AddWithValue("@l2", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
 					cmd.Parameters.AddWithValue("@l3", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
@@ -149,6 +155,7 @@ namespace SearchProcurement.Models
 					cmd.Parameters.AddWithValue("@l7", Contact);
 					cmd.Parameters.AddWithValue("@l8", ActionSteps);
 					cmd.Parameters.AddWithValue("@l9", status);
+					cmd.Parameters.AddWithValue("@l10", type);
 					cmd.Parameters.AddWithValue("@ip_addr", ip_addr ?? "");
 
 					// Run the DB command
@@ -381,7 +388,8 @@ namespace SearchProcurement.Models
                         "close_date, " +
                         "contact, " +
                         "action_steps, " +
-                        "status " +
+                        "status, " +
+                        "listing_type " +
                         "FROM listing WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 
@@ -401,6 +409,7 @@ namespace SearchProcurement.Models
                             Contact = r.IsDBNull(5) ? "" : r.GetString(5);
                             ActionSteps = r.IsDBNull(6) ? "" : r.GetString(6);
                             Status = r.GetString(7);
+                            Type = r.GetString(8);
                         }
                         else
                             throw new System.ArgumentException("Couldn't find the requested listing!");
@@ -417,6 +426,9 @@ namespace SearchProcurement.Models
 
                 // And pull out the attachments
                 loadAttachments();
+
+                // Load sublistings, if there are sublistings
+                loadSublistings();
 
             }
         }
@@ -555,6 +567,56 @@ namespace SearchProcurement.Models
 
 
 
+        /**
+         * Load sublistings
+         * @return none
+         */
+        public void loadSublistings()
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection())
+			{
+				// Open the DB connection
+				my_dbh.ConnectionString = Defines.myConnectionString;
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT listing_id, title FROM listing " +
+                        "WHERE listing_parent_id = @id ORDER BY title";
+					cmd.Parameters.AddWithValue("@id", ListingId);
+
+					// Run the DB command
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+                        List<Listing> listings = new List<Listing>();
+
+						while(r.Read())
+						{
+                            Listing l = new Listing
+                            {
+                                ListingId = r.GetInt32(0),
+                                Title = r.GetString(1)
+                            };
+                            listings.Add(l);
+                        }
+
+                        // And we're done
+                        Sublistings = listings.ToArray();
+
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
 
         /**
          * Load up active listings
@@ -586,7 +648,7 @@ namespace SearchProcurement.Models
                     }
 
                     // And build the SQL for selecting statuses
-					cmd.CommandText = "SELECT listing_id, title, status, close_date FROM listing " +
+					cmd.CommandText = "SELECT listing_id, title, status, listing_type, close_date FROM listing " +
                         "WHERE source_id = @agencyId AND status in (" + String.Join(",", statusesIn) + ") ORDER BY title";
 					cmd.Parameters.AddWithValue("@agencyId", agencyId);
 
@@ -602,7 +664,8 @@ namespace SearchProcurement.Models
                                 ListingId = r.GetInt32(0),
                                 Title = r.GetString(1),
                                 Status = r.GetString(2),
-                                CloseDate = r.GetDateTime(3)
+                                Type = r.GetString(3),
+                                CloseDate = r.GetDateTime(4)
                             };
                             listings.Add(l);
                         }

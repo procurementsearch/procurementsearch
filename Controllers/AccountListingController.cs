@@ -43,6 +43,39 @@ namespace SearchProcurement.Controllers
 
 
 
+
+        /**
+         * Show the umbrella listing overlay
+         * @param int id The listing ID to show subcontracts for
+         */
+        [Authorize]
+        [Route("/Account/setupUmbrella")]
+        public IActionResult SetupUmbrella(int id)
+        {
+            // Have we seen this unique identifier before?  If no, send them to the new account page
+            string uniq = this.readNameIdentifier();
+            if( !Agency.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // Let's try to load the listing
+            Listing l = new Listing();
+            l.loadById(id);
+
+            return View(l);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         [Authorize]
         [Route("/Account/newListing")]
         public IActionResult NewListing(int? locId)
@@ -193,6 +226,7 @@ namespace SearchProcurement.Controllers
                 // Add the listing with the assigned status
                 listing.add(
                     action == "draft" ? ListingStatus.Draft : ListingStatus.Published,
+                    ListingTypes.Simple,
                     HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
                 );
 

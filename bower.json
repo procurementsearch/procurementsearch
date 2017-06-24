@@ -6,6 +6,10 @@
     "jquery": "^3.2.1",
     "parsleyjs": "^2.7.0",
     "datetimepicker": "^2.5.4",
-    "blueimp-file-upload": "^9.18.0"
+    "blueimp-file-upload": "^9.18.0",
+    "jquery-modal": "^0.8.0"
+  },
+  "resolutions": {
+    "jquery": "^3.2.1"
   }
 }

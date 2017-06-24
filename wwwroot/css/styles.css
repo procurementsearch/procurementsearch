@@ -40,9 +40,13 @@ html, body { /* for sticky footer */
     background: rgb(66, 184, 221); /* this is a light blue */
 }
 
-body {
+body, .modal {
     color: #555;
     background-color: #f5f9f4;
+}
+
+.modal {
+    max-width: inherit;
 }
 
 html, button, input, select, textarea,

@@ -85,5 +85,29 @@ namespace SearchProcurement.AWS
             s3Client.DeleteObjectAsync(d);
         }
 
+
+
+        /**
+         * Copy an object on s3
+         * @param oldS3Bucket The s3 bucket to copy from
+         * @param oldName The name of the object to copy
+         * @param newS3Bucket The s3 bucket to copy from
+         * @param newName The name of the object to copy
+         * @return none
+         */
+        public void Duplicate(string oldS3Bucket, string oldName, string newS3Bucket, string newName)
+        {
+            CopyObjectRequest c = new CopyObjectRequest();
+            c.SourceBucket = oldS3Bucket;
+            c.SourceKey = oldName;
+            c.DestinationBucket = newS3Bucket;
+            c.DestinationKey = newName;
+
+            // And, copy the object
+            s3Client.CopyObjectAsync(c);
+        }
+
+
+
     }
 }

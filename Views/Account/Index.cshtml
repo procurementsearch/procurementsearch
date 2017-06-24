@@ -7,15 +7,17 @@
         @Model.AgencyName
     </h2>
     <p>
-        <a class="pure-button button-small pure-button-primary" href="/account/newListing">Set up a new RFP/ITB</a>
+        <a class="pure-button button-small pure-button-primary" href="/account/newListing">Set up a new Listing/ITB</a>
         <a class="pure-button button-small" href="/account/myAccount">Edit my account</a>
         <a class="pure-button button-small" href="/account/logout">Log out</a>
     </p>
 
-    <div class="my-rfps">
+
+
+    <div class="my-Listings">
         <h2>Active Listings</h2>
         <p>
-            These are your current listings.  When an RFP/ITB closes, or when you manually disable it, it moves from this table to the inactive RFP/ITB table below.
+            These are your current listings.  When an Listing/ITB closes, or when you manually disable it, it moves from this table to the inactive Listing/ITB table below.
         </p>
         <table class="pure-table pure-table-horizontal pure-table-striped">
             <thead>
@@ -25,15 +27,15 @@
                     <th>Close Date</th>
                     <th></th>
                     <th></th>
+<!--                    <th></th>
                     <th></th>
-                    <th></th>
-                </tr>
+-->                </tr>
             </thead>
             <tbody>
                 @if (ViewBag.activeListings.Length == 0)
                 {
                 <tr>
-                    <th colspan="7">No active listings</th>
+                    <th colspan="5">No active listings</th>
                 </tr>
                 }
                 else
@@ -45,16 +47,23 @@
                     <td>@l.Status</td>
                     <td>@l.CloseDate.ToString("M/d/y")</td>
                     <td style="text-align: center;">
-                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit RFP"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        @if (l.Type == "umbrella")
+                        {
+                        <a href="/account/setupUmbrella?id=@l.ListingId" rel="modal:open" class="pure-button button-xsmall edit-multiple" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        }
+                        else
+                        {
+                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        }
+                    </td>
+<!--                    <td style="text-align: center;">
+                        <a href="/account/cloneListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="/account/cloneListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="/account/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause Listing - can be reopened"><img src="/images/icons/database_gear.png"><br>Pause</a>
                     </td>
-                    <td style="text-align: center;">
-                        <a href="/account/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause RFP - can be reopened"><img src="/images/icons/database_gear.png"><br>Pause</a>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="/account/closeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Close RFP Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+-->                    <td style="text-align: center;">
+                        <a href="/account/closeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Close Listing Now"><img src="/images/icons/database_delete.png"><br>Close</a>
                     </td>
                 </tr>
                 }
@@ -64,7 +73,7 @@
 
         <h2>Inactive Listings</h2>
         <p>
-            These are your inactive RFPs.  You can't reopen any of these, but you can clone one and open a new RFP.
+            These are your inactive Listings.  You can't reopen any of these, but you can clone one and open a new Listing.
         </p>
         <table class="pure-table pure-table-horizontal">
             <thead>
@@ -72,14 +81,14 @@
                     <th>Title</th>
                     <th>Status</th>
                     <th>Close Date</th>
-                    <th></th>
-                </tr>
+<!--                    <th></th>
+-->                </tr>
             </thead>
             <tbody>
                 @if (ViewBag.inactiveListings.Length == 0)
                 {
                 <tr>
-                    <th colspan="7">No iactive listings</th>
+                    <th colspan="3">No iactive listings</th>
                 </tr>
                 }
                 else
@@ -90,10 +99,10 @@
                     <td>@l.Title</td>
                     <td>@l.Status</td>
                     <td>@l.CloseDate.ToString("M/d/y")</td>
-                    <td style="text-align: center;">
-                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone RFP"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+<!--                    <td style="text-align: center;">
+                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
-                </tr>
+-->                </tr>
                 }
                 }
 

@@ -1,0 +1,60 @@
+@using SearchProcurement.Models
+@model Listing
+@{
+    Layout = null;
+}
+
+<div class="my-rfps">
+    <h2>Project: @Model.Title</h2>
+    <br>
+    <p>
+        <a class="pure-button button-small" href="/account/setupListing?id=@Model.ListingId">Edit this listing</a>
+        <a class="pure-button button-small" href="/account/setupListing?parentId=@Model.ListingId">Add a subcontract</a>
+    </p>
+    <br>
+    @if (Model.Sublistings == null)
+    {
+    <p>
+        There are no subcontracts.
+    </p>
+    }
+    else
+    {
+    <p>
+        There @(Model.Sublistings.Length == 1 ? "is" : "are") @Model.Sublistings.Length subcontracts:
+    </p>
+    }
+    <br>
+    <table class="pure-table pure-table-horizontal pure-table-striped">
+        <thead>
+            <tr>
+                <th>Title <small>(click to view)</small></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Sublistings == null || Model.Sublistings.Length == 0)
+            {
+            <tr>
+                <th colspan="3">No subcontracts</th>
+            </tr>
+            }
+            else
+            {
+            foreach(var l in Model.Sublistings)
+            {
+            <tr>
+                <td><a target="_blank" href="/details/@l.ListingId">@l.Title</a></td>
+                <td style="text-align: center;">
+                    <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Subcontract"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                </td>
+                <td style="text-align: center;">
+                    <a href="/account/removeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Remove Subcontract"><img src="/images/icons/database_delete.png"><br>Remove</a>
+                </td>
+            </tr>
+            }
+            }
+        </tbody>
+    </table>
+</div>
