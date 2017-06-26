@@ -292,8 +292,8 @@ namespace SearchProcurement.Models
                         "action_steps=@l7, " +
                         "status=@l8 " +
                         "WHERE listing_id=@id";
-					cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
-					cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l1", OpenDate == DateTime.MinValue ? null : OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", CloseDate == DateTime.MinValue ? null : CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
 					cmd.Parameters.AddWithValue("@l3", Title);
 					cmd.Parameters.AddWithValue("@l4", Description);
 					cmd.Parameters.AddWithValue("@l5", Title + "\n" + Description);
@@ -316,8 +316,8 @@ namespace SearchProcurement.Models
                         "close_date=@l2, " +
                         "status=@l3 " +
                         "WHERE listing_parent_id=@id";
-                    cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
-                    cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l1", OpenDate == DateTime.MinValue ? null : OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", CloseDate == DateTime.MinValue ? null : CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
                     cmd.Parameters.AddWithValue("@l3", Status);
                     cmd.Parameters.AddWithValue("@id", ListingId);
                     cmd.ExecuteNonQuery();
@@ -356,8 +356,8 @@ namespace SearchProcurement.Models
                         "close_date=@l2, " +
                         "status=@l3 " +
                         "WHERE listing_id=@id";
-					cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
-					cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l1", OpenDate == DateTime.MinValue ? null : OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", CloseDate == DateTime.MinValue ? null : CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
 					cmd.Parameters.AddWithValue("@l3", Status);
                     cmd.Parameters.AddWithValue("@parentId", myParentId);
                     cmd.Parameters.AddWithValue("@id", ListingId);

@@ -597,7 +597,7 @@ namespace SearchProcurement.Models
          */
         public Listing[] getActiveListings()
         {
-            return ListingHelper.loadListings(AgencyId, new[]{"inprogress", "waiting", "open"});
+            return ListingHelper.loadListings(AgencyId, new[]{ListingStatus.Published, ListingStatus.Open, ListingStatus.Draft});
         }
 
 
@@ -607,7 +607,7 @@ namespace SearchProcurement.Models
          */
         public Listing[] getInactiveListings()
         {
-            return ListingHelper.loadListings(AgencyId, new[]{"closed", "canceled", "disabled"});
+            return ListingHelper.loadListings(AgencyId, new[]{ListingStatus.Closed, ListingStatus.Canceled, ListingStatus.Disabled});
         }
 
 

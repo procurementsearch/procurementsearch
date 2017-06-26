@@ -78,23 +78,19 @@ namespace SearchProcurement.Controllers
         public IActionResult NewListing(int? locId)
         {
             // Have we seen this unique identifier before?
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
                 return Redirect("/account/NewAccount");
 
-            // Yep, they're good, they can start an RFP
-            Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(uniq);
-            a.loadDataByAgencyIdentifier(uniq);
-
-            // Did we get a location ID?
+            // Yep, they're good.  So, did we get a location ID?
             if( locId != null )
             {
+                // Save the location for the redirect
+                HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
+
                 // They can post here--let's let them
                 if( a.hasAvailablePaymentToken(locId.Value) )
                 {
-                    // Save the location for the redirect
-                    HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
                     return Redirect("/account/addListing");
                 }
                 else

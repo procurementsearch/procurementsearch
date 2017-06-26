@@ -160,14 +160,19 @@ namespace SearchProcurement.Helpers
 
 						while(r.Read())
 						{
+							// Instantiate a listing, just for this use
                             Listing l = new Listing
                             {
                                 ListingId = r.GetInt32(0),
                                 Title = r.GetString(1),
                                 Status = r.GetString(2),
-                                Type = r.GetString(3),
-                                CloseDate = r.GetDateTime(4)
+                                Type = r.GetString(3)
                             };
+
+							// Argh!  Close date can be null
+							if( !r.IsDBNull(4) )
+								l.CloseDate = r.GetDateTime(4);
+
                             listings.Add(l);
                         }
 
