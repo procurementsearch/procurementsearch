@@ -53,7 +53,7 @@
                         }
                         else
                         {
-                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
                         }
                     </td>
 <!--                    <td style="text-align: center;">
@@ -100,7 +100,7 @@
                     <td>@l.Status</td>
                     <td>@l.CloseDate.ToString("M/d/y")</td>
 <!--                    <td style="text-align: center;">
-                        <a href="/account/setupListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
 -->                </tr>
                 }

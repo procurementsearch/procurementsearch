@@ -93,7 +93,7 @@ namespace SearchProcurement.Controllers
             // for the listing they've just paid for
             a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
 
-            return Redirect("/account/setupListing");
+            return Redirect("/account/addListing");
         }
 
 

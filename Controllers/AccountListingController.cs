@@ -95,7 +95,7 @@ namespace SearchProcurement.Controllers
                 {
                     // Save the location for the redirect
                     HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
-                    return Redirect("/account/setupListing");
+                    return Redirect("/account/addListing");
                 }
                 else
                     return View("NewListingPay", a);  // Nope, need to pay first
@@ -109,59 +109,67 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/setupListing")]
-        public IActionResult SetupListing(int? id)
+        [Route("/Account/addListing")]
+        public IActionResult addListing(int? id)
         {
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
+            Agency a = new Agency();
+            a.loadIdByAgencyIdentifier(uniq);
 
-            // Is this a new listing?  If it is, we need to verify
-            // the payment token..
-            if( id == null )
-            {
-                Agency a = new Agency();
-                a.loadIdByAgencyIdentifier(uniq);
+            // Make sure they've selected a location Id
+            int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+            if( locId == null )
+                return Redirect("/account/newListing");
 
-                // Make sure they've selected a location Id
-                int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
-                if( locId == null )
-                    return Redirect("/account/newListing");
+            // If they can't post here, send them to the payment screen
+            if( !a.hasAvailablePaymentToken(locId.Value) )
+                return Redirect("/account/newListing?locId=" + locId.Value);
 
-                // If they can't post here, send them to the payment screen
-                if( !a.hasAvailablePaymentToken(locId.Value) )
-                    return Redirect("/account/newListing?locId=" + locId.Value);
+            // OK, they've picked a location and they've paid for it ..
+            Listing l = new Listing();
 
-                // OK, they've picked a location and they've paid for it ..
-                Listing l = new Listing();
-
-                // Get the item
-                ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
-                ViewBag.locId = locId.Value;
-
-                return View(l);
-
-            }
-            else
-            {
-                // They're editing an existing listing .. let's load it before showing the view
-                Listing l = new Listing();
-                l.loadById(id.Value);
-
-                // Now save these files to the session, so we can remove them by GUID
-                HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
-
-                // Get the item top-level location ID
-                ViewBag.locId = l.PrimaryLocationId;
-                ViewBag.listingLocation = LocationHelper.getNameForId(l.PrimaryLocationId);
-                ViewBag.id = id.Value;
-
-                return View(l);
-            }
+            // Get the item
+            ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
+            ViewBag.locId = locId.Value;
+            return View("~/Views/AccountListing/SetupListing.cshtml", l);
 
         }
+
+
+
+
+
+
+        [Authorize]
+        [Route("/Account/editListing")]
+        public IActionResult editListing(int id)
+        {
+            // Have we seen this unique identifier before?
+            string uniq = this.readNameIdentifier();
+            if( !Agency.isKnownAgency(uniq) )
+                return Redirect("/account/NewAccount");
+
+            // They're editing an existing listing .. let's load it before showing the view
+            Listing l = new Listing();
+            l.loadById(id);
+
+            // Now save these files to the session, so we can access them by GUID
+            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
+
+            // Get the item top-level location ID
+            ViewBag.locId = l.PrimaryLocationId;
+            ViewBag.listingLocation = LocationHelper.getNameForId(l.PrimaryLocationId);
+            ViewBag.id = id;
+            return View("~/Views/AccountListing/SetupListing.cshtml", l);
+
+        }
+
+
+
 
 
 

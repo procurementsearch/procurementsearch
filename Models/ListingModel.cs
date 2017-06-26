@@ -305,7 +305,22 @@ namespace SearchProcurement.Models
 					// Run the DB command
                     if( cmd.ExecuteNonQuery() == 0 )
                         throw new System.ArgumentException("Couldn't update the listing");
+                }
 
+                // And, if there are subcontracts, do those too...
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "UPDATE listing SET " +
+                        "open_date=@l1, " +
+                        "close_date=@l2, " +
+                        "status=@l3 " +
+                        "WHERE listing_parent_id=@id";
+                    cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                    cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+                    cmd.Parameters.AddWithValue("@l3", Status);
+                    cmd.Parameters.AddWithValue("@id", ListingId);
+                    cmd.ExecuteNonQuery();
                 }
 
             }
