@@ -38,7 +38,7 @@
     <h2>Bid Documents</h2>
     <div class="attachments">
         <p>This project has the following bid documents.  You may need to log into the project owner's website to review these documents.</p>
-        <table class="pure-table pure-table-horizontal">
+        <table class="pure-table pure-table-horizontal pure-table-striped">
             <thead>
                 <tr>
                     <th>Bid Document:</th>
@@ -49,7 +49,7 @@
                 @{int i = 0;}
                 @foreach (var res in Model.attachments)
                 {
-                <tr @(i == 1 ? Html.Raw("class=\"pure-table-odd\"") : Html.Raw(""))>
+                <tr>
                    <td><a target="_blank" href="@res.Url">@res.Title</a></td><td>@res.Filetype</td>
                 </tr>
                 i = 1 - i;

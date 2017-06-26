@@ -60,10 +60,9 @@ namespace SearchProcurement.Models
 			id = my_id;
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -171,10 +170,9 @@ namespace SearchProcurement.Models
 		public frameDetails loadFrameData()
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -221,10 +219,9 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -277,14 +274,10 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(), my_sph = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString), my_sph = new MySqlConnection(Defines.myConnectionString))
 			{
-				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
+				// Open the DB and Sphinx connections
 				my_dbh.Open();
-
-				// And the Sphinx connection
-				my_sph.ConnectionString = Defines.myConnectionString;
 				my_sph.Open();
 
 				// Pull the item data out of the database

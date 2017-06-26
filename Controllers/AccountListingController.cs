@@ -53,8 +53,7 @@ namespace SearchProcurement.Controllers
         public IActionResult SetupUmbrella(int id)
         {
             // Have we seen this unique identifier before?  If no, send them to the new account page
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            if( !Agency.isKnownAgency(this.readNameIdentifier()) )
                 return Redirect("/account/NewAccount");
 
             // Let's try to load the listing
@@ -64,8 +63,6 @@ namespace SearchProcurement.Controllers
             return View(l);
 
         }
-
-
 
 
 
@@ -98,8 +95,6 @@ namespace SearchProcurement.Controllers
                 {
                     // Save the location for the redirect
                     HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
-
-                    // And send them to the listing setup page
                     return Redirect("/account/setupListing");
                 }
                 else
@@ -122,6 +117,7 @@ namespace SearchProcurement.Controllers
             if( !Agency.isKnownAgency(uniq) )
                 return Redirect("/account/NewAccount");
 
+
             // Is this a new listing?  If it is, we need to verify
             // the payment token..
             if( id == null )
@@ -141,23 +137,6 @@ namespace SearchProcurement.Controllers
                 // OK, they've picked a location and they've paid for it ..
                 Listing l = new Listing();
 
-                // Flush out any old session files from this session, in case they
-                // started and clicked away from a previous listing
-                string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
-                if( sessionFilesJson != null )
-                {
-                    // Delete any unsaved uploaded files
-                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-                    foreach (Attachment att in sessionFiles)
-                    {
-                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + att.FileName);
-                    }
-
-                    // And empty the session files list
-                    HttpContext.Session.SetString(Defines.SessionKeys.Files, null);
-
-                }
-
                 // Get the item
                 ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
                 ViewBag.locId = locId.Value;
@@ -167,17 +146,11 @@ namespace SearchProcurement.Controllers
             }
             else
             {
-                // They're editing an existing listing .. let's load it before
-                // showing the view
+                // They're editing an existing listing .. let's load it before showing the view
                 Listing l = new Listing();
                 l.loadById(id.Value);
 
-                // Go through the attachments and assign a GUID to each of them
-                for (int i = 0; i < l.BidDocuments.Length; i++)
-                    l.BidDocuments[i].Guid = Guid.NewGuid().ToString();
-
-                // Now save these files to the session, so we can remove
-                // them by GUID
+                // Now save these files to the session, so we can remove them by GUID
                 HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
 
                 // Get the item top-level location ID
@@ -230,26 +203,15 @@ namespace SearchProcurement.Controllers
                     HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
                 );
 
-                // And set the location
+                // And set the location(s)
                 listing.addLocationById(HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId).Value);
-
-                // And, if requested, secondary location
                 if( !string.IsNullOrEmpty(HttpContext.Request.Form["secondary_location_id"]) )
                     listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
 
                 // And add the attachments
                 string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
                 if( sessionFilesJson != null )
-                {
-                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-                    foreach (Attachment att in sessionFiles)
-                    {
-                        // Add the attachment
-                        Attachment myAtt = att;
-                        myAtt.RedirectUrl = HttpContext.Request.Form["redir-" + myAtt.Guid];
-                        listing.addAttachment(myAtt);
-                    }
-                }
+                    AttachmentHelper.processFiles(JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), HttpContext, listing);
 
             }
             else
@@ -303,9 +265,7 @@ namespace SearchProcurement.Controllers
 
                 // Save the new one only if we've actually set a new one
                 if( !string.IsNullOrEmpty(HttpContext.Request.Form["secondary_location_id"]) )
-                {
                     listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
-                }
 
                 // OK!  Now, this is a little tricky, saving out the addenda...
                 string[] oldTitles = AttachmentHelper.getAttachmentTitles(listing.ListingId);
@@ -313,50 +273,14 @@ namespace SearchProcurement.Controllers
                 // And save new attachments, if we have any new attachments
                 string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
                 if( sessionFilesJson != null )
-                {
-                    List<Attachment> sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-                    foreach (Attachment att in sessionFiles)
-                    {
-                        string redirectUrl = HttpContext.Request.Form["redir-" + att.Guid];
+                    AttachmentHelper.processFiles(JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), HttpContext, listing);
 
-                        // If it hasn't got an ID, we want to save it
-                        if( att.AttachmentId == 0 )
-                        {
-                            // Add the attachment
-                            Attachment myAtt = att;
-                            myAtt.RedirectUrl = redirectUrl;
-                            listing.addAttachment(myAtt);
-                        }
-                        else
-                        {
-                            // Or...possibly...delete it
-                            if( att.ToDelete )
-                            {
-                                // Remove the file attachment
-                                AttachmentHelper.removeAttachmentFile(
-                                    att.IsStaged,
-                                    AttachmentHelper.getDeletionIdentifier(att.AttachmentId)
-                                );
-                                AttachmentHelper.deleteById(att.AttachmentId);
-                            }
-                            else
-                                // Otherwise, just update its redirect URL
-                                AttachmentHelper.updateRedirectUrl(att.AttachmentId, redirectUrl);
-                        }
-                    }
-                }
 
                 // Continuing the attachment diffing...
                 string[] newTitles = AttachmentHelper.getAttachmentTitles(listing.ListingId);
                 if( updateMode == ListingUpdateMode.Addendum )
-                {
-                    // Get the difference, to see if we've changed the attachment list
-                    string[] diff = oldTitles.Except(newTitles).Union(newTitles.Except(oldTitles)).ToArray();
-
-                    // Yes?  We have?  OK, note it
-                    if( diff.Length > 0 )
+                    if( Library.diffStringArrays(oldTitles, newTitles).Length > 0 )
                         ListingHelper.logAddendum(listing.ListingId, "attachments", String.Join("\n", oldTitles), String.Join("\n", newTitles));
-                }
 
             }
 
@@ -366,6 +290,141 @@ namespace SearchProcurement.Controllers
 
             return View();
         }
+
+
+
+
+
+
+        [Authorize]
+        [Route("/Account/addSublisting")]
+        public IActionResult AddSublisting(int parentId)
+        {
+            // Have we seen this unique identifier before?  If not, they really shouldn't be here
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Make sure they gave us a parent ID
+            if( parentId == 0 )
+                return Redirect("/account");
+
+            // Make sure that the listing they're attaching this subcontract to,
+            // they own that listing ...
+            Listing parent = new Listing();
+            parent.loadById(parentId);
+            if( parent.AgencyId != a.AgencyId )
+                return Redirect("/account");
+
+            // Get the item
+            Listing l = new Listing();
+            ViewBag.projectTitle = parent.Title;
+            ViewBag.parentId = parentId;
+            return View("~/Views/AccountListing/SetupSublisting.cshtml", l);
+
+        }
+
+
+
+
+
+        [Authorize]
+        [Route("/Account/editSublisting")]
+        public IActionResult EditSublisting(int parentId, int id)
+        {
+            // Have we seen this unique identifier before?  If not, they really shouldn't be here
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Load the parent, to get the title/project description
+            Listing parent = new Listing();
+            parent.loadById(parentId);
+
+            // They're editing an existing listing .. let's load it and verify ownership
+            Listing l = new Listing();
+            l.loadById(id);
+            if( l.AgencyId != a.AgencyId )
+                return Redirect("/account");
+
+            // Now save these files to the session, so we can remove them by GUID
+            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
+
+            // Get the item
+            ViewBag.projectTitle = parent.Title;
+            ViewBag.parentId = parentId;
+            ViewBag.id = id;
+            return View("~/Views/AccountListing/SetupSublisting.cshtml", l);
+
+        }
+
+
+
+
+
+
+        /**
+         * The POST endpoint for saving a subcontract
+         */
+        [Authorize]
+        [HttpPost]
+        [Route("/Account/setupSublisting")]
+        [ValidateAntiForgeryToken]
+        public IActionResult SetupSublistingPost(int parentId, int? id, Listing listing)
+        {
+            // Have we seen this unique identifier before?  If not, they really shouldn't be here
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Which button did they click on?
+            string action = HttpContext.Request.Form["action"];
+
+            // Cancel!
+            if( action == "cancel" )
+                return Redirect("/account");
+
+            if( id == null )
+            {
+                // No ID means we're adding a listing
+                listing.AgencyId = a.AgencyId;
+
+                // Add the listing with the assigned status
+                listing.add("", ListingTypes.Simple, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+                listing.setParent(parentId);
+            }
+            else
+            {
+                // Be sure to set the old listing ID, since the model binding doesn't
+                // catch this
+                listing.ListingId = id.Value;
+
+                // A failsafe, in case they're trying to be tricky
+                if( listing.getAgencyId() != a.AgencyId )
+                    return Redirect("/account");  // This should never happen!
+
+                // And, update!
+                listing.update(ListingUpdateMode.Revision);
+            }
+
+
+            // And save new attachments, if we have any new attachments
+            string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+            if( sessionFilesJson != null )
+                AttachmentHelper.processFiles(JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), HttpContext, listing);
+
+            // Empty out the session data
+            HttpContext.Session.Remove(Defines.SessionKeys.Files);
+
+            return View();
+        }
+
+
+
+
+
+
+
 
 
 
@@ -487,6 +546,41 @@ namespace SearchProcurement.Controllers
 
             return StatusCode(200);
         }
+
+
+
+
+
+        /**
+         * Remove the sublisting from an umbrella contract
+         * @param int id The listing ID of the subcontract to remove
+         */
+        [Authorize]
+        [Route("/Account/removeSublisting")]
+        public IActionResult RemoveSublisting(int id)
+        {
+            // Have we seen this unique identifier before?  If no, send them to the new account page
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Let's try to load the listing
+            Listing l = new Listing();
+            l.loadById(id);
+
+            // Is it really ours?
+            if( l.getAgencyId() == a.AgencyId )
+            {
+                // OK!  Remove the listing
+                l.removeListing();
+                return StatusCode(200);
+            }
+            else
+                // It is not!  Do nothing...
+                return StatusCode(418);
+
+        }
+
 
 
     }

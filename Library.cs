@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -31,6 +32,19 @@ namespace SearchProcurement
 			}
 
 		}
+
+
+		/**
+		 * Diff a string array
+		 * @param string[] a The first array
+		 * @param string[] b The second array
+		 * @return string[] The difference
+		 */
+		static public string[] diffStringArrays(string[] a, string[] b)
+		{
+			return a.Except(b).Union(b.Except(a)).ToArray();
+		}
+
 
 
 		/**

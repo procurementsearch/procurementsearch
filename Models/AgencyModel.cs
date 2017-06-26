@@ -60,6 +60,28 @@ namespace SearchProcurement.Models
 
 
 
+
+        /**
+         * Constructor with no arguments, just instantiate the object
+         */
+        public Agency() {}
+
+        /**
+         * Instantiate and load ID and data from unique string
+         * @param string uniq The unique identifier
+         */
+        public Agency(string uniq)
+        {
+            if( Agency.isKnownAgency(uniq) )
+            {
+                this.loadIdByAgencyIdentifier(uniq);
+                this.loadDataByAgencyIdentifier(uniq);
+            }
+        }
+
+
+
+
         /**
          * Do we have an account for this unique identifier?  If so, then we're
          * probably sending the user to their account page.  If not, we're
@@ -70,10 +92,9 @@ namespace SearchProcurement.Models
         public static bool isKnownAgency(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -104,10 +125,9 @@ namespace SearchProcurement.Models
         public void loadIdByAgencyIdentifier(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -137,10 +157,9 @@ namespace SearchProcurement.Models
         public bool hasAvailablePaymentToken(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -172,10 +191,9 @@ namespace SearchProcurement.Models
         public void addPaymentToken(string listingType, decimal amount, string stripeToken)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -211,10 +229,9 @@ namespace SearchProcurement.Models
         public void loadDataByAgencyIdentifier(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -308,10 +325,9 @@ namespace SearchProcurement.Models
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -395,10 +411,9 @@ namespace SearchProcurement.Models
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -501,10 +516,9 @@ namespace SearchProcurement.Models
                 }
 
                 // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection())
+                using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
                 {
                     // Open the DB connection
-                    my_dbh.ConnectionString = Defines.myConnectionString;
                     my_dbh.Open();
 
                     // And save the agency logo to the database
@@ -541,10 +555,9 @@ namespace SearchProcurement.Models
             if( AgencyLogo != "" )
             {
                 // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection())
+                using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
                 {
                     // Open the DB connection
-                    my_dbh.ConnectionString = Defines.myConnectionString;
                     my_dbh.Open();
 
                     // And save the agency logo to the database
@@ -584,7 +597,7 @@ namespace SearchProcurement.Models
          */
         public Listing[] getActiveListings()
         {
-            return Listing.loadListings(AgencyId, new[]{"inprogress", "waiting", "open"});
+            return ListingHelper.loadListings(AgencyId, new[]{"inprogress", "waiting", "open"});
         }
 
 
@@ -594,7 +607,7 @@ namespace SearchProcurement.Models
          */
         public Listing[] getInactiveListings()
         {
-            return Listing.loadListings(AgencyId, new[]{"closed", "canceled", "disabled"});
+            return ListingHelper.loadListings(AgencyId, new[]{"closed", "canceled", "disabled"});
         }
 
 
@@ -609,10 +622,9 @@ namespace SearchProcurement.Models
         public static bool emailExists(string email)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database

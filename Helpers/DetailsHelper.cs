@@ -12,10 +12,9 @@ namespace SearchProcurement.Helpers
 		public static string loadTitle(int id)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database
@@ -42,10 +41,9 @@ namespace SearchProcurement.Helpers
 		public static int[] findSubcontractIds(int id)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 	
 				// Pull the item data out of the database

@@ -1,11 +1,29 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 
 using SearchProcurement.AWS;
+using SearchProcurement.Models;
 
 namespace SearchProcurement.Helpers
 {
+	/* The definitive attachment class definition */
+    public class Attachment
+    {
+        public int AttachmentId;
+        public string DocumentName;
+        public string FileName;
+        public string Url;
+        public string RedirectUrl;
+        public string Guid;
+        public bool IsStaged;
+        public bool ToDelete;
+    }
+
+
+
+
 
     public class AttachmentHelper
     {
@@ -18,10 +36,9 @@ namespace SearchProcurement.Helpers
 		public static string getDeletionIdentifier(int attId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -46,10 +63,9 @@ namespace SearchProcurement.Helpers
 		public static void deleteById(int attId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -100,10 +116,9 @@ namespace SearchProcurement.Helpers
 		public static void updateRedirectUrl(int id, string url)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -130,10 +145,9 @@ namespace SearchProcurement.Helpers
 		public static string[] getAttachmentTitles(int listId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -165,6 +179,53 @@ namespace SearchProcurement.Helpers
                 }
             }
 		}
+
+
+
+
+		/**
+		 * Process the uploaded attachments for a listing
+		 * @param Attachment[] files The array of attachments to proces
+		 * @param HttpContext h The HTTP Context that has the form with our redirect URLs in it
+		 * @param Listing l The listing to attach these files to (or remove from)
+		 * @return none
+		 */
+		public static void processFiles(Attachment[] files, HttpContext h, Listing l)
+		{
+			// Process all the files
+			foreach (Attachment att in files)
+			{
+				string redirectUrl = h.Request.Form["redir-" + att.Guid];
+
+				// If it hasn't got an ID, we want to save it
+				if( att.AttachmentId == 0 )
+				{
+					// Add the attachment
+					Attachment myAtt = att;
+					myAtt.RedirectUrl = redirectUrl;
+					l.addAttachment(myAtt);
+				}
+				else
+				{
+					// Or...possibly...delete it
+					if( att.ToDelete )
+					{
+						// Remove the file attachment
+						AttachmentHelper.removeAttachmentFile(
+							att.IsStaged,
+							AttachmentHelper.getDeletionIdentifier(att.AttachmentId)
+						);
+						AttachmentHelper.deleteById(att.AttachmentId);
+					}
+					else
+						// Otherwise, just update its redirect URL
+						AttachmentHelper.updateRedirectUrl(att.AttachmentId, redirectUrl);
+				}
+			}
+
+		}
+
+
 
 
     }

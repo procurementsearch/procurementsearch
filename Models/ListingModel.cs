@@ -12,42 +12,6 @@ using SearchProcurement.Helpers;
 namespace SearchProcurement.Models
 {
 
-    public static class ListingTypes
-    {
-        public const string Simple = "simple";
-        public const string Umbrella = "umbrella";
-    }
-
-
-    public static class ListingStatus
-    {
-        public const string Draft = "draft";
-        public const string Published = "published";
-        public const string Open = "open";
-        public const string Disabled = "disabled";
-        public const string Canceled = "canceled";
-        public const string Closed = "closed";
-    }
-
-    public static class ListingUpdateMode
-    {
-        public const string Addendum = "addendum";
-        public const string Revision = "revision";
-    }
-
-
-    public class Attachment
-    {
-        public int AttachmentId;
-        public string DocumentName;
-        public string FileName;
-        public string Url;
-        public string RedirectUrl;
-        public string Guid;
-        public bool IsStaged;
-        public bool ToDelete;
-    }
-
 
 	public class Listing
     {
@@ -83,6 +47,9 @@ namespace SearchProcurement.Models
         // Does the listing have sublistings?  If so, stick 'em here.
         public Listing[] Sublistings { get; set; }
 
+        // Alternately, does the listing have a parent ID?
+        public int? ParentId;
+
         // The listing geographical regions
         public int PrimaryLocationId { get; set; }
         public int[] SecondaryLocationIds { get; set; }
@@ -99,10 +66,9 @@ namespace SearchProcurement.Models
                 throw new System.Exception("No listing ID means no whiskey!");
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -131,10 +97,9 @@ namespace SearchProcurement.Models
         public void add(string status, string type, string ip_addr)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -144,7 +109,7 @@ namespace SearchProcurement.Models
 					cmd.CommandText = "INSERT INTO listing " +
                         "(source_id, open_date, close_date, title, description, contents, " +
                         "contact, action_steps, status, listing_type, created, created_ip_addr) VALUES (" +
-                        "'rfp', @l1, @l2, @l3, @l4, @l5, " +
+                        "@l1, @l2, @l3, @l4, @l5, " +
                         "@l6, @l7, @l8, @l9, @l10, now(), @ip_addr)";
 					cmd.Parameters.AddWithValue("@l1", AgencyId);
 					cmd.Parameters.AddWithValue("@l2", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
@@ -182,10 +147,9 @@ namespace SearchProcurement.Models
         public void addLocationById(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -215,10 +179,9 @@ namespace SearchProcurement.Models
         public void removeLocationById(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -250,10 +213,9 @@ namespace SearchProcurement.Models
         public void addAttachment(Attachment a)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -286,6 +248,8 @@ namespace SearchProcurement.Models
 
         /**
          * Update the listing
+         * @param string updateMode The update mode, revision..addendum..?
+         * @return none
          */
         public bool update(string updateMode)
         {
@@ -310,15 +274,11 @@ namespace SearchProcurement.Models
             }
 
 
-
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
-
-				// Pull the item data out of the database
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
@@ -356,6 +316,65 @@ namespace SearchProcurement.Models
 
 
 
+        /**
+         * Set the parent ID for the listing
+         * @param int parentId The ID of the parent listing to use
+         * @return none
+         */
+        public void setParent(int myParentId)
+        {
+            // Load the parent ID to sync up open/close date, status, etc.
+            Listing p = new Listing();
+            p.loadById(myParentId);
+
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE listing SET " +
+                        "listing_parent_id=@parentId, " +
+                        "open_date=@l1, " +
+                        "close_date=@l2, " +
+                        "status=@l3 " +
+                        "WHERE listing_id=@id";
+					cmd.Parameters.AddWithValue("@l1", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l3", Status);
+                    cmd.Parameters.AddWithValue("@parentId", myParentId);
+                    cmd.Parameters.AddWithValue("@id", ListingId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't update the listing!");
+
+                }
+
+            }
+
+
+            // Now, sync up the location information
+            if( PrimaryLocationId != 0 )
+                removeLocationById(PrimaryLocationId);
+
+            if( SecondaryLocationIds != null )
+                foreach( var locId in SecondaryLocationIds )
+                    removeLocationById(locId);
+
+            // And add the locations from the parent
+            addLocationById(p.PrimaryLocationId);
+
+            foreach( var locId in p.SecondaryLocationIds )
+                addLocationById(locId);
+
+            // And that's it, we're done
+
+        }
+
+
 
 
 
@@ -371,10 +390,9 @@ namespace SearchProcurement.Models
         public void loadById(int id)
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -389,7 +407,8 @@ namespace SearchProcurement.Models
                         "contact, " +
                         "action_steps, " +
                         "status, " +
-                        "listing_type " +
+                        "listing_type, " +
+                        "listing_parent_id " +
                         "FROM listing WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 
@@ -410,6 +429,11 @@ namespace SearchProcurement.Models
                             ActionSteps = r.IsDBNull(6) ? "" : r.GetString(6);
                             Status = r.GetString(7);
                             Type = r.GetString(8);
+
+                            if( r.IsDBNull(9) )
+                                ParentId = null;
+                            else
+                                ParentId = r.GetInt32(9);
                         }
                         else
                             throw new System.ArgumentException("Couldn't find the requested listing!");
@@ -426,6 +450,10 @@ namespace SearchProcurement.Models
 
                 // And pull out the attachments
                 loadAttachments();
+
+                // Go through the attachments and assign a GUID to each of them
+                for (int i = 0; i < BidDocuments.Length; i++)
+                    BidDocuments[i].Guid = Guid.NewGuid().ToString();
 
                 // Load sublistings, if there are sublistings
                 loadSublistings();
@@ -445,10 +473,9 @@ namespace SearchProcurement.Models
         public void loadLocations()
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the listing locations out of the database
@@ -467,7 +494,7 @@ namespace SearchProcurement.Models
 
                     // A failsafe
                     if( PrimaryLocationId == 0 )
-                        throw new System.ArgumentException("Couldn't find the requested listing!");
+                        throw new System.ArgumentException("Couldn't find a primary location for the requested listing!");
                 }
 
 				using(MySqlCommand cmd = new MySqlCommand())
@@ -515,10 +542,9 @@ namespace SearchProcurement.Models
         public void loadAttachments()
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the listing locations out of the database
@@ -574,10 +600,9 @@ namespace SearchProcurement.Models
         public void loadSublistings()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
 				// Pull the item data out of the database
@@ -617,70 +642,58 @@ namespace SearchProcurement.Models
 
 
 
-
         /**
-         * Load up active listings
-         * @param int AgencyId The ID of the agency to load listings for
-         * @param string status The listing status to load
-         * @return array The active listings
+         * Remove a listing and all its attachments
+         * @return none
          */
-        public static Listing[] loadListings(int agencyId, string[] statuses)
+        public void removeListing()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection())
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
-				my_dbh.ConnectionString = Defines.myConnectionString;
 				my_dbh.Open();
 
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-
-                    // Build the string for statuses
-                    string[] statusesIn = new string[statuses.Length];
-                    for (int i = 0; i < statuses.Length; i++)
+                using(MySqlTransaction tr = my_dbh.BeginTransaction())
+                {
+                    // Delete the attachment(s)
+                    using(MySqlCommand cmd = new MySqlCommand())
                     {
-                        string myStatus = "@status" + (i+1);
-                        statusesIn[i] = myStatus;
-                        cmd.Parameters.AddWithValue(myStatus, statuses[i]);
+                        cmd.Connection = my_dbh;
+                        cmd.Transaction = tr;
+                        cmd.CommandText = "DELETE FROM attachment WHERE listing_id = @id";
+                        cmd.Parameters.AddWithValue("@id", ListingId);
+                        cmd.ExecuteNonQuery();
                     }
 
-                    // And build the SQL for selecting statuses
-					cmd.CommandText = "SELECT listing_id, title, status, listing_type, close_date FROM listing " +
-                        "WHERE source_id = @agencyId AND status in (" + String.Join(",", statusesIn) + ") ORDER BY title";
-					cmd.Parameters.AddWithValue("@agencyId", agencyId);
-
-					// Run the DB command
-					using(MySqlDataReader r = cmd.ExecuteReader())
-					{
-                        List<Listing> listings = new List<Listing>();
-
-						while(r.Read())
-						{
-                            Listing l = new Listing
-                            {
-                                ListingId = r.GetInt32(0),
-                                Title = r.GetString(1),
-                                Status = r.GetString(2),
-                                Type = r.GetString(3),
-                                CloseDate = r.GetDateTime(4)
-                            };
-                            listings.Add(l);
-                        }
-
-                        // And we're done
-                        return listings.ToArray();
-
+                    // And the location(s)
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = my_dbh;
+                        cmd.Transaction = tr;
+                        cmd.CommandText = "DELETE FROM location_listing_join WHERE listing_id = @id";
+                        cmd.Parameters.AddWithValue("@id", ListingId);
+                        cmd.ExecuteNonQuery();
                     }
+
+                    // And the listing
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = my_dbh;
+                        cmd.Transaction = tr;
+                        cmd.CommandText = "DELETE FROM listing WHERE listing_id = @id";
+                        cmd.Parameters.AddWithValue("@id", ListingId);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Commit the transaction
+                    tr.Commit();
                 }
             }
         }
 
+
+
     }
-
-
-
 
 }
