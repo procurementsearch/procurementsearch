@@ -75,12 +75,12 @@ namespace SearchProcurement.Controllers
 
         [Authorize]
         [Route("/Account/newListing")]
-        public IActionResult NewListing(int? locId)
+        public IActionResult NewListing(int? locId, string listingType)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/account/newAccount");
 
             // Yep, they're good.  So, did we get a location ID?
             if( locId != null )
@@ -89,10 +89,12 @@ namespace SearchProcurement.Controllers
                 HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
 
                 // They can post here--let's let them
-                if( a.hasAvailablePaymentToken(locId.Value) )
-                {
-                    return Redirect("/account/addListing");
-                }
+                ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
+                ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
+                ViewBag.locationName = LocationHelper.getNameForId(locId.Value);
+
+                if( listingType == "" )
+                    return View("NewListingPay", a);  // Nope, need to pay first
                 else
                     return View("NewListingPay", a);  // Nope, need to pay first
             }
@@ -100,6 +102,36 @@ namespace SearchProcurement.Controllers
                 return View(a);
 
         }
+
+
+
+
+
+
+
+        [Authorize]
+        [Route("/Account/newListingActivate")]
+        public IActionResult NewListingActivate(string listingType)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Failsafe
+            int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+            if( locId == null )
+                return Redirect("/account/newListing");
+
+            // And set up the view
+            ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
+            ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
+
+            return View(a);
+
+        }
+
+
 
 
 
@@ -290,6 +322,7 @@ namespace SearchProcurement.Controllers
 
             // Empty out the session data
             HttpContext.Session.Remove(Defines.SessionKeys.LocationId);
+            HttpContext.Session.Remove(Defines.SessionKeys.ListingType);
             HttpContext.Session.Remove(Defines.SessionKeys.Files);
 
             return View();

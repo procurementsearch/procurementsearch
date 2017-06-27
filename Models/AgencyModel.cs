@@ -170,7 +170,7 @@ namespace SearchProcurement.Models
                         "FROM agency_payment_token " +
                         "WHERE agency_id = @id " +
                         "AND ((location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()) " +
-                        "OR (location_id IS NULL AND token_type = 'single_use' AND token_used = 0))";
+                        "OR (location_id IS NULL AND token_type = 'single' AND token_used = 0))";
 					cmd.Parameters.AddWithValue("@id", AgencyId);
 					cmd.Parameters.AddWithValue("@locId", locId);
 
@@ -180,6 +180,49 @@ namespace SearchProcurement.Models
             }
 
         }
+
+
+
+
+        /**
+         * How many uses of a specific payment token type does this agency
+         * have for the given state?
+         * @param int locId The location ID
+         * @param string type The listing type, simple or umbrella listing
+         * @return int How many tokens available (an unlimited token always returns true for the region)
+         */
+        public int getPaymentTokens(int locId, string type)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+
+				// Pull the item data out of the database
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT COUNT(*) " +
+                        "FROM agency_payment_token " +
+                        "WHERE agency_id = @id " +
+                        "AND (" +
+                            "(location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()) " +
+                            "OR (location_id IS NULL AND token_type = 'single' AND listing_type = @listingType AND token_used = 0)" +
+                        ")";
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+					cmd.Parameters.AddWithValue("@locId", locId);
+					cmd.Parameters.AddWithValue("@listingType", type);
+
+					// Run the DB command
+					return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+        }
+
+
+
 
 
 
@@ -203,7 +246,7 @@ namespace SearchProcurement.Models
 					cmd.CommandText = "INSERT INTO agency_payment_token " +
                         "(agency_id, token_type, listing_type, amount_paid, stripe_token, created) " +
                         "VALUES " +
-                        "(@agency_id, 'single_use', @type, @amt, @token, NOW())";
+                        "(@agency_id, 'single', @type, @amt, @token, NOW())";
 					cmd.Parameters.AddWithValue("@agency_id", AgencyId);
                     cmd.Parameters.AddWithValue("@type", listingType);
                     cmd.Parameters.AddWithValue("@amt", amount);

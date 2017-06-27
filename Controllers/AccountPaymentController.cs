@@ -1,7 +1,11 @@
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+
 
 using Stripe;
 
@@ -92,6 +96,10 @@ namespace SearchProcurement.Controllers
             // OK!  They've paid, so let's give them a payment token
             // for the listing they've just paid for
             a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
+
+            // And save the type of listing they just paid for, because we're
+            // assuming they'll use this first
+            HttpContext.Session.SetString(Defines.SessionKeys.ListingType, listingType);
 
             return Redirect("/account/addListing");
         }

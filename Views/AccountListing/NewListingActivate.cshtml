@@ -1,0 +1,99 @@
+@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+
+<div class="view-box">
+    <h1>Starting a new RFP/ITB</h1>
+    <table class="listing-progress-bar">
+        <tbody>
+            <tr>
+                <td class="highlight">Choose State</td>
+                <td class="highlight">RFP/ITB Type</td>
+                <td>Set up listing</td>
+                <td>Done!</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2) Select the type of listing you want to set up.</h2>
+
+    <p>
+        You can set up either a simple contract with a single scope of work,
+        or an umbrella contract with multiple scopes of work.
+    </p>
+
+    <h2>Available contract types:</h2>
+
+    @if (ViewBag.simpleTokens > 0)
+    {
+        <p><a href="/account/newListingActivate?listingType=@ListingTypes.Simple" class="pure-button button-small">RFP/ITB with One Scope of Work</a></p>
+    }
+    else
+    {
+        <p>
+            You don't have any unused and paid-for simple contracts in your account.
+            You can start one here.
+        </p>
+        <h3>Start a new simple contract</h3>
+        <p>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple)</p>
+
+        <form action="/account/ChargeSimple" method="POST" style="text-align: center;">
+        <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
+            data-amount="@(Price.loadPrice(Model.AgencyType, "simple") * 100)"
+            data-name="Steve Havelka Software LLC"
+            data-description="Posting an RFP"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+            data-locale="auto">
+        </script>
+        </form>
+    }
+
+    @if (ViewBag.umbrellaTokens > 0)
+    {
+        <p><a href="/account/newListingActivate?listingType=@ListingTypes.Simple" class="pure-button button-small">RFP/ITB with Multiple Scopes of Work</a></p>
+    }
+    else
+    {
+        <p>
+            You don't have any unused and paid-for umbrella contracts in your account.
+            You can start one here.
+        </p>
+        <h3>Start a new umbrella contract</h3>
+        <p>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Umbrella)</p>
+
+        <form action="/account/ChargeUmbrella" method="POST" style="text-align: center;">
+        <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
+            data-amount="@(Price.loadPrice(Model.AgencyType, "umbrella") * 100)"
+            data-name="Steve Havelka Software LLC"
+            data-description="Posting an RFP with subcontracts"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+            data-locale="auto">
+        </script>
+        </form>
+        
+    }
+
+</div>
+
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    @Html.Partial("Pages-menu")
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>

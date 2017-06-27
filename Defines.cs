@@ -64,6 +64,7 @@ namespace SearchProcurement
 		{
 			public const string LocationId = "locId";
 			public const string Files = "myFiles";
+			public const string ListingType = "listingType";
 		}
 
 	}

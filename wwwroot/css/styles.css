@@ -459,6 +459,21 @@ a {
     background-color: #5cb85c;
 }
 
+/* A listing of steps for completing an RFP/ITP */
+.listing-progress-bar {
+    border: solid thin black;
+    width: 500px;
+}
+
+.listing-progress-bar td {
+    width: 25%;
+}
+
+.listing-progress-bar td.highlight {
+    background-color: #CCCCCC;
+}
+
+
 
 @media screen and (max-width: 48em) {
     /* small screens */

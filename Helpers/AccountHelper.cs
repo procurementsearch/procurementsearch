@@ -11,6 +11,11 @@ namespace SearchProcurement.Helpers
         public const string Private = "private";
     }
 
+    static class PaymentTokenType
+    {
+        public const string Single = "single";
+        public const string Umbrella = "umbrella";
+    }
 
     public static class AccountHelper
     {

@@ -4,31 +4,64 @@
 <div class="view-box">
     <h1>Starting a new RFP</h1>
 
-    <h2>Next, let's pay for the listing.</h2>
+    <h2>2) Select your listing type.</h2>
 
     <p>
-        You'll pay for the listing now, but it won't go live until you're ready.  If
-        you don't have all your documents ready now, that's OK!  This listing will
-        stay in your account as "in-progress" until you're ready to go.
+        You'll select your listing type now (and pay for it if you need to), but it
+        won't go live until you're ready.  If you don't have all your documents ready
+        now, that's OK!  This listing will stay in your account as an unpublished draft
+        until you're ready to go.
     </p>
     <p>
-        And, of course, you can always post addenda to the listing once it does go live.
-        There's no extra charge for that.
+        And, of course, you can post revisions and addenda to your RFP/ITB once it does go live.
+        There's never an extra charge for that.
     </p>
 
-    <table class="pure-table" style="margin: 2em auto;">
+    <table class="pure-table" style="margin: 2em 10%;">
         <thead>
             <tr style="text-align: center;">
-                <th>Single Scope of Work</th>
-                <th>Multiple Scopes of Work</th>
+                <th>RFP/ITB with Single Scope of Work</th>
+                <th>RFP/ITB with Multiple Scopes of Work</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>
-                    <p>Post a contract with a single scope of work.</p>
-                    <p>You can still attach as many documents as you need.</p>
-                    <p>Your cost: $@Price.loadPrice(Model.AgencyType, "simple")</p>
+                <td width="50%" valign="top">
+                    <b>This RFP/ITB will have a single scope of work.</b>
+                </td>
+                <td width="50%" valign="top">
+                    <b>This RFP/ITB can have as many subcontracts as you need.</b>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    You get:
+                    <ul>
+                        <li>unlimited bid documents,</li>
+                        <li>unlimited addenda,</li>
+                        <li>contract has no subcontracts.</li>
+                    </ul>
+                </td>
+                <td valign="top">
+                    You get:
+                    <ul>
+                        <li>unlimited bid documents,</li>
+                        <li>unlimited addenda,</li>
+                        <li>unlimited subcontracts.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="top">
+
+                    @if (ViewBag.simpleTokens > 0)
+                    {
+                    <b>Begin your RFP/ITB:</b><br>
+                    <a href="/account/newListing?listingType=@ListingTypes.Simple" class="pure-button pure-button-primary button-small">RFP/ITB with One Scope of Work</a>
+                    }
+                    else
+                    {
+                    <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple)</b>
 
                     <form action="/account/ChargeSimple" method="POST" style="text-align: center;">
                     <script
@@ -41,11 +74,19 @@
                         data-locale="auto">
                     </script>
                     </form>
+                    }
+
                 </td>
-                <td>
-                    <p>Post a contract with multiple scopes of work.</p>
-                    <p>Each scope of work will refer back to the parent contract.</p>
-                    <p>Your cost: $@Price.loadPrice(Model.AgencyType, "umbrella")</p>
+                <td align="center" valign="top">
+
+                    @if (ViewBag.umbrellaTokens > 0)
+                    {
+                    <b>Begin your RFP/ITB:</b><br>
+                    <a href="/account/newListing?listingType=@ListingTypes.Umbrella" class="pure-button pure-button-primary button-small">RFP/ITB with Multiple Scopes of Work</a>
+                    }
+                    else
+                    {
+                    <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Umbrella)</b>
 
                     <form action="/account/ChargeUmbrella" method="POST" style="text-align: center;">
                     <script
@@ -58,13 +99,25 @@
                         data-locale="auto">
                     </script>
                     </form>
+                    }
+
                 </td>
             </tr>
         </tbody>
     </table>
 
-</div>
+    <h2>Notes:</h2>
+    <p>
+        If you've got an unlimited access account for @ViewBag.locationName, you'll never be
+        asked to pay for anything here.  If you do, and you are being asked to pay, something's
+        wrong.  Give us a call!
+    </p>
+    <p>
+        If you pay for an RFP/ITB listing now, but you don't start it, that's OK!  We've recorded
+        the payment and let you start it later, and you won't have to pay again (obviously!).
+    </p>
 
+</div>
 
 
 <div class="pure-g">
