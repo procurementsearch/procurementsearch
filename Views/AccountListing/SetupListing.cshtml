@@ -6,6 +6,11 @@
 <div class="view-box">
     <h1>Setting up your RFP/ITB</h1>
 
+    @if (@Model.ListingId == 0)
+    {
+    <h2>3) Enter the information for your new listing.</h2>
+    }
+
     <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">
     @Html.AntiForgeryToken()
     @if (@Model.ListingId != 0)
@@ -119,7 +124,7 @@
         else if (@Model.Status == ListingStatus.Published)
         {
         <button type="submit" name="action" value="revision" class="pure-button pure-button-primary">Save Update</button>
-        <button type="submit" name="action" value="draft" class="pure-button button-secondary">Save as Draft</button>
+        <button type="submit" name="action" value="draft" class="pure-button button-secondary">Unpublish / Save as Draft</button>
         <button type="submit" name="action" value="cancel" class="pure-button button-secondary" formnovalidate>Cancel editing</button>
         }
         else

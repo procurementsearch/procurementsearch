@@ -82,6 +82,13 @@ namespace SearchProcurement.Controllers
             if( a.AgencyId == 0 )
                 return Redirect("/account/newAccount");
 
+            // Try to use the session location, if we didn't get one in the query string.
+            // If the session location is also empty, this'll do nothing, which is the
+            // right thing anyway.
+            if( locId == null )
+                locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+
+
             // Yep, they're good.  So, did we get a location ID?
             if( locId != null )
             {
@@ -102,6 +109,7 @@ namespace SearchProcurement.Controllers
                     ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
                     ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
                     ViewBag.locationName = LocationHelper.getNameForId(locId.Value);
+                    ViewBag.locationId = locId.Value;
                     return View("NewListingPay", a);
                 }
 
@@ -220,11 +228,6 @@ namespace SearchProcurement.Controllers
             if( a.AgencyId == 0 )
                 return Redirect("/account/NewAccount");
 
-            // First, a failsafe, to make sure they have a location
-            int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
-            if( locId == null )
-                return Redirect("/account/newListing");
-
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
 
@@ -232,10 +235,14 @@ namespace SearchProcurement.Controllers
             if( action == "cancel" )
                 return Redirect("/account");
 
-
             // Are we adding, or updating?
             if( id == null )
             {
+                // First, a failsafe, to make sure they have a location
+                int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+                if( locId == null )
+                    return Redirect("/account/newListing");
+
                 // And a failsafe, to make sure they have a payment token when they're
                 // adding a new listing
                 string listingType = HttpContext.Session.GetString(Defines.SessionKeys.ListingType);
@@ -248,7 +255,7 @@ namespace SearchProcurement.Controllers
                 // Add the listing with the assigned status
                 listing.add(
                     action == "draft" ? ListingStatus.Draft : ListingStatus.Published,
-                    ListingTypes.Simple,
+                    listingType,
                     HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]
                 );
 

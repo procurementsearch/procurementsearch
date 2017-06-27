@@ -298,10 +298,9 @@ namespace SearchProcurement.Models
 					cmd.CommandText = "UPDATE agency_payment_token " +
                         "SET token_used = 1, activated = NOW(), activated_ipaddr = @ip_addr " +
                         "WHERE " +
-                        "agency_id = @id AND location_id = @locId AND token_type = 'single' AND listing_type = @listingType " +
+                        "agency_id = @id AND location_id IS NULL AND token_type = 'single' AND listing_type = @listingType AND token_used = 0 " +
                         "LIMIT 1";
 					cmd.Parameters.AddWithValue("@id", AgencyId);
-					cmd.Parameters.AddWithValue("@locId", locId);
                     cmd.Parameters.AddWithValue("@listingType", type);
                     cmd.Parameters.AddWithValue("@ip_addr", ip_addr);
 

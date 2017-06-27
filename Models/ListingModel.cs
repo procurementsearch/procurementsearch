@@ -112,8 +112,8 @@ namespace SearchProcurement.Models
                         "@l1, @l2, @l3, @l4, @l5, " +
                         "@l6, @l7, @l8, @l9, @l10, now(), @ip_addr)";
 					cmd.Parameters.AddWithValue("@l1", AgencyId);
-					cmd.Parameters.AddWithValue("@l2", OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
-					cmd.Parameters.AddWithValue("@l3", CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l2", OpenDate == DateTime.MinValue ? null : OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
+					cmd.Parameters.AddWithValue("@l3", CloseDate == DateTime.MinValue ? null : CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
 					cmd.Parameters.AddWithValue("@l4", Title);
 					cmd.Parameters.AddWithValue("@l5", Description);
 					cmd.Parameters.AddWithValue("@l6", Title + "\n" + Description);
