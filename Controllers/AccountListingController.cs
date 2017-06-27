@@ -88,21 +88,29 @@ namespace SearchProcurement.Controllers
                 // Save the location for the redirect
                 HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
 
-                // They can post here--let's let them
-                ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
-                ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
-                ViewBag.locationName = LocationHelper.getNameForId(locId.Value);
-
-                if( listingType == "" )
-                    return View("NewListingPay", a);  // Nope, need to pay first
+                // Did they select a location AND a listing type?
+                if( (listingType == ListingTypes.Simple && a.getPaymentTokens(locId.Value, ListingTypes.Simple) > 0) ||
+                    (listingType == ListingTypes.Umbrella && a.getPaymentTokens(locId.Value, ListingTypes.Umbrella) > 0) )
+                {
+                    // OK!  They've selected a listing type AND they have a payment token for it
+                    HttpContext.Session.SetString(Defines.SessionKeys.ListingType, listingType);
+                    return Redirect("/Account/addListing");
+                }
                 else
-                    return View("NewListingPay", a);  // Nope, need to pay first
+                {
+                    // They can post here--let's let them
+                    ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
+                    ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
+                    ViewBag.locationName = LocationHelper.getNameForId(locId.Value);
+                    return View("NewListingPay", a);
+                }
+
             }
             else
+                // No location ID means no whiskey!
                 return View(a);
 
         }
-
 
 
 
@@ -141,12 +149,9 @@ namespace SearchProcurement.Controllers
         public IActionResult addListing(int? id)
         {
             // Have we seen this unique identifier before?
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
                 return Redirect("/account/NewAccount");
-
-            Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(uniq);
 
             // Make sure they've selected a location Id
             int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
@@ -177,8 +182,8 @@ namespace SearchProcurement.Controllers
         public IActionResult editListing(int id)
         {
             // Have we seen this unique identifier before?
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
                 return Redirect("/account/NewAccount");
 
             // They're editing an existing listing .. let's load it before showing the view
@@ -210,13 +215,15 @@ namespace SearchProcurement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SetupListingPost(int? id, Listing listing)
         {
-            // Have we seen this unique identifier before?  If not, they really shouldn't be here
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
                 return Redirect("/account/NewAccount");
 
-            Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(uniq);
+            // First, a failsafe, to make sure they have a location
+            int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
+            if( locId == null )
+                return Redirect("/account/newListing");
 
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
@@ -229,6 +236,12 @@ namespace SearchProcurement.Controllers
             // Are we adding, or updating?
             if( id == null )
             {
+                // And a failsafe, to make sure they have a payment token when they're
+                // adding a new listing
+                string listingType = HttpContext.Session.GetString(Defines.SessionKeys.ListingType);
+                if( listingType == null || a.getPaymentTokens(locId.Value, listingType) == 0 )
+                    return Redirect("/account/newListing");
+
                 // No ID means it's a new listing
                 listing.AgencyId = a.AgencyId;
 
@@ -240,7 +253,7 @@ namespace SearchProcurement.Controllers
                 );
 
                 // And set the location(s)
-                listing.addLocationById(HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId).Value);
+                listing.addLocationById(locId.Value);
                 if( !string.IsNullOrEmpty(HttpContext.Request.Form["secondary_location_id"]) )
                     listing.addLocationById(Convert.ToInt32(HttpContext.Request.Form["secondary_location_id"]));
 
@@ -248,6 +261,9 @@ namespace SearchProcurement.Controllers
                 string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
                 if( sessionFilesJson != null )
                     AttachmentHelper.processFiles(JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), HttpContext, listing);
+
+                // And at last, do we need to register a payment token as having been used?
+                a.usePaymentToken(locId.Value, listingType, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
 
             }
             else
@@ -327,6 +343,9 @@ namespace SearchProcurement.Controllers
 
             return View();
         }
+
+
+
 
 
 

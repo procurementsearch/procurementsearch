@@ -265,6 +265,57 @@ namespace SearchProcurement.Models
 
 
         /**
+         * Use a payment token!
+         * @param int locId The location ID
+         * @param string type The listing type, simple or umbrella listing
+         * @return int How many tokens available (an unlimited token always returns true for the region)
+         */
+        public bool usePaymentToken(int locId, string type, string ip_addr)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT COUNT(*) FROM agency_payment_token WHERE agency_id = @id " +
+                        "AND location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()";
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+					cmd.Parameters.AddWithValue("@locId", locId);
+
+                    // If they've got an unlimited access token for this region, always preferentially apply that
+                    if( Convert.ToInt32(cmd.ExecuteScalar()) > 0 )
+                        return true;
+
+                }
+
+                // Otherwise, use their payment token
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE agency_payment_token " +
+                        "SET token_used = 1, activated = NOW(), activated_ipaddr = @ip_addr " +
+                        "WHERE " +
+                        "agency_id = @id AND location_id = @locId AND token_type = 'single' AND listing_type = @listingType " +
+                        "LIMIT 1";
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+					cmd.Parameters.AddWithValue("@locId", locId);
+                    cmd.Parameters.AddWithValue("@listingType", type);
+                    cmd.Parameters.AddWithValue("@ip_addr", ip_addr);
+
+                    // If we've actually updated a row, that means the payment token
+                    // has been successfully applied!
+                    return Convert.ToInt32(cmd.ExecuteNonQuery()) > 0 ? true : false;
+                }
+            }
+        }
+
+
+
+
+        /**
          * Load the account by the unique identifier key.
          * @param uniq The unique identifier
          * @return bool Do we have this identifier in our database?

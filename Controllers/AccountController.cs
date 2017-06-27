@@ -60,6 +60,9 @@ namespace SearchProcurement.Controllers
             Listing[] activeListings = a.getActiveListings();
             Listing[] inactiveListings = a.getInactiveListings();
 
+            // Make sure we're starting fresh
+            HttpContext.Session.Remove(Defines.SessionKeys.LocationId);
+
             // And stash the data
             ViewBag.nameidentifier = uniq;
             ViewBag.activeListings = activeListings;
