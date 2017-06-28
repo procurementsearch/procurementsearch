@@ -196,7 +196,7 @@ namespace SearchProcurement.Controllers
             if( !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"]) )
                 agency.saveLogo(HttpContext.Request.Form["logoData"]);
 
-            return View();
+            return View("NewAccountPost");
         }
 
 
