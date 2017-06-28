@@ -77,7 +77,7 @@ namespace SearchProcurement.Models
             int[] ids_from_source = SearchHelper.findBySourceId(source);
 
 			// Pull out the search data
-			s.searchString = SearchHelper.loadSourceName(source);
+			s.searchString = SearchHelper.loadAgencyName(source);
 			s.searchUrl = "source=" + source;
 			s.searchCount = ids_from_source.Length;
 

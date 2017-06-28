@@ -28,7 +28,7 @@ namespace SearchProcurement.Controllers
             else if( source != null )
             {
                 rssItems = r.bySource(source.GetValueOrDefault());
-                myTitle = Defines.RssTitle + ": " + SearchHelper.loadSourceName(source.GetValueOrDefault());
+                myTitle = Defines.RssTitle + ": " + SearchHelper.loadAgencyName(source.GetValueOrDefault());
             }
             else
             {

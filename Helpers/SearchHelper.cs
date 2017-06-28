@@ -35,9 +35,9 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select l.title, l.description, l.created, l.source_id, s.source_name, l.listing_parent_id " +
-                        "from listing as l " +
-                        "left join source as s on s.source_id = l.source_id " +
+					cmd.CommandText = "SELECT l.title, l.description, l.created, l.agency_id, a.agency_name, l.listing_parent_id " +
+                        "FROM listing AS l " +
+                        "LEFT JOIN agency AS a ON a.agency_id = l.agency_id " +
                         "where listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
@@ -91,12 +91,10 @@ namespace SearchProcurement.Helpers
 			{
 				// Open the DB connection
 				my_dbh.Open();
-	
-				// Pull the item data out of the database
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select listing_id from listing where source_id = @id and status='open'";
+					cmd.CommandText = "select listing_id from listing where agency_id = @id and status='open'";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -125,23 +123,21 @@ namespace SearchProcurement.Helpers
 
 
         /**
-         * Load the source name for the source ID
-         * @param sourceId The source ID
+         * Load the source name for the agency ID
+         * @param int id The agency ID
          * @return int[] sources The listing IDs
          */
-        public static string loadSourceName(int id)
+        public static string loadAgencyName(int id)
 		{
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
-	
-				// Pull the item data out of the database
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select source_name from source where source_id = @id";
+					cmd.CommandText = "select agency_name from agency where agency_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
@@ -161,7 +157,7 @@ namespace SearchProcurement.Helpers
 
 
 		// Filter search items according to an array of source IDs
-		public static int[] filter(int[] search_ids, int[] source_ids)
+		public static int[] filter(int[] search_ids, int[] agency_ids)
 		{
 			// failsafe
 			if( search_ids.Length == 0 )
@@ -172,14 +168,12 @@ namespace SearchProcurement.Helpers
 			{
 				// Open the DB connection
 				my_dbh.Open();
-
-				// Pull the item data out of the database
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select listing_id from listing where listing_id in (" +
-						string.Join(", ", search_ids) + ") and source_id in (" +
-						string.Join(", ", source_ids) + ")";
+						string.Join(", ", search_ids) + ") and agency_id in (" +
+						string.Join(", ", agency_ids) + ")";
 					cmd.Prepare();
 
 					// Run the DB command

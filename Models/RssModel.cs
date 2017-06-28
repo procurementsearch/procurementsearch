@@ -68,7 +68,7 @@ namespace SearchProcurement.Models
 				// Pull the item data out of the database
 				using(MySqlCommand cmd = new MySqlCommand("", my_dbh))
 				{
-					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' and source_id = @id order by created desc limit 40) tmp order by created asc";
+					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' and agency_id = @id order by created desc limit 40) tmp order by created asc";
 					cmd.Parameters.AddWithValue("@id", source);
 					cmd.Prepare();
 

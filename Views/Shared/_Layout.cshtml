@@ -84,16 +84,6 @@
             opportunities and open RFPs with any of our member agencies.<br><br>
             Whatever business you're in, you can find out who's
             buying what you're selling.<br><br>
-
-            @if (User.Identity.IsAuthenticated)
-            {
-                <span>&raquo; You are logged in as @User.Identity.  <a  asp-controller="Account" asp-action="Logout">Logout</a>.</span>
-            }
-            else
-            {
-                <span>&raquo; <b><a asp-controller="Account" asp-action="Login">Buyer Login</a></b></span>
-            }
-
         </div>
 
         <div class="pure-u-1 pure-u-md-1-3 l2-box">

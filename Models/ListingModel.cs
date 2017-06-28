@@ -75,7 +75,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT source_id FROM listing " +
+					cmd.CommandText = "SELECT agency_id FROM listing " +
                         "WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", ListingId);
 
@@ -107,7 +107,7 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO listing " +
-                        "(source_id, open_date, close_date, title, description, contents, " +
+                        "(agency_id, open_date, close_date, title, description, contents, " +
                         "contact, action_steps, status, listing_type, created, created_ip_addr) VALUES (" +
                         "@l1, @l2, @l3, @l4, @l5, " +
                         "@l6, @l7, @l8, @l9, @l10, now(), @ip_addr)";
@@ -414,7 +414,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT source_id, " +
+					cmd.CommandText = "SELECT agency_id, " +
                         "title, " +
                         "description, " +
                         "open_date, " +

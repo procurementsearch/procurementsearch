@@ -69,16 +69,16 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT s.source_name, " + // 0
+					cmd.CommandText = "SELECT a.agency_name, " + // 0
                         "l.title, " + // 1
-                        "s.action_steps_text, " + // 2
+                        "a.agency_action_steps, " + // 2
 	                    "l.origin_id, " + // 3
                         "l.origin_url, " + // 4
                         "l.origin_opportunity_no, " + // 5
                         "l.contact, " + // 6
-                        "s.show_attachments, " + // 7
+                        "a.is_attachment_visible, " + // 7
 						"l.listing_parent_id " + // 8
-                        "FROM listing AS l LEFT JOIN source AS s ON l.source_id = s.source_id " +
+                        "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
@@ -179,8 +179,8 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT l.source_id, l.contents, l.raw_contents, l.origin_url, s.redirect_url_suffix " +
-                        "FROM listing AS l LEFT JOIN source AS s ON l.source_id = s.source_id " +
+					cmd.CommandText = "SELECT l.agency_id, l.contents, l.raw_contents, l.origin_url, a.feed_redirect_url_suffix " +
+                        "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
                         "WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();

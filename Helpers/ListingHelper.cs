@@ -149,7 +149,7 @@ namespace SearchProcurement.Helpers
 
                     // And build the SQL for selecting statuses
 					cmd.CommandText = "SELECT listing_id, title, status, listing_type, close_date FROM listing " +
-                        "WHERE source_id = @agencyId AND status in (" + String.Join(",", statusesIn) + ") " +
+                        "WHERE agency_id = @agencyId AND status in (" + String.Join(",", statusesIn) + ") " +
 						"AND listing_parent_id IS NULL ORDER BY title";
 					cmd.Parameters.AddWithValue("@agencyId", agencyId);
 
