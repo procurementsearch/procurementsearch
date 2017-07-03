@@ -1,4 +1,7 @@
 @model SearchProcurement.Models.Agency
+@{
+    Layout = "~/Views/Shared/_Account.cshtml";
+}
 
 <div class="view-box">
     <h1>Your Buyer/PM Account</h1>
@@ -33,7 +36,7 @@
             <span class="pure-form-message">This is a required field.</span>
 
             <p>
-                You're registered as a <b>@(Model.AgencyType == SearchProcurement.Models.AgencyTypes.GovernmentNP ? "Government/Non-profit" : "Private Sector")</b>
+                You're registered as a <b>@(Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.GovernmentNP ? "Government/Non-profit" : "Private Sector")</b>
                 agency.  If you think this is incorrect, please call us at 503-395-5303.
             </p>
 

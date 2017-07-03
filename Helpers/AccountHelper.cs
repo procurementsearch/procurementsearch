@@ -5,13 +5,13 @@ using SearchProcurement.Controllers;
 namespace SearchProcurement.Helpers
 {
 
-    static class AgencyTypes
+    public static class AgencyTypes
     {
         public const string GovernmentNP = "government_np";
         public const string Private = "private";
     }
 
-    static class PaymentTokenType
+    public static class PaymentTokenType
     {
         public const string Single = "single";
         public const string Umbrella = "umbrella";

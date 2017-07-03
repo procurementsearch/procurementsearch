@@ -11,15 +11,32 @@
     <link rel="alternate" type="application/rss+xml" title="RSS"
           href="http://www.procurementsearch.com/rss">
 
+
+
     <environment names="Development">
-        <link rel="stylesheet" href="/css/fonts.css">
-        <link rel="stylesheet" href="/css/pure-min.css">
-        <link rel="stylesheet" href="/css/grids-responsive-min.css">
-        <link rel="stylesheet" href="/css/styles.css">
+        <link rel="stylesheet" href="~/css/pure-min.css">
+        <link rel="stylesheet" href="~/css/grids-responsive-min.css">
+        <link rel="stylesheet" href="~/css/fonts.css">
+        <link rel="stylesheet" href="~/lib/jquery-modal/jquery.modal.css">
+        <link rel="stylesheet" href="~/lib/Croppie/croppie.css">
+        <link rel="stylesheet" href="~/lib/datetimepicker/jquery.datetimepicker.css">
+        <link rel="stylesheet" href="~/lib/blueimp-file-upload/css/jquery.fileupload.css">
+        <link rel="stylesheet" href="~/css/styles.css"> <!-- site styles have to go last -->
+
+        <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="~/lib/jquery-modal/jquery.modal.js" charset="utf-8"></script>
+        <script type="text/javascript" src="~/lib/parsleyjs/dist/parsley.js"></script>
+        <script type="text/javascript" src="~/lib/Croppie/croppie.js"></script>
+        <script type="text/javascript" src="~/lib/php-date-formatter/js/php-date-formatter.js"></script>
+        <script type="text/javascript" src="~/lib/datetimepicker/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="~/lib/blueimp-file-upload/js/vendor/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="~/lib/blueimp-file-upload/js/jquery.iframe-transport.js"></script>
+        <script type="text/javascript" src="~/lib/blueimp-file-upload/js/jquery.fileupload.js"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="~/css/site.micro.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <script type="text/javascript" src="~/js/site.min.js"></script>
     </environment>
 
     <script type="text/javascript"
@@ -42,39 +59,21 @@
     <div class="wrapper">
         <!-- for sticky footer -->
 
-        <div class="header minisearch">
+        <div class="header small-hide">
             <div class="pure-menu pure-menu-horizontal">
-                <a class="pure-menu-heading rss small-hide"
-                   href="/rss"><img src="/images/rss-icon.png" alt="RSS"></a>
-
-                <a class="pure-menu-heading logo"
-                   href="/">
-                    <img src="/images/Logo-sm.png" alt="Home
-                                                          Logo">
-                </a>
-                <div class="search-container">
-                    <form method="get" action="/search/">
-                        <input name="kw" type="text"><input type="image"
-                                                            src="/images/search.png">
-                    </form>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="subheader small-hide">
-            <div class="pure-menu pure-menu-horizontal">
-                <!-- <a class="pure-menu-heading" href="">Home</a> -->
+                <a class="pure-menu-heading rss" href="/rss"><img src="/images/rss-icon.png"></a>
                 <ul class="pure-menu-list">
                     @Html.Partial("Pages-nav")
                 </ul>
             </div>
         </div>
+	<div style="clear: both;"></div>
 
         @RenderBody()
 
         <div class="push"></div>
     </div>
+
 
     <div class="footer pure-g">
 
@@ -84,7 +83,7 @@
             You can search for and find up-to-date procurement
             opportunities and open RFPs with any of our member agencies.<br><br>
             Whatever business you're in, you can find out who's
-            buying what you're selling.
+            buying what you're selling.<br><br>
         </div>
 
         <div class="pure-u-1 pure-u-md-1-3 l2-box">
