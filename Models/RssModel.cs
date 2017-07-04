@@ -39,7 +39,7 @@ namespace SearchProcurement.Models
 
 						// And filter by source and build the result array
 						List<searchItem> rssItems = new List<searchItem>();
-						foreach(int id in SearchHelper.filter(ids.ToArray(), Defines.mySources))
+						foreach(int id in SearchHelper.filter(ids.ToArray(), Defines.myLocations))
 						{
 							rssItems.Add(SearchHelper.loadItem(id));
 						}

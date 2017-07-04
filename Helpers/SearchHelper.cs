@@ -9,8 +9,8 @@ namespace SearchProcurement.Helpers
 		public int Id;
 		public string Title;
 		public string Description;
-        public int SourceId;
-        public string SourceName;
+        public int AgencyId;
+        public string AgencyName;
 		public DateTimeOffset Created;
 		public int ParentId;
 	}
@@ -56,8 +56,8 @@ namespace SearchProcurement.Helpers
 							item.Description = "";
 						}
 						item.Created = r.GetDateTime(2);
-                        item.SourceId = r.GetInt32(3);
-                        item.SourceName = r.GetString(4);
+                        item.AgencyId = r.GetInt32(3);
+                        item.AgencyName = r.GetString(4);
 
 						// And do a little extra for subcontracts
 						if( !r.IsDBNull(5) )
@@ -156,11 +156,19 @@ namespace SearchProcurement.Helpers
         }
 
 
+
+		/**
+		 * Filter search items according to an array of location IDs
+		 * @param int[] searchIds The listing IDs
+		 * @param int[] locationIds The location IDs
+		 * @return int[] The filtered items
+		 */
+
 		// Filter search items according to an array of source IDs
-		public static int[] filter(int[] search_ids, int[] agency_ids)
+		public static int[] filter(int[] searchIds, int[] locationIds)
 		{
 			// failsafe
-			if( search_ids.Length == 0 )
+			if( searchIds.Length == 0 )
 				return new int[0];
 
 			// Set up the database connection, there has to be a better way!
@@ -171,9 +179,11 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "select listing_id from listing where listing_id in (" +
-						string.Join(", ", search_ids) + ") and agency_id in (" +
-						string.Join(", ", agency_ids) + ")";
+					cmd.CommandText = "SELECT DISTINCT l.listing_id FROM listing AS l " +
+						"LEFT JOIN location_listing_join AS lj " +
+						"ON lj.listing_id = l.listing_id " +
+						"WHERE lj.location_id IN (" + string.Join(", ", locationIds) + ") " +
+						"AND l.listing_id IN (" + string.Join(", ", searchIds) + ")";
 					cmd.Prepare();
 
 					// Run the DB command

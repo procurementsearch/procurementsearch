@@ -19,7 +19,10 @@ namespace SearchProcurement.Controllers
             ViewBag.kw = kw;
 
             // Load the model
-            return View(d);
+            if( d.isExternalFeed )
+                return View("IndexIframe", d);
+            else
+                return View(d);
         }
 
         public IActionResult Iframe(int id)

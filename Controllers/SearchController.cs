@@ -8,15 +8,15 @@ namespace SearchProcurement.Controllers
 {
     public class SearchController : Controller
     {
-        public IActionResult Index(string kw, int? agencyId)
+        public IActionResult Index(string kw, int? agency)
         {
-            if( kw == null && agencyId == null)
+            if( kw == null && agency == null)
                 return Redirect("/");
 
             // Get the search model ready
             Search s;
             if( kw == null ) {
-                s = Search.loadByAgency(agencyId.GetValueOrDefault());
+                s = Search.loadByAgency(agency.GetValueOrDefault());
                 ViewBag.extraTitle = "Showing all " + s.searchString + " opportunities";
             }
             else

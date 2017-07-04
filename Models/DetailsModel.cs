@@ -38,9 +38,11 @@ namespace SearchProcurement.Models
 		public string agencyName { get; private set; }
 		public string title { get; private set; }
 		public string subtitle { get; private set; }
+		public string description { get; private set; }
 		public int id { get; private set; }
 		public int parentId { get; private set; }
 		public string actionSteps { get; private set; }
+		public bool isExternalFeed { get; private set; }
 
 		/* The attachments */
 		public attachment[] attachments { get; private set; }
@@ -77,7 +79,9 @@ namespace SearchProcurement.Models
                         "l.origin_opportunity_no, " + // 5
                         "l.contact, " + // 6
                         "a.is_attachment_visible, " + // 7
-						"l.listing_parent_id " + // 8
+						"l.listing_parent_id, " + // 8
+						"l.description, " + // 9
+						"l.feed_id " + // 10
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -104,6 +108,10 @@ namespace SearchProcurement.Models
 								Replace("%ORIGIN_URL%", r.IsDBNull(4) ? "" : r.GetString(4)).
 								Replace("%CONTACT%", r.IsDBNull(6) ? "" : r.GetString(6));
 						}
+
+						// Has description?
+						description = r.IsDBNull(9) ? "" : r.GetString(9);
+						isExternalFeed = r.IsDBNull(10) ? false : true;
 
 						// Has a parent ID?  If so...
 						if( !r.IsDBNull(8) )
@@ -195,7 +203,6 @@ namespace SearchProcurement.Models
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
-f.contents.Replace(
 					// Run the DB command
 					using(MySqlDataReader r = cmd.ExecuteReader())
 					{

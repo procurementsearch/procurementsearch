@@ -209,7 +209,7 @@ namespace SearchProcurement
                     template: "rss/agency={agency}",
                     defaults: new { controller = "Rss", action = "Index" });
                 routes.MapRoute(
-                    name: "Rss for Agency",
+                    name: "Rss for Agency (deprecated)",
                     template: "rss/source={agency}",
                     defaults: new { controller = "Rss", action = "Index" });
                 routes.MapRoute(

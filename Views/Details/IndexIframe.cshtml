@@ -17,9 +17,7 @@
     </div>
     }
 
-    <div class="description">
-        @Html.Raw(Library.nl2br(Model.description))
-    </div>
+    <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
 
     @if (Model.snippets.Length > 0 )
     {
