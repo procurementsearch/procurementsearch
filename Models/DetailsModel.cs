@@ -83,7 +83,7 @@ namespace SearchProcurement.Models
 						"l.listing_parent_id, " + // 8
 						"l.description, " + // 9
 						"a.feed_id, " + // 10
-						"a.agency_logo " + // 11
+						"a.agency_logo_url " + // 11
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
