@@ -205,8 +205,12 @@ namespace SearchProcurement
                     template: "rss/kw={kw}",
                     defaults: new { controller = "Rss", action = "Index" });
                 routes.MapRoute(
-                    name: "Rss for Source",
-                    template: "rss/source={source}",
+                    name: "Rss for Agency",
+                    template: "rss/agency={agency}",
+                    defaults: new { controller = "Rss", action = "Index" });
+                routes.MapRoute(
+                    name: "Rss for Agency",
+                    template: "rss/source={agency}",
                     defaults: new { controller = "Rss", action = "Index" });
                 routes.MapRoute(
                     name: "Rss feed",
@@ -217,31 +221,31 @@ namespace SearchProcurement
                 routes.MapRoute(
                     name: "Rss feed for City of Beaverton",
                     template: "rss_cityofbeaverton",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.CityOfBeaverton });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.CityOfBeaverton });
                 routes.MapRoute(
                     name: "Rss feed for City of Portland",
                     template: "rss_portland",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.CityOfPortland });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.CityOfPortland });
                 routes.MapRoute(
                     name: "Rss feed for Port of Portland",
                     template: "rss_portofportland",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortOfPortland });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.PortOfPortland });
                 routes.MapRoute(
                     name: "Rss feed for Oregon Department of Corrections",
                     template: "rss_odoc",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.OregonDepartmentOfCorrections });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.OregonDepartmentOfCorrections });
                 routes.MapRoute(
                     name: "Rss feed for Portland State University",
                     template: "rss_psu",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortlandStateUniversity });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.PortlandStateUniversity });
                 routes.MapRoute(
                     name: "Rss feed for Portland Public Schools",
                     template: "rss_pps",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.PortlandPublicSchools });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.PortlandPublicSchools });
                 routes.MapRoute(
                     name: "Rss feed for Oregon Department of Transportation",
                     template: "rss_odot",
-                    defaults: new { controller = "Rss", action = "Index", source = Defines.OregonDepartmentOfTransportation });
+                    defaults: new { controller = "Rss", action = "Index", agency = Defines.SourceLookup.OregonDepartmentOfTransportation });
             });
         }
     }

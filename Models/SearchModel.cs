@@ -47,7 +47,7 @@ namespace SearchProcurement.Models
 				// Run the search
 				int[] searchIds = s.search();
 
-				// And filter down to allowed sources
+				// And filter down to allowed agencies
 				searchCount = searchIds.Length;
 
 				// Load the data from the search IDs
@@ -66,20 +66,20 @@ namespace SearchProcurement.Models
 
 
         /**
-         * Load procurement opportunities by source ID
-         * @param source The source ID
+         * Load procurement opportunities by agency ID
+         * @param agency The agency ID
          * @return The search object with procurement data
          */
-		public static Search loadBySource(int source)
+		public static Search loadByAgency(int agency)
 		{
 			// Instantiate the search object
             Search s = new Search(null);
-            int[] ids_from_source = SearchHelper.findBySourceId(source);
+            int[] ids_from_agency = SearchHelper.findByAgencyId(agency);
 
 			// Pull out the search data
-			s.searchString = SearchHelper.loadAgencyName(source);
-			s.searchUrl = "source=" + source;
-			s.searchCount = ids_from_source.Length;
+			s.searchString = SearchHelper.loadAgencyName(agency);
+			s.searchUrl = "agency=" + agency;
+			s.searchCount = ids_from_agency.Length;
 
 			// no result?
 			if( s.searchCount == 0 ) {
@@ -92,7 +92,7 @@ namespace SearchProcurement.Models
 			{
 				// Load the data from the search IDs
 				List<searchItem> items = new List<searchItem>();
-				foreach(int id in ids_from_source)
+				foreach(int id in ids_from_agency)
 				{
 					items.Add(SearchHelper.loadItem(id));
 				}

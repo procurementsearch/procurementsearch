@@ -54,10 +54,10 @@ namespace SearchProcurement.Models
 
 
         /**
-         * Return the latest procurement listings for a source
+         * Return the latest procurement listings for an agency
          * @return An array of search items
          */
-		public searchItem[] bySource(int source)
+		public searchItem[] byAgency(int agencyId)
 		{
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
@@ -69,7 +69,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand("", my_dbh))
 				{
 					cmd.CommandText = "select listing_id from (select * from listing where status = 'open' and agency_id = @id order by created desc limit 40) tmp order by created asc";
-					cmd.Parameters.AddWithValue("@id", source);
+					cmd.Parameters.AddWithValue("@id", agencyId);
 					cmd.Prepare();
 
 					// Run the DB command

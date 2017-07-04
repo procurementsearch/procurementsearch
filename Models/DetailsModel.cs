@@ -19,9 +19,9 @@ namespace SearchProcurement.Models
 	/* The details of the embedded iframe */
 	public struct frameDetails
 	{
-		public int sourceId;
+		public int agencyId;
 		public string contents;
-		public string rawContents;
+		public string viewPath;
 		public string redirectUrl;
 	}
 
@@ -35,7 +35,7 @@ namespace SearchProcurement.Models
 
 	public class Details
 	{
-		public string sourceName { get; private set; }
+		public string agencyName { get; private set; }
 		public string title { get; private set; }
 		public string subtitle { get; private set; }
 		public int id { get; private set; }
@@ -89,7 +89,7 @@ namespace SearchProcurement.Models
 						r.Read();
 	
 						// Store the item data
-						sourceName = r.GetString(0);
+						agencyName = r.GetString(0);
 						title = r.GetString(1);
 						if(r.IsDBNull(2))
 						{
@@ -112,7 +112,7 @@ namespace SearchProcurement.Models
 							parentId = r.GetInt32(8);
 						}
 
-						// And, get the attachments if the source wants to show them or
+						// And, get the attachments if the agency wants to show them or
 						// if we're showing some matching search terms
 						if( r.GetInt32(7) == 1 )
 							attachments = loadAttachments(my_id);
@@ -179,12 +179,23 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT l.agency_id, l.contents, l.raw_contents, l.origin_url, a.feed_redirect_url_suffix " +
-                        "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
+					cmd.CommandText = "SELECT " +
+						"l.agency_id, " +                // 0
+						"l.contents, " +                 // 1
+						"l.raw_contents, " +             // 2
+						"l.origin_url, " +               // 3
+						"f.feed_view_path, " +           // 4
+						"f.contents_find, " +            // 5
+						"f.contents_replace, " +         // 6
+						"a.feed_redirect_url_suffix " +  // 7
+                        "FROM listing AS l " +
+						"LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
+						"LEFT JOIN feed AS f ON f.feed_id = a.feed_id " +
                         "WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 					cmd.Prepare();
 
+f.contents.Replace(
 					// Run the DB command
 					using(MySqlDataReader r = cmd.ExecuteReader())
 					{
@@ -192,14 +203,28 @@ namespace SearchProcurement.Models
 
 						// And load the data into the frame
 						frameDetails f;
-						f.sourceId = r.GetInt32(0);
-						f.contents = r.GetString(1);
-						f.rawContents = r.IsDBNull(2) ? "" : r.GetString(2);
+						f.agencyId = r.GetInt32(0);
+
+						// Prefer the raw contents
+						if( r.IsDBNull(2) )
+							f.contents = r.GetString(1);
+						else
+							f.contents = r.GetString(2);
+
 						f.redirectUrl = r.IsDBNull(3) ? "" : r.GetString(3);
+						f.viewPath = r.IsDBNull(4) ? "" : r.GetString(4);
+
+						// Do we have some search/replace to do?
+						if( !r.IsDBNull(5) && !r.IsDBNull(6) )
+						{
+							string find = r.GetString(5);
+							string repl = r.GetString(6);
+							f.contents = f.contents.Replace(find, repl);
+						}
 
                         // And, if we have a url suffix for the origin URL (e.g. for analytics/UTM tagging)
-                        if( !r.IsDBNull(4) )
-                            f.redirectUrl += r.GetString(4);
+                        if( !r.IsDBNull(7) )
+                            f.redirectUrl += r.GetString(7);
 
 						return f;
 					}

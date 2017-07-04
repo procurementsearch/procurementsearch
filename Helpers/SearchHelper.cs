@@ -84,7 +84,7 @@ namespace SearchProcurement.Helpers
          * @param sourceId The source ID
          * @return int[] sources The listing IDs
          */
-        public static int[] findBySourceId(int id)
+        public static int[] findByAgencyId(int id)
 		{
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))

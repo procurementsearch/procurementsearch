@@ -9,7 +9,7 @@ namespace SearchProcurement.Controllers
 {
     public class RssController : Controller
     {
-        public IActionResult Index(string kw, int? source)
+        public IActionResult Index(string kw, int? agencyId)
         {
             kw = WebUtility.UrlDecode(kw);
 
@@ -25,10 +25,10 @@ namespace SearchProcurement.Controllers
                 rssItems = r.byKeyword(kw);
                 myTitle = Defines.RssTitle + ": " + kw;
             }
-            else if( source != null )
+            else if( agencyId != null )
             {
-                rssItems = r.bySource(source.GetValueOrDefault());
-                myTitle = Defines.RssTitle + ": " + SearchHelper.loadAgencyName(source.GetValueOrDefault());
+                rssItems = r.byAgency(agencyId.GetValueOrDefault());
+                myTitle = Defines.RssTitle + ": " + SearchHelper.loadAgencyName(agencyId.GetValueOrDefault());
             }
             else
             {

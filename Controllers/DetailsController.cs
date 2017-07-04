@@ -24,59 +24,20 @@ namespace SearchProcurement.Controllers
 
         public IActionResult Iframe(int id)
         {
-            // Get the model, so we can get the source from it
+            // Get the model, so we can get the agency name from it
             Details d = new Details(id, null);
             frameDetails f = d.loadFrameData();
 
             // Update the access count
             LogHelper.updateDetailsAccesses(id);
 
-            // Load the model
-            switch(f.sourceId)
+            // Are we using a custom redirect URL?  That overrides all
+            if( f.redirectUrl != "" )
+                return Redirect(f.redirectUrl);
+            else
             {
-                // Oregon Department of Transportation EBIDS gets a custom template
-                case Defines.OregonDepartmentOfTransportationEBIDS:
-                    ViewBag.contents = f.contents;
-                    return View("~/Views/Details/Templates/OdotEBIDS.cshtml");
-
-                // Port of Portland gets a custom template
-                case Defines.Bremik:
-                    ViewBag.contentsFormatted = Library.nl2br(f.contents);
-                    return View("~/Views/Details/Templates/Bremik.cshtml");
-
-                // Port of Portland gets a custom template
-                case Defines.PortOfPortland:
-                    ViewBag.contents = f.contents;
-                    return View("~/Views/Details/Templates/Portofportland.cshtml");
-
-                // PDC gets a custom template
-                case Defines.PDC:
-                    ViewBag.contents = f.contents;
-                    return View("~/Views/Details/Templates/Pdc.cshtml");
-
-                // PPS gets a custom template
-                case Defines.PortlandPublicSchools:
-                    ViewBag.contents = f.contents;
-                    return View("~/Views/Details/Templates/Pps.cshtml");
-
-                // Orpin-sourced data gets a modified raw_contents template
-                case Defines.Metro:
-                case Defines.PortlandStateUniversity:
-                case Defines.OregonDepartmentOfCorrections:
-                case Defines.OregonDepartmentOfTransportation:
-                    ViewBag.rawContents = f.rawContents.Replace("<head>", "<head><base href=\"http://orpin.oregon.gov/\">");
-                    return View("~/Views/Details/Templates/Orpin.cshtml");
-
-                // Otherwise, we're probably doing a redirect..
-                default:
-                    if( f.redirectUrl != "" )
-                        return Redirect(f.redirectUrl);
-                    else
-                    {
-                        ViewBag.rawContents = f.rawContents;
-                        return View("~/Views/Details/Templates/Raw.cshtml");
-                    }
-
+                ViewBag.contents = f.contents;
+                return View(f.viewPath);
             }
 
         }
