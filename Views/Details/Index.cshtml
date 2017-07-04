@@ -17,6 +17,12 @@
     </div>
     }
 
+    @if (Model.agencyLogo != "" )
+    {
+    <img src="@Model.agencyLogo" class="pure-img">
+    }
+
+    <h2>Description:</h2>
     <div class="description">
         @Html.Raw(Library.nl2br(Model.description))
     </div>

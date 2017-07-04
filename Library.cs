@@ -13,7 +13,7 @@ using MySql.Data.MySqlClient;
 namespace SearchProcurement
 {
 
-	static class Library
+	public static class Library
 	{
 		/**
 		 * Get the last insert ID from MariaDB

@@ -39,6 +39,7 @@ namespace SearchProcurement.Models
 		public string title { get; private set; }
 		public string subtitle { get; private set; }
 		public string description { get; private set; }
+		public string agencyLogo { get; private set; }
 		public int id { get; private set; }
 		public int parentId { get; private set; }
 		public string actionSteps { get; private set; }
@@ -81,7 +82,8 @@ namespace SearchProcurement.Models
                         "a.is_attachment_visible, " + // 7
 						"l.listing_parent_id, " + // 8
 						"l.description, " + // 9
-						"l.feed_id " + // 10
+						"a.feed_id, " + // 10
+						"a.agency_logo " + // 11
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -112,6 +114,7 @@ namespace SearchProcurement.Models
 						// Has description?
 						description = r.IsDBNull(9) ? "" : r.GetString(9);
 						isExternalFeed = r.IsDBNull(10) ? false : true;
+						agencyLogo = r.IsDBNull(11) ? "" : r.GetString(11);
 
 						// Has a parent ID?  If so...
 						if( !r.IsDBNull(8) )
