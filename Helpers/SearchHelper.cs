@@ -79,10 +79,9 @@ namespace SearchProcurement.Helpers
 
 
         /**
-         * Load the IDs for every open procurement opportunity for the
-         * given source
-         * @param sourceId The source ID
-         * @return int[] sources The listing IDs
+         * Load the IDs for every open procurement opportunity for the given agency
+         * @param id The agency ID
+         * @return int[] The listing IDs
          */
         public static int[] findByAgencyId(int id)
 		{
