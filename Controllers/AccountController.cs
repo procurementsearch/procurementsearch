@@ -131,14 +131,17 @@ namespace SearchProcurement.Controllers
             agency.update();
 
             // Did we get a new logo?
-            if( HttpContext.Request.Form["logoData"] != "" )
+            if(
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
+            )
             {
                 // Remove the old one first
                 if( !string.IsNullOrEmpty(agency.AgencyLogo) )
                     agency.removeLogo();
 
                 // And save the new logo to s3
-                agency.saveLogo(HttpContext.Request.Form["logoData"]);
+                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
             }
             else if( HttpContext.Request.Form["removeOldLogo"] == "1" )
             {
@@ -193,8 +196,11 @@ namespace SearchProcurement.Controllers
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
             agency.add(uniq, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
-            if( !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"]) )
-                agency.saveLogo(HttpContext.Request.Form["logoData"]);
+            if(
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
+            )
+                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
 
             return View("NewAccountPost");
         }

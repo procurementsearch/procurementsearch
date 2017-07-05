@@ -44,8 +44,9 @@ namespace SearchProcurement
 		public const string s3AttachmentPath = "bid_documents";
 
 		/* The on-server storage path(s) */
-		public const string UploadStoragePath = "/tmp/my_files";
+		public const string UploadStoragePath = "/home/steve/Source_Code/Procurement/files.procurementsearch.com";
 		public const string UploadStorageUrl = "http://files.procurementsearch.com";
+		public const string UploadLogoPath = "/logos";
 
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";

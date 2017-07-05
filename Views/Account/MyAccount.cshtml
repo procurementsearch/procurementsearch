@@ -180,6 +180,7 @@
         </fieldset>
 
         <input type="hidden" name="logoData">
+        <input type="hidden" name="logoName">
         <button type="submit" class="pure-button pure-button-primary">Update your information</button>
 
     </form>
@@ -262,6 +263,8 @@ $(function () {
         });
       }
       reader.readAsDataURL(input.files[0]);
+      // And save the logo name, for uploading
+      $('input[name=logoName]').val(input.files[0].name);
     } else {
       swal("Sorry - you're browser doesn't support the FileReader API");
     }
@@ -291,6 +294,7 @@ $(function () {
     $uploadCrop.croppie('bind', { url: ''});
     $('#logo_preview').empty();
     $('input[name=logoData]').val('');
+    $('input[name=logoName]').val('');
     $('input[name=removeOldLogo]').val('1');
     $hid.toggle();
     $hid_btn.toggle();

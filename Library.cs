@@ -159,6 +159,22 @@ namespace SearchProcurement
 		}
 
 
+
+
+		/**
+		 * Remove all non-alnum characters
+		 * @param string stg The source string
+		 * @return string The br-ified string
+		 */
+		static public string tidyString(string stg)
+		{
+			Regex rgx = new Regex(@"[^a-zA-Z0-9\-]");
+			stg = rgx.Replace(stg, "");
+			return stg;
+		}
+
+
+
         /**
          * Generate an excerpt of max length l from the text
          * @param string stg The source text

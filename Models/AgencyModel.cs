@@ -577,19 +577,18 @@ namespace SearchProcurement.Models
 
         /**
          * Add a logo to an agency, uploading it to DreamObjects/S3 in the process
-         * @param string The logo, base 64 encoded
+         * @param string logoName The filename of the logo
+         * @param string encodedLogo The logo, base 64 encoded
          * @return bool Success?
          */
-        public void saveLogo(string encodedLogo)
+        public void saveLogo(string logoName, string encodedLogo)
         {
             // Parse out the image data, and get ready to commit it to DreamObjects
-            byte[] decodedLogo;
-            string decodedLogoMd5;
-
             if( encodedLogo.IndexOf("data:image/png;base64,") == 0 )
             {
                 // Decode the logo, and get an mp3 for the s3 file name
-                decodedLogo = Convert.FromBase64String( encodedLogo.Replace("data:image/png;base64,", ""));
+                byte[] decodedLogo = Convert.FromBase64String( encodedLogo.Replace("data:image/png;base64,", ""));
+                string decodedLogoMd5;
 
                 // And get the md5dum for the logo
                 using (IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.MD5))
@@ -597,41 +596,32 @@ namespace SearchProcurement.Models
                     hasher.AppendData(decodedLogo);
                     hasher.AppendData(Encoding.ASCII.GetBytes(UserEmailAddress));
                     decodedLogoMd5 = BitConverter.ToString(hasher.GetHashAndReset()).Replace("-", "");
-
-                    // And upload the logo to S3
-                    SearchProcurement.AWS.S3 s = new SearchProcurement.AWS.S3();
-                    
-                    Console.WriteLine(Defines.s3Bucket);
-                    Console.WriteLine(Defines.s3LogoPath + "/" + decodedLogoMd5 + ".png");
-
-                    AgencyLogo = s.UploadBuffer(decodedLogo, Defines.s3Bucket, Defines.s3LogoPath + "/" + decodedLogoMd5 + ".png");
-
                 }
+
+                // Save the logo to the local logo repository
+                string myLogo = Library.tidyString(logoName) + "-" + decodedLogoMd5 + ".png";
+
+                System.IO.File.WriteAllBytes(Defines.UploadStoragePath + Defines.UploadLogoPath + "/" + myLogo, decodedLogo);
 
                 // Set up the database connection, there has to be a better way!
                 using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
                 {
                     // Open the DB connection
                     my_dbh.Open();
-
-                    // And save the agency logo to the database
                     using(MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = my_dbh;
                         cmd.CommandText = "UPDATE agency SET agency_logo_url = @url WHERE agency_id = @id";
-                        cmd.Parameters.AddWithValue("@url", AgencyLogo);
+                        cmd.Parameters.AddWithValue("@url", Defines.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo);
                         cmd.Parameters.AddWithValue("@id", AgencyId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
-
                 }
-
 
             }
             else
                 throw new System.ArgumentException("Not base 64-encoded image!!");
-
 
         }
 

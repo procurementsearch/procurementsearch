@@ -194,6 +194,7 @@
         <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
 
         <input type="hidden" name="logoData">
+        <input type="hidden" name="logoName">
         <button type="submit" class="pure-button pure-button-primary">Sign Up</button>
 
     </form>
@@ -276,6 +277,8 @@ $(function () {
         });
       }
       reader.readAsDataURL(input.files[0]);
+      // And save the logo name, for uploading
+      $('input[name=logoName]').val(input.files[0].name);
     } else {
       swal("Sorry - you're browser doesn't support the FileReader API");
     }
@@ -304,6 +307,7 @@ $(function () {
     $uploadCrop.croppie('bind', { url: ''});
     $('#logo_preview').empty();
     $('input[name=logoData]').val('');
+    $('input[name=logoName]').val('');
     $hid.toggle();
     $hid_btn.toggle();
   });

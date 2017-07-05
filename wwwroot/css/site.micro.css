@@ -347,7 +347,7 @@ a {
 }
 
 .view-box .subtitle {
-    font-size: 13pt;
+    font-size: 14pt;
     margin-bottom: .5em;
 }
 
@@ -387,6 +387,11 @@ a {
     font-style: italic;
 }
 
+.view-box .description {
+    border: solid thin #4B4642;
+    padding: .5em;
+    overflow-y: scroll;
+}
 
 .view-box .subcontracts {
     padding-bottom: 1em;
