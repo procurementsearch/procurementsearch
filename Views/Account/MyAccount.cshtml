@@ -8,7 +8,7 @@
 
     @if( ViewBag.message != null && ViewBag.message != "" )
     {
-        <div class="message">@ViewBag.message</div>
+        <div class="message">@ViewBag.message <a href="/account">Click here to return to your account.</a></div>
     }
 
     <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/MyAccount">
