@@ -15,6 +15,25 @@ namespace SearchProcurement.Controllers
             return View();
         }
 
+        /**
+         * Handle user logged-in state, redirecting as necessary
+         */
+        public IActionResult MyAccount()
+        {
+            if (User.Identity.IsAuthenticated)
+                return Redirect("/Account");
+            else
+                return View();
+        }
+
+        /**
+         * Show the coming-soon page
+         */
+        public IActionResult ComingSoon()
+        {
+            return View();
+        }
+
         public IActionResult Contact()
         {
             
