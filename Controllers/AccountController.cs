@@ -149,6 +149,8 @@ namespace SearchProcurement.Controllers
                 if( !string.IsNullOrEmpty(agency.AgencyLogo) )
                     agency.removeLogo();
             }
+            else
+                agency.loadLogo();  // We just need to load the logo if we haven't done anything else to it
 
             // And show the account
             ViewBag.message = "I've saved your information!";

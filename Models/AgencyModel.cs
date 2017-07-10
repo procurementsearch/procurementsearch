@@ -148,6 +148,9 @@ namespace SearchProcurement.Models
 
 
 
+
+
+
         /**
          * Does this location have a payment token (unlimited, or unused
          * one-time use) to the specified state?
@@ -619,6 +622,9 @@ namespace SearchProcurement.Models
                     }
                 }
 
+                // And save the logo back to the object
+                AgencyLogo = Defines.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo;
+
             }
             else
                 throw new System.ArgumentException("Not base 64-encoded image!!");
@@ -655,12 +661,9 @@ namespace SearchProcurement.Models
 
                 }
 
-                // And, delete the object from s3.  First, get the object name from the logo URL
-                string objectName = AgencyLogo.Split('/').Last();
-
-                // And upload the logo to S3
-                SearchProcurement.AWS.S3 s = new SearchProcurement.AWS.S3();
-                s.Delete(Defines.s3Bucket, objectName);
+                // And, delete the object from disk
+                string logoName = AgencyLogo.Split('/').Last();
+                System.IO.File.Delete(Defines.UploadStoragePath + Defines.UploadLogoPath + "/" + logoName);
 
             }
 
@@ -668,6 +671,26 @@ namespace SearchProcurement.Models
 
 
 
+        /**
+         * Load just the logo for the agency
+         * @return none
+         */
+        public void loadLogo()
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT agency_logo_url FROM agency WHERE agency_id = @id";
+					cmd.Parameters.AddWithValue("@id", AgencyId);
+					AgencyLogo = Convert.ToString(cmd.ExecuteScalar());
+                }
+            }
+        }
 
 
 
