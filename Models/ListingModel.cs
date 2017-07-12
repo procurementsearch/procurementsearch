@@ -223,14 +223,14 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO attachment " +
-                        "(listing_id, title, filetype, url, redirect_url, deletion_identifier, is_staged) " +
+                        "(listing_id, title, filetype, url, redirect_url, deletion_identifier, is_staged, created) " +
                         "VALUES " +
-                        "(@l1, @l2, @l3, @l4, @l5, @l6, 1)";
+                        "(@l1, @l2, @l3, @l4, @l5, @l6, 1, NOW())";
 					cmd.Parameters.AddWithValue("@l1", ListingId);
 					cmd.Parameters.AddWithValue("@l2", a.DocumentName);
 					cmd.Parameters.AddWithValue("@l3", MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(a.FileName)));
 					cmd.Parameters.AddWithValue("@l4", a.Url);
-					cmd.Parameters.AddWithValue("@l5", a.RedirectUrl);
+					cmd.Parameters.AddWithValue("@l5", String.IsNullOrEmpty(a.RedirectUrl) ? null : a.RedirectUrl);
 					cmd.Parameters.AddWithValue("@l6", a.FileName);
 
 					// Run the DB command

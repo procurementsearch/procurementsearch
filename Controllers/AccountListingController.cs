@@ -529,12 +529,15 @@ namespace SearchProcurement.Controllers
 
             // OK, we've got a file.  Let's copy it to the on-server temp storage
             myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
-            myFile.FileName = myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
-            myFile.Url = Defines.UploadStorageUrl + myFile.FileName;
+
+            // Just to be clear, the filename is:  the tidied original document name (minus
+            // extension), the document GUID, and the extension...
+            myFile.FileName = Library.tidyString(Path.GetFileNameWithoutExtension(myFile.DocumentName)) + "-" + myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
+            myFile.Url = Defines.UploadStorageUrl + Defines.UploadDocumentPath + "/" + myFile.FileName;
             myFile.IsStaged = true;
 
             // Copy the file to the staging area and delete the uploaded file
-            string myFilePath = Defines.UploadStoragePath + "/" + myFile.FileName;
+            string myFilePath = Defines.UploadStoragePath + Defines.UploadDocumentPath + "/" + myFile.FileName;
             System.IO.File.Copy(uploadTempFile, myFilePath);
             System.IO.File.Delete(uploadTempFile);
 

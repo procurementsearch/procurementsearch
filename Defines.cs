@@ -43,10 +43,12 @@ namespace SearchProcurement
 		public const string s3LogoPath = "agency_logos";
 		public const string s3AttachmentPath = "bid_documents";
 
+
 		/* The on-server storage path(s) */
 		public const string UploadStoragePath = "/home/steve/Source_Code/Procurement/files.procurementsearch.com";
 		public const string UploadStorageUrl = "http://files.procurementsearch.com";
 		public const string UploadLogoPath = "/logos";
+		public const string UploadDocumentPath = "/documents";
 
 		/* The Stripe tokens */
 		public const string StripeKey = "pk_test_IKl6YnYvLi0eKY1lPA3upGMV";
