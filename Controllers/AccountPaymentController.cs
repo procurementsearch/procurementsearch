@@ -47,6 +47,18 @@ namespace SearchProcurement.Controllers
         }
 
 
+
+        /**
+         * Process a Stripe token to charge a credit card when someone
+         * purchases a block of 10 RFPs.
+         */
+        [Authorize]
+        [Route("/account/ChargeSimple10")]
+        public IActionResult ChargeSimple10(string stripeEmail, string stripeToken)
+        {
+            return Charge(ListingTypes.Simple10, stripeEmail, stripeToken);
+        }
+
         /**
          * Process a Stripe token to charge a credit card when someone
          * purchases an umbrella RFP.
@@ -88,14 +100,25 @@ namespace SearchProcurement.Controllers
 
             var charge = charges.Create(new StripeChargeCreateOptions {
                 Amount = Decimal.ToInt32(Price.loadPrice(a.AgencyType, listingType) * 100),
-                Description = "",
+                Description = "RFP/ITB Listing on ProcurementSearch.com",
                 Currency = "usd",
                 CustomerId = customer.Id
             });
 
             // OK!  They've paid, so let's give them a payment token
             // for the listing they've just paid for
-            a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
+            if( listingType == ListingTypes.Simple10 )
+            {
+                // The type is really the Simple listing type ..
+                listingType = ListingTypes.Simple;
+
+                // But do it 10 times instead of once
+                for (int i=0; i < 10; i++)
+                    a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
+
+            }
+            else
+                a.addPaymentToken(listingType, Price.loadPrice(a.AgencyType, listingType), stripeToken);
 
             // And save the type of listing they just paid for, because we're
             // assuming they'll use this first

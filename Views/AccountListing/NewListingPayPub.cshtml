@@ -1,0 +1,126 @@
+@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+@{
+    Layout = "~/Views/Shared/_Account.cshtml";
+}
+
+<div class="view-box">
+    <h1>Starting a new RFP</h1>
+
+    <h2>2) Pay for your listing.</h2>
+
+    <p>
+        You'll pay for your listing now (or use one of your prepaid listings), but it
+        won't go live until you're ready.  If you don't have all your documents ready
+        now, that's OK!  This listing will stay in your account as an unpublished draft
+        until you're ready to go.
+    </p>
+    <p>
+        And, of course, you can post revisions and addenda to your RFP/ITB once it does go live.
+        There's never an extra charge for that.
+    </p>
+
+    <table class="pure-table" style="margin: 2em 10%;">
+        <thead>
+            <tr style="text-align: center;">
+                <th>Pay for an RFP/ITB</th>
+                <th>Prepay for 10 RFPs/ITBs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="50%" valign="top">
+                    <b>This RFP/ITB will have a single scope of work.</b>
+                </td>
+                <td width="50%" valign="top">
+                    <b>Each RFP/ITB will have a single scope of work.</b>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    You get:
+                    <ul>
+                        <li>unlimited bid documents,</li>
+                        <li>unlimited addenda,</li>
+                        <li>contract has no subcontracts.</li>
+                    </ul>
+                </td>
+                <td valign="top">
+                    These RFP/ITB listings can be used whenever you need.
+                    You get a 15% discount on each listing when
+                    prepaying for ten listings.
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="top">
+
+                    @if (ViewBag.simpleTokens > 0)
+                    {
+                    <b>Begin your RFP/ITB:</b><br>
+                    <a href="/account/newListing?listingType=@ListingTypes.Simple" class="pure-button pure-button-primary button-small">RFP/ITB with One Scope of Work</a>
+                    }
+                    else
+                    {
+                    <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple)</b>
+
+                    <form action="/account/ChargeSimple" method="POST" style="text-align: center;">
+                    <script
+                        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="@Defines.StripeKey"
+                        data-amount="@(Price.loadPrice(Model.AgencyType, "simple") * 100)"
+                        data-name="Steve Havelka Software LLC"
+                        data-description="Posting an RFP"
+                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                        data-locale="auto">
+                    </script>
+                    </form>
+                    }
+
+                </td>
+                <td align="center" valign="top">
+
+                    <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple10)</b>
+
+                    <form action="/account/ChargeSimple10" method="POST" style="text-align: center;">
+                    <script
+                        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="@Defines.StripeKey"
+                        data-amount="@(Price.loadPrice(Model.AgencyType, "simple10") * 100)"
+                        data-name="Steve Havelka Software LLC"
+                        data-description="Posting an RFP x10"
+                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                        data-locale="auto">
+                    </script>
+                    </form>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Notes:</h2>
+    <p>
+        If you pay for an RFP/ITB listing now, but you don't start it, that's OK!  We've recorded
+        the payment and let you start it later, and you won't have to pay again (obviously!).
+    </p>
+
+</div>
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    @Html.Partial("Pages-menu")
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>

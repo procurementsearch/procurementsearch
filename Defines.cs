@@ -1,7 +1,7 @@
 namespace SearchProcurement
 {
 
-	static class Defines
+	public static class Defines
 	{
 		/* The database connection string */
 		public const string myConnectionString = "server=127.0.0.1;uid=root;pwd=toor;database=rss_procure;sslmode=none;";
@@ -47,6 +47,10 @@ namespace SearchProcurement
 		public const string UploadStoragePath = "/home/steve/Source_Code/Procurement/files.procurementsearch.com";
 		public const string UploadStorageUrl = "http://files.procurementsearch.com";
 		public const string UploadLogoPath = "/logos";
+
+		/* The Stripe tokens */
+		public const string StripeKey = "pk_test_IKl6YnYvLi0eKY1lPA3upGMV";
+		public const string StripeSecret = "";
 
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";

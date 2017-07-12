@@ -36,7 +36,19 @@
             <span class="pure-form-message">This is a required field.</span>
 
             <p>
-                You're registered as a <b>@(Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.GovernmentNP ? "Government/Non-profit" : "Private Sector")</b>
+                You're registered as a
+                @if (Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.GovernmentNP)
+                {
+                <b>Government/Non-profit</b>
+                }
+                else if (Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.TribalGovt)
+                {
+                <b>Tribal Government/Organization</b>
+                }
+                else
+                {
+                <b>Private Sector</b>
+                }
                 agency.  If you think this is incorrect, please call us at 503-395-5303.
             </p>
 

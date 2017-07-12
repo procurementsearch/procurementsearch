@@ -7,8 +7,9 @@ namespace SearchProcurement.Helpers
 
     public static class AgencyTypes
     {
-        public const string GovernmentNP = "government_np";
+        public const string GovernmentNP = "governmentnp";
         public const string Private = "private";
+        public const string TribalGovt = "tribalgov";
     }
 
     public static class PaymentTokenType

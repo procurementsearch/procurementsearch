@@ -95,8 +95,18 @@ namespace SearchProcurement.Controllers
                 // Save the location for the redirect
                 HttpContext.Session.SetInt32(Defines.SessionKeys.LocationId, locId.Value);
 
-                // Did they select a location AND a listing type?
-                if( (listingType == ListingTypes.Simple && a.getPaymentTokens(locId.Value, ListingTypes.Simple) > 0) ||
+                // Did they select a location AND a listing type?  OR ... are they
+                // a government agency, and can only use simple listing types, and
+                // have one available?
+                if (a.AgencyType == AgencyTypes.GovernmentNP && a.getPaymentTokens(locId.Value, ListingTypes.Simple) > 0)
+                {
+                    // They are a government agency, so they can only use simple listings, no umbrella listings
+                    // TODO See if this varies by state, and is an Oregon-specific thing, or if it is true everywhere
+                    HttpContext.Session.SetString(Defines.SessionKeys.ListingType, ListingTypes.Simple);
+                    return Redirect("/Account/addListing");
+                }
+                else if(
+                    (listingType == ListingTypes.Simple && a.getPaymentTokens(locId.Value, ListingTypes.Simple) > 0) ||
                     (listingType == ListingTypes.Umbrella && a.getPaymentTokens(locId.Value, ListingTypes.Umbrella) > 0) )
                 {
                     // OK!  They've selected a listing type AND they have a payment token for it
@@ -110,7 +120,11 @@ namespace SearchProcurement.Controllers
                     ViewBag.umbrellaTokens = a.getPaymentTokens(locId.Value, ListingTypes.Umbrella);
                     ViewBag.locationName = LocationHelper.getNameForId(locId.Value);
                     ViewBag.locationId = locId.Value;
-                    return View("NewListingPay", a);
+
+                    if( a.AgencyType == AgencyTypes.GovernmentNP )
+                        return View("NewListingPayPub", a);
+                    else
+                        return View("NewListingPayPriv", a);
                 }
 
             }

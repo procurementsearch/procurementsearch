@@ -11,6 +11,8 @@ namespace SearchProcurement.Helpers
     public static class ListingTypes
     {
         public const string Simple = "simple";
+        public const string Simple10 = "simple10";
+        public const string Simple100 = "simple100";
         public const string Umbrella = "umbrella";
     }
 
