@@ -69,7 +69,7 @@
                     <form action="/account/ChargeSimple" method="POST" style="text-align: center;">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                        data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
+                        data-key="@Defines.StripeKey"
                         data-amount="@(Price.loadPrice(Model.AgencyType, "simple") * 100)"
                         data-name="Steve Havelka Software LLC"
                         data-description="Posting an RFP"
@@ -94,7 +94,7 @@
                     <form action="/account/ChargeUmbrella" method="POST" style="text-align: center;">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                        data-key="pk_test_IKl6YnYvLi0eKY1lPA3upGMV"
+                        data-key="@Defines.StripeKey"
                         data-amount="@(Price.loadPrice(Model.AgencyType, "umbrella") * 100)"
                         data-name="Steve Havelka Software LLC"
                         data-description="Posting an RFP with subcontracts"
