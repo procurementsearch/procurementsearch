@@ -172,7 +172,7 @@ namespace SearchProcurement.Models
 					cmd.CommandText = "SELECT COUNT(*) " +
                         "FROM agency_payment_token " +
                         "WHERE agency_id = @id " +
-                        "AND ((location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()) " +
+                        "AND ((location_id = @locId AND token_type = 'unlimited' AND CURDATE() <= token_expires) " +
                         "OR (location_id IS NULL AND token_type = 'single' AND token_used = 0))";
 					cmd.Parameters.AddWithValue("@id", AgencyId);
 					cmd.Parameters.AddWithValue("@locId", locId);
