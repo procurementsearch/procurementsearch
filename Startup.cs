@@ -40,7 +40,7 @@ namespace SearchProcurement
             Defines.AppSettings.s3AccessKey = Configuration.GetSection("S3")["AccessKey"];
             Defines.AppSettings.s3SecretKey = Configuration.GetSection("S3")["SecretKey"];
             Defines.AppSettings.s3Bucket = Configuration.GetSection("S3")["DefaultBucket"];
-
+            Defines.AppSettings.StripeKey = Configuration.GetSection("Stripe")["PublishableKey"];
         }
 
         // public static void RegisterBundles(BundleCollection bundles)

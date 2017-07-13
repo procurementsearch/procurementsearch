@@ -73,6 +73,10 @@ namespace SearchProcurement
 			public static string s3AccessKey;
 			public static string s3SecretKey;
 			public static string s3Bucket;
+
+			/* And the Stripe public key */
+			public static string StripeKey;
+
 		}
 
 	}
