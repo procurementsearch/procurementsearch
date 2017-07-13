@@ -1,11 +1,8 @@
 namespace SearchProcurement
 {
 
-	public static class Defines
+	public sealed class Defines
 	{
-		/* The database connection string */
-		public const string myConnectionString = "server=127.0.0.1;uid=root;pwd=toor;database=rss_procure;sslmode=none;";
-
 		/* My locations */
 		public static readonly int[] myLocations = { 1, 2, 3, 4, 5 };  // Oregon (Portland, Eugene), Washington (Seattle)
 
@@ -36,23 +33,13 @@ namespace SearchProcurement
 		}
 
 		/* The dreamobjects access and secret keys */
-		public const string s3ServiceUrl = "https://objects-us-west-1.dream.io/";
-		public const string s3AccessKey = "hF0qM1vBICnpZeGF_oC5";
-        public const string s3SecretKey = "G-u6q1uEsAJRiNgJx2kfGTFyfoWc2ltyO3YlJqo3";
-		public const string s3Bucket = "procurementsearch-dev";
 		public const string s3LogoPath = "agency_logos";
 		public const string s3AttachmentPath = "bid_documents";
 
 
 		/* The on-server storage path(s) */
-		public const string UploadStoragePath = "/home/steve/Source_Code/Procurement/files.procurementsearch.com";
-		public const string UploadStorageUrl = "http://files.procurementsearch.com";
 		public const string UploadLogoPath = "/logos";
 		public const string UploadDocumentPath = "/documents";
-
-		/* The Stripe tokens */
-		public const string StripeKey = "pk_test_IKl6YnYvLi0eKY1lPA3upGMV";
-		public const string StripeSecret = "";
 
 		/* The RSS data for this specific site */
 		public const string RssTitle = "Procurement Opportunities";
@@ -68,6 +55,19 @@ namespace SearchProcurement
 			public const string LocationId = "locId";
 			public const string Files = "myFiles";
 			public const string ListingType = "listingType";
+		}
+
+
+		/* Make this into a singleton class, for handling configuration from appsettings.json */
+		private static readonly Defines _instance = new Defines();
+		public static Defines Instance
+		{
+			get { return _instance; }
+		}
+
+		private Defines()
+ 		{
+			// place for instance initialization code
 		}
 
 	}
