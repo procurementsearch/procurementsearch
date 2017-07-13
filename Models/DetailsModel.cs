@@ -35,6 +35,7 @@ namespace SearchProcurement.Models
 
 	public class Details
 	{
+		public int agencyId { get; private set; }
 		public string agencyName { get; private set; }
 		public string title { get; private set; }
 		public string subtitle { get; private set; }
@@ -85,7 +86,8 @@ namespace SearchProcurement.Models
 						"l.description, " + // 9
 						"a.feed_id, " + // 10
 						"a.agency_logo_url, " + // 11
-						"l.status " + // 12
+						"l.status, " + // 12
+						"l.agency_id " + // 13
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -118,6 +120,7 @@ namespace SearchProcurement.Models
 						isExternalFeed = r.IsDBNull(10) ? false : true;
 						agencyLogo = r.IsDBNull(11) ? "" : r.GetString(11);
 						status = r.GetString(12);
+						agencyId = r.GetInt32(13);
 
 						// Has a parent ID?  If so...
 						if( !r.IsDBNull(8) )

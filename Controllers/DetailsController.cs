@@ -18,9 +18,17 @@ namespace SearchProcurement.Controllers
             ViewBag.extraTitle = d.title;
             ViewBag.kw = kw;
 
-            // Draft, published (but not yet live), disabled -- don't show them anything
+            // Draft, published (but not yet live), disabled -- check to see if they're logged in,
+            // and this is their listing..  if it is, let them see it
             if( d.status == ListingStatus.Draft || d.status == ListingStatus.Published || d.status == ListingStatus.Disabled )
-                return Redirect("/");
+            {
+                // What's the agency?
+                Agency a = new Agency(this.readNameIdentifier());
+
+                // No agency?  Or not the owning agency?  Don't show the listing
+                if( a.AgencyId == 0 || a.AgencyId != d.agencyId )
+                    return Redirect("/");
+            }
 
             // Load the model
             if( d.isExternalFeed )
