@@ -66,7 +66,7 @@ namespace SearchProcurement.Helpers
 			string xmldiff = xml.Declaration + "\n" + xml.ToString();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -101,7 +101,7 @@ namespace SearchProcurement.Helpers
 		public static string getStatus(int listId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -130,7 +130,7 @@ namespace SearchProcurement.Helpers
         public static Listing[] loadListings(int agencyId, string[] statuses)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

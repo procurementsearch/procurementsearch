@@ -16,7 +16,7 @@ namespace SearchProcurement.Models
 		public searchItem[] latest()
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -60,7 +60,7 @@ namespace SearchProcurement.Models
 		public searchItem[] byAgency(int agencyId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

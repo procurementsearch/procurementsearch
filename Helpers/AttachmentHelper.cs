@@ -36,7 +36,7 @@ namespace SearchProcurement.Helpers
 		public static string getDeletionIdentifier(int attId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -63,7 +63,7 @@ namespace SearchProcurement.Helpers
 		public static void deleteById(int attId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -93,12 +93,12 @@ namespace SearchProcurement.Helpers
 		{
 			if( isStaged )
 				// Has an ID, is staged, it's still on disk, but we don't have its name handy
-				System.IO.File.Delete(Defines.UploadStoragePath + "/" + deletionIdentifier);
+				System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + "/" + deletionIdentifier);
 			else
 			{
 				// Has an ID, not staged, it's been moved to S3
 				S3 s3 = new S3();
-				s3.Delete(Defines.s3Bucket, Defines.s3AttachmentPath + "/" + deletionIdentifier);
+				s3.Delete(Defines.AppSettings.s3Bucket, Defines.s3AttachmentPath + "/" + deletionIdentifier);
 			}
 
 		}
@@ -116,7 +116,7 @@ namespace SearchProcurement.Helpers
 		public static void updateRedirectUrl(int id, string url)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -145,7 +145,7 @@ namespace SearchProcurement.Helpers
 		public static string[] getAttachmentTitles(int listId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

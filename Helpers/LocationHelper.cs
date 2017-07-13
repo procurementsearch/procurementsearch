@@ -23,7 +23,7 @@ namespace SearchProcurement.Helpers
         public static Location[] getAvailableStates()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -69,7 +69,7 @@ namespace SearchProcurement.Helpers
 		public static string getNameForId(int locId)
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -97,7 +97,7 @@ namespace SearchProcurement.Helpers
         public static Location[] getRegionsForState(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

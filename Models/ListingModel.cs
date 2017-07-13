@@ -66,7 +66,7 @@ namespace SearchProcurement.Models
                 throw new System.Exception("No listing ID means no whiskey!");
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -97,7 +97,7 @@ namespace SearchProcurement.Models
         public void add(string status, string type, string ip_addr)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -147,7 +147,7 @@ namespace SearchProcurement.Models
         public void addLocationById(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -179,7 +179,7 @@ namespace SearchProcurement.Models
         public void removeLocationById(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -213,7 +213,7 @@ namespace SearchProcurement.Models
         public void addAttachment(Attachment a)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -275,7 +275,7 @@ namespace SearchProcurement.Models
 
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -343,7 +343,7 @@ namespace SearchProcurement.Models
             p.loadById(myParentId);
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -405,7 +405,7 @@ namespace SearchProcurement.Models
         public void loadById(int id)
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -488,7 +488,7 @@ namespace SearchProcurement.Models
         public void loadLocations()
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -557,7 +557,7 @@ namespace SearchProcurement.Models
         public void loadAttachments()
         {
             // Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -615,7 +615,7 @@ namespace SearchProcurement.Models
         public void loadSublistings()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -664,7 +664,7 @@ namespace SearchProcurement.Models
         public void removeListing()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

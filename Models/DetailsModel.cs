@@ -64,7 +64,7 @@ namespace SearchProcurement.Models
 			id = my_id;
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -184,7 +184,7 @@ namespace SearchProcurement.Models
 		public frameDetails loadFrameData()
 		{
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -257,7 +257,7 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -312,7 +312,7 @@ namespace SearchProcurement.Models
 			List<attachment> adata = new List<attachment>();
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString), my_sph = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString), my_sph = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB and Sphinx connections
 				my_dbh.Open();

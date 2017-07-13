@@ -16,9 +16,9 @@ namespace SearchProcurement.AWS
         {
             // Set up the configuration object and the client
             config = new AmazonS3Config();
-            config.ServiceURL = Defines.s3ServiceUrl;
+            config.ServiceURL = Defines.AppSettings.s3ServiceUrl;
             config.ForcePathStyle = true;
-            s3Client = new AmazonS3Client(Defines.s3AccessKey, Defines.s3SecretKey, config);
+            s3Client = new AmazonS3Client(Defines.AppSettings.s3AccessKey, Defines.AppSettings.s3SecretKey, config);
         }
 
 

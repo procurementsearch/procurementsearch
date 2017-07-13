@@ -58,18 +58,23 @@ namespace SearchProcurement
 		}
 
 
-		/* Make this into a singleton class, for handling configuration from appsettings.json */
-		private static readonly Defines _instance = new Defines();
-		public static Defines Instance
+		/* Settings loaded from AppSettings */
+		public static class AppSettings
 		{
-			get { return _instance; }
-		}
+			/* MariaDB configuration */
+			public static string myConnectionString;
 
-		private Defines()
- 		{
-			// place for instance initialization code
+			/* Upload path configuration */
+			public static string UploadStorageUrl;
+			public static string UploadStoragePath;
+
+			/* S3 configuration settings */
+			public static string s3ServiceUrl;
+			public static string s3AccessKey;
+			public static string s3SecretKey;
+			public static string s3Bucket;
 		}
 
 	}
-	
+
 }

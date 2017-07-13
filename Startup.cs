@@ -31,6 +31,16 @@ namespace SearchProcurement
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            // Load some defines before doing anything else
+            Defines.AppSettings.myConnectionString = Configuration.GetSection("MariaDB")["connection"];
+            Defines.AppSettings.UploadStoragePath = Configuration.GetSection("Upload")["StoragePath"];
+            Defines.AppSettings.UploadStorageUrl = Configuration.GetSection("Upload")["StorageUrl"];
+            Defines.AppSettings.s3ServiceUrl = Configuration.GetSection("S3")["ServiceURL"];
+            Defines.AppSettings.s3AccessKey = Configuration.GetSection("S3")["AccessKey"];
+            Defines.AppSettings.s3SecretKey = Configuration.GetSection("S3")["SecretKey"];
+            Defines.AppSettings.s3Bucket = Configuration.GetSection("S3")["DefaultBucket"];
+
         }
 
         // public static void RegisterBundles(BundleCollection bundles)

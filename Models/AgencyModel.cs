@@ -92,7 +92,7 @@ namespace SearchProcurement.Models
         public static bool isKnownAgency(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -125,7 +125,7 @@ namespace SearchProcurement.Models
         public void loadIdByAgencyIdentifier(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -160,7 +160,7 @@ namespace SearchProcurement.Models
         public bool hasAvailablePaymentToken(int locId)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -197,7 +197,7 @@ namespace SearchProcurement.Models
         public int getPaymentTokens(int locId, string type)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -237,7 +237,7 @@ namespace SearchProcurement.Models
         public void addPaymentToken(string listingType, decimal amount, string stripeToken)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -276,7 +276,7 @@ namespace SearchProcurement.Models
         public bool usePaymentToken(int locId, string type, string ip_addr)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -325,7 +325,7 @@ namespace SearchProcurement.Models
         public void loadDataByAgencyIdentifier(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -421,7 +421,7 @@ namespace SearchProcurement.Models
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -507,7 +507,7 @@ namespace SearchProcurement.Models
         {
 
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -604,10 +604,10 @@ namespace SearchProcurement.Models
                 // Save the logo to the local logo repository
                 string myLogo = Library.tidyString(logoName) + "-" + decodedLogoMd5 + ".png";
 
-                System.IO.File.WriteAllBytes(Defines.UploadStoragePath + Defines.UploadLogoPath + "/" + myLogo, decodedLogo);
+                System.IO.File.WriteAllBytes(Defines.AppSettings.UploadStoragePath + Defines.UploadLogoPath + "/" + myLogo, decodedLogo);
 
                 // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+                using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
                 {
                     // Open the DB connection
                     my_dbh.Open();
@@ -615,7 +615,7 @@ namespace SearchProcurement.Models
                     {
                         cmd.Connection = my_dbh;
                         cmd.CommandText = "UPDATE agency SET agency_logo_url = @url WHERE agency_id = @id";
-                        cmd.Parameters.AddWithValue("@url", Defines.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo);
+                        cmd.Parameters.AddWithValue("@url", Defines.AppSettings.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo);
                         cmd.Parameters.AddWithValue("@id", AgencyId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
@@ -623,7 +623,7 @@ namespace SearchProcurement.Models
                 }
 
                 // And save the logo back to the object
-                AgencyLogo = Defines.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo;
+                AgencyLogo = Defines.AppSettings.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo;
 
             }
             else
@@ -644,7 +644,7 @@ namespace SearchProcurement.Models
             if( AgencyLogo != "" )
             {
                 // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+                using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
                 {
                     // Open the DB connection
                     my_dbh.Open();
@@ -663,7 +663,7 @@ namespace SearchProcurement.Models
 
                 // And, delete the object from disk
                 string logoName = AgencyLogo.Split('/').Last();
-                System.IO.File.Delete(Defines.UploadStoragePath + Defines.UploadLogoPath + "/" + logoName);
+                System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + Defines.UploadLogoPath + "/" + logoName);
 
             }
 
@@ -678,7 +678,7 @@ namespace SearchProcurement.Models
         public void loadLogo()
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();
@@ -728,7 +728,7 @@ namespace SearchProcurement.Models
         public static bool emailExists(string email)
         {
 			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.myConnectionString))
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
 			{
 				// Open the DB connection
 				my_dbh.Open();

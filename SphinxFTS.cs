@@ -80,7 +80,7 @@ namespace SteveHavelka.SphinxFTS
 			using(MySqlConnection my_sph = new MySqlConnection())
 			{
 				// create the DB connection
-			    my_sph.ConnectionString = Defines.myConnectionString;
+			    my_sph.ConnectionString = Defines.AppSettings.myConnectionString;
 			    my_sph.Open();
 
 				/* Our database command */
@@ -118,7 +118,7 @@ namespace SteveHavelka.SphinxFTS
 			using(MySqlConnection my_sph = new MySqlConnection())
 			{
 				// create the DB connection
-			    my_sph.ConnectionString = Defines.myConnectionString;
+			    my_sph.ConnectionString = Defines.AppSettings.myConnectionString;
 			    my_sph.Open();
 
 				/* Our database command */

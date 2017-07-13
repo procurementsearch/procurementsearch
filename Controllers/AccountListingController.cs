@@ -533,11 +533,11 @@ namespace SearchProcurement.Controllers
             // Just to be clear, the filename is:  the tidied original document name (minus
             // extension), the document GUID, and the extension...
             myFile.FileName = Library.tidyString(Path.GetFileNameWithoutExtension(myFile.DocumentName)) + "-" + myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
-            myFile.Url = Defines.UploadStorageUrl + Defines.UploadDocumentPath + "/" + myFile.FileName;
+            myFile.Url = Defines.AppSettings.UploadStorageUrl + Defines.UploadDocumentPath + "/" + myFile.FileName;
             myFile.IsStaged = true;
 
             // Copy the file to the staging area and delete the uploaded file
-            string myFilePath = Defines.UploadStoragePath + Defines.UploadDocumentPath + "/" + myFile.FileName;
+            string myFilePath = Defines.AppSettings.UploadStoragePath + Defines.UploadDocumentPath + "/" + myFile.FileName;
             System.IO.File.Copy(uploadTempFile, myFilePath);
             System.IO.File.Delete(uploadTempFile);
 
@@ -610,7 +610,7 @@ namespace SearchProcurement.Controllers
                     // remove the file from our attachment listing..
                     if( myFile.AttachmentId == 0 )
                     {
-                        System.IO.File.Delete(Defines.UploadStoragePath + "/" + myFile.FileName);
+                        System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + "/" + myFile.FileName);
                         sessionFiles.Remove(myFile);
                     }
                     else
