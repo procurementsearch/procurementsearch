@@ -18,6 +18,10 @@ namespace SearchProcurement.Controllers
             ViewBag.extraTitle = d.title;
             ViewBag.kw = kw;
 
+            // Draft, published (but not yet live), disabled -- don't show them anything
+            if( d.status == ListingStatus.Draft || d.status == ListingStatus.Published || d.status == ListingStatus.Disabled )
+                return Redirect("/");
+
             // Load the model
             if( d.isExternalFeed )
                 return View("IndexIframe", d);
