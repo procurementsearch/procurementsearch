@@ -109,7 +109,7 @@ namespace SearchProcurement.Models
 						{
 							actionSteps = r.GetString(2).
 								Replace("%TITLE%", title).
-								Replace("%ORIGIN_ID%", r.GetString(3)).
+								Replace("%ORIGIN_ID%", r.IsDBNull(3) ? "" : r.GetString(3)).
 								Replace("%ORIGIN_OPPORTUNITY_NO%", r.IsDBNull(5) ? "" : r.GetString(5)).
 								Replace("%ORIGIN_URL%", r.IsDBNull(4) ? "" : r.GetString(4)).
 								Replace("%CONTACT%", r.IsDBNull(6) ? "" : r.GetString(6));
