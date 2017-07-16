@@ -7,11 +7,23 @@
 }
 
 <div class="view-box">
-    <h1>Setting up your RFP/ITB</h1>
-
     @if (@Model.ListingId == 0)
     {
-    <h2>3) Enter the information for your new listing.</h2>
+    <h1>Starting a new RFP/ITB</h1>
+    <nav>
+        <ol class="cd-multi-steps text-top">
+            <li class="visited"><a href="#">Select Region</a></li>
+            <li class="visited"><a href="#">Pay</a></li>
+            <li class="current"><a href="#">Set up Listing</a></li>
+            <li><em>Done</em></li>
+        </ol>
+    </nav>
+
+    <h2>Enter the information for your new listing.</h2>
+    }
+    else
+    {
+    <h1>Setting up your RFP/ITB</h1>
     }
 
     <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">

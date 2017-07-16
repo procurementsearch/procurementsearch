@@ -4,8 +4,24 @@
 }
 
 <div class="view-box">
+    @if (ViewBag.isNew != null && ViewBag.isNew == true)
+    {
+    <h1>Starting a new RFP/ITB</h1>
+    <nav>
+        <ol class="cd-multi-steps text-top">
+            <li class="visited"><a href="#">Select Region</a></li>
+            <li class="visited"><a href="#">Pay</a></li>
+            <li class="visited"><a href="#">Set up Listing</a></li>
+            <li class="current"><em>Done</em></li>
+        </ol>
+    </nav>
+    }
+    else
+    {
     <h1>Setting up your RFP/ITB</h1>
+    }
     <h2>All done!</h2>
+
     <p>
         That's it!  Your listing is now saved to ProcurementSearch.com.  If you've published it, and it's
         ready to go live, it'll start showing up in search results in a few minutes.

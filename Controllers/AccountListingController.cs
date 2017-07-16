@@ -286,6 +286,9 @@ namespace SearchProcurement.Controllers
                 // And at last, do we need to register a payment token as having been used?
                 a.usePaymentToken(locId.Value, listingType, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
 
+                // And show the right breadcrumbs
+                ViewBag.isNew = true;
+
             }
             else
             {
