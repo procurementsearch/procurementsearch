@@ -307,8 +307,9 @@ namespace SearchProcurement.Controllers
                 // Published, not live -> Save as draft // Save as revision
                 // Published, live -> Save as addendum // Save as revision
                 string updateMode = "";
+                string origStatus = ListingHelper.getStatus(listing.ListingId);
 
-                if( listing.Status == ListingStatus.Draft || listing.Status == ListingStatus.Published )
+                if( origStatus == ListingStatus.Draft || origStatus == ListingStatus.Published )
                 {
                     if( action == "draft" )
                         listing.Status = ListingStatus.Draft;
@@ -319,7 +320,7 @@ namespace SearchProcurement.Controllers
                 else
                 {
                     // If it's not a draft and it's not in published mode, it's got to be an open listing
-                    listing.Status = ListingHelper.getStatus(listing.ListingId);
+                    listing.Status = origStatus;
                     if( action == "revision" )
                         updateMode = ListingUpdateMode.Revision;
                     else
@@ -543,6 +544,9 @@ namespace SearchProcurement.Controllers
             string myFilePath = Defines.AppSettings.UploadStoragePath + Defines.UploadDocumentPath + "/" + myFile.FileName;
             System.IO.File.Copy(uploadTempFile, myFilePath);
             System.IO.File.Delete(uploadTempFile);
+
+            // Set the file permissions on the new file
+            
 
             // And get the file size
             FileInfo f = new FileInfo(myFilePath);

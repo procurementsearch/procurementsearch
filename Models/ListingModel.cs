@@ -588,7 +588,7 @@ namespace SearchProcurement.Models
                                     AttachmentId = r.GetInt32(0),
                                     DocumentName = r.GetString(1),
                                     Url = r.IsDBNull(2) ? "" : r.GetString(2),
-                                    RedirectUrl = r.IsDBNull(3) ? "" : r.GetString(3),
+                                    RedirectUrl = r.IsDBNull(3) ? null : r.GetString(3),
                                     IsStaged = Convert.ToBoolean(r.GetInt32(4))
                                 });
                             }

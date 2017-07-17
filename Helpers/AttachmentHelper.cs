@@ -127,7 +127,7 @@ namespace SearchProcurement.Helpers
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "UPDATE attachment SET redirect_url = @url WHERE attachment_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
-					cmd.Parameters.AddWithValue("@url", url);
+					cmd.Parameters.AddWithValue("@url", String.IsNullOrEmpty(url) ? null : url);
 					cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }
