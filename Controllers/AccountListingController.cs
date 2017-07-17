@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Mono.Posix;
 
 using Newtonsoft.Json;
 
@@ -546,7 +547,13 @@ namespace SearchProcurement.Controllers
             System.IO.File.Delete(uploadTempFile);
 
             // Set the file permissions on the new file
-            
+            var chmodFile = new Mono.Unix.UnixFileInfo(myFilePath);
+
+            // set file permission to 644
+            // chmodFile.FileAccessPermissions =
+            //     FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite
+            //         FileAccessPermissions.GroupRead
+            //         FileAccessPermissions.OtherRead;
 
             // And get the file size
             FileInfo f = new FileInfo(myFilePath);
