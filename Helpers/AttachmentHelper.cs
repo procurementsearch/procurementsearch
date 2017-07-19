@@ -18,6 +18,8 @@ namespace SearchProcurement.Helpers
         public string RedirectUrl;
         public string Guid;
         public bool IsStaged;
+		public bool IsIntentToAward;
+		public bool IsNoticeToProceed;
         public bool ToDelete;
     }
 
@@ -93,7 +95,7 @@ namespace SearchProcurement.Helpers
 		{
 			if( isStaged )
 				// Has an ID, is staged, it's still on disk, but we don't have its name handy
-				System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + "/" + deletionIdentifier);
+				System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + Defines.UploadDocumentPath + "/" + deletionIdentifier);
 			else
 			{
 				// Has an ID, not staged, it's been moved to S3
@@ -179,6 +181,102 @@ namespace SearchProcurement.Helpers
                 }
             }
 		}
+
+
+
+
+		/**
+		 * Filter out attachments so that only intent-to-award attachments remain
+		 * @param Attachment[] atts The attachment array
+		 * @return Attachment[] The remaining attachments
+		 */
+		public static Attachment[] filterIntentToAward(Attachment[] atts)
+		{
+			List<Attachment> remaining = new List<Attachment>();
+			foreach(var a in atts)
+			{
+				if( a.IsIntentToAward )
+					remaining.Add(a);
+			}
+
+			// And return the resulting array
+			return remaining.ToArray();
+		}
+
+
+
+		/**
+		 * Filter out attachments so that only notice-to-proceed attachments remain
+		 * @param Attachment[] atts The attachment array
+		 * @return Attachment[] The remaining attachments
+		 */
+		public static Attachment[] filterNoticeToProceed(Attachment[] atts)
+		{
+			List<Attachment> remaining = new List<Attachment>();
+			foreach(var a in atts)
+			{
+				if( a.IsNoticeToProceed )
+					remaining.Add(a);
+			}
+
+			// And return the resulting array
+			return remaining.ToArray();
+		}
+
+
+
+
+
+		/**
+		 * Toggle intent to award flag
+		 * @param Attachment[] atts The array of attachments to process
+		 * @param bool flag The intent-to-award status
+		 * @return Attachment[] results
+		 */
+		public static Attachment[] toggleIntentToAward(Attachment[] atts, bool flag)
+		{
+			List<Attachment> results = new List<Attachment>();
+
+			// Process all the files
+			foreach (Attachment att in atts)
+			{
+				Attachment newAtt = att;
+				newAtt.IsIntentToAward = flag;
+				results.Add(newAtt);
+			}
+
+			// And done
+			return results.ToArray();
+		}
+
+
+
+
+
+		/**
+		 * Toggle notice to proceed flag
+		 * @param Attachment[] atts The array of attachments to process
+		 * @param bool flag The notice-to-proceed status
+		 * @return Attachment[] results
+		 */
+		public static Attachment[] toggleNoticeToProceed(Attachment[] atts, bool flag)
+		{
+			List<Attachment> results = new List<Attachment>();
+
+			// Process all the files
+			foreach (Attachment att in atts)
+			{
+				Attachment newAtt = att;
+				newAtt.IsNoticeToProceed = flag;
+				results.Add(newAtt);
+			}
+
+			// And done
+			return results.ToArray();
+		}
+
+
+
 
 
 

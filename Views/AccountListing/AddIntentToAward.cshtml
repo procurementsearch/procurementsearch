@@ -1,0 +1,154 @@
+@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+@model Listing
+@{
+    Layout = "~/Views/Shared/_Account.cshtml";
+}
+
+<div class="view-box">
+    <h1>Adding an Intent to Award</h1>
+
+    <p>Once you've closed a bid, you can add information on your intent to award here.</p>
+
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/addIntentToAward">
+    @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@ViewBag.id">
+
+        <fieldset>
+            <legend>RFP/ITB: @Model.Title</legend>
+
+            <label asp-for="IntentToAward"></label>
+            <textarea asp-for="IntentToAward" class="pure-u-23-24" rows=5></textarea>
+            <span class="pure-form-message">This is a required field.</span>
+        </fieldset>
+
+        <fieldset>
+            <legend>File Attachments</legend>
+
+            <!-- The fileinput-button span is used to style the file input field as button -->
+            <span class="pure-button button-secondary fileinput-button">
+                <span>Select files...</span>
+                <!-- The file input field used as target for the file upload widget -->
+                <input id="fileupload" type="file" name="files[]" multiple>
+            </span>
+            <br>
+            <br>
+            <!-- The global progress bar -->
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success"></div>
+            </div>
+            <!-- The container for the uploaded files -->
+            <table class="pure-table pure-table-striped">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="files" class="files">
+                @if (ViewBag.awardDocuments != null)
+                {
+                @foreach (Attachment a in ViewBag.awardDocuments)
+                {
+                    <tr>
+                        <td>@a.DocumentName</td>
+                        <td><a class="pure-button button-xsmall" data-guid="@a.Guid" href="#">remove</a></td>
+                    </tr>
+                }
+                }
+                </tbody>
+            </table>
+         </fieldset>
+
+        <p>That's it!  You can save your intent to award and it'll be attached to your listing.</p>
+
+        <button type="submit" name="action" value="save" class="pure-button pure-button-primary">Save Intent to Award</button>
+        <button type="submit" name="action" value="cancel" class="pure-button button-secondary" formnovalidate>Cancel editing</button>
+    </form>
+</div>
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul>
+                    @Html.Partial("Pages-menu")
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+
+  // Set up the datetime pickers
+  $('#OpenDate, #CloseDate').datetimepicker({
+    format: 'm/d/y H:i'
+  });
+
+  // And the file drag/drop utility
+  var removeUpload = function(e, a, uploadId) {
+      e.stopPropagation();
+      e.preventDefault();
+      $.ajax('/account/RemoveAttachment?id=' + uploadId, {
+          success: function() {
+              // If the server says we've removed that file, remove the file from the list
+              $(a).closest('tr').remove();
+          }
+      });
+  };
+
+  // Do we need to pre-load the remove links for some upload buttons?
+  @if (Model.BidDocuments != null)
+  {
+  <text>
+  $('#files a').each(function(idx, el) {
+    var uploadId = $(el).data('guid');
+    $(el).click(function(e) { removeUpload(e, el, uploadId); });
+  });
+  </text>
+  }
+
+  $('#fileupload').fileupload({
+      url: '/account/saveUpload',
+      dataType: 'json',
+      done: function (e, data) {
+          console.log("DONE:");
+          console.log(data);
+          $.each(data.result.files, function (index, file) {
+              var a = $('<a>', {
+                  text: 'remove',
+                  href: '#',
+                  click: function(e) { removeUpload(e, a, file.uploadId) }
+              });
+              a.addClass('pure-button button-xsmall');
+              var name = $('<td/>').text(file.name);
+              var rem = $('<td/>').append(a);
+              var row = $('<tr>').append(name).append(rem);
+              row.appendTo('#files');
+          });
+      },
+      progressall: function (e, data) {
+          console.log("PROGRESS:");
+          console.log(data);
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('#progress .progress-bar').css(
+              'width',
+              progress + '%'
+          );
+          console.log(progress);
+      }
+  }).prop('disabled', !$.support.fileInput)
+      .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+});
+
+</script>

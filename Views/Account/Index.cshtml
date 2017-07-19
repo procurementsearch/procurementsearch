@@ -5,6 +5,10 @@
     <h1>
         Welcome, @Model.UserRealName!
     </h1>
+    @if (!String.IsNullOrEmpty(Model.AgencyLogo))
+    {
+    <img src="@Model.AgencyLogo" class="pure-img">
+    }
     <h2>
         @Model.AgencyName
     </h2>
@@ -75,7 +79,7 @@
 
         <h2>Inactive Listings</h2>
         <p>
-            These are your inactive Listings.  You can't reopen any of these, but you can clone one and open a new Listing.
+            These are your inactive Listings.  You can't reopen any of these, but you can add an intent to award or notice to proceed to any closed listing.
         </p>
         <table class="pure-table pure-table-horizontal pure-table-striped">
             <thead>
@@ -83,6 +87,8 @@
                     <th>Title</th>
                     <th>Status</th>
                     <th>Close Date</th>
+                    <th></th>
+                    <th></th>
 <!--                    <th></th>
 -->                </tr>
             </thead>
@@ -101,6 +107,12 @@
                     <td>@l.Title</td>
                     <td>@l.Status</td>
                     <td>@(l.CloseDate == DateTime.MinValue ? "none" : l.CloseDate.ToString("M/d/y"))</td>
+                    <td style="text-align: center;">
+                        <a href="/account/addIntentToAward?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Intent to Award"><img src="/images/icons/database_add.png"><br>Add Intent<br>to Award</a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="/account/addNoticeToProceed?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Notice to Proceed"><img src="/images/icons/database_go.png"><br>Add Notice<br>to Proceed</a>
+                    </td>
 <!--                    <td style="text-align: center;">
                         <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>

@@ -35,6 +35,12 @@ namespace SearchProcurement.Models
         [Display(Name="Listing Action Steps")]
         public string ActionSteps { get; set; }
 
+        // Accessory information for the listing
+        [Display(Name="Intent to Award")]
+        public string IntentToAward { get; set; }
+        [Display(Name="Notice to Proceed")]
+        public string NoticeToProceed { get; set; }
+
         // The listing status
         public string Status;
 
@@ -223,15 +229,17 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO attachment " +
-                        "(listing_id, title, filetype, url, redirect_url, deletion_identifier, is_staged, created) " +
+                        "(listing_id, title, filetype, url, redirect_url, deletion_identifier, is_intent_to_award, is_notice_to_proceed, is_staged, created) " +
                         "VALUES " +
-                        "(@l1, @l2, @l3, @l4, @l5, @l6, 1, NOW())";
+                        "(@l1, @l2, @l3, @l4, @l5, @l6, @l7, @l8, 1, NOW())";
 					cmd.Parameters.AddWithValue("@l1", ListingId);
 					cmd.Parameters.AddWithValue("@l2", a.DocumentName);
 					cmd.Parameters.AddWithValue("@l3", MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(a.FileName)));
 					cmd.Parameters.AddWithValue("@l4", a.Url);
 					cmd.Parameters.AddWithValue("@l5", String.IsNullOrEmpty(a.RedirectUrl) ? null : a.RedirectUrl);
 					cmd.Parameters.AddWithValue("@l6", a.FileName);
+					cmd.Parameters.AddWithValue("@l7", a.IsIntentToAward ? 1 : 0);
+					cmd.Parameters.AddWithValue("@l8", a.IsNoticeToProceed ? 1 : 0);
 
 					// Run the DB command
                     if( cmd.ExecuteNonQuery() == 0 )
@@ -290,7 +298,9 @@ namespace SearchProcurement.Models
                         "contents=@l5, " +
                         "contact=@l6, " +
                         "action_steps=@l7, " +
-                        "status=@l8 " +
+                        "status=@l8, " +
+                        "intent_to_award=@l9, " +
+                        "notice_to_proceed=@l10 " +
                         "WHERE listing_id=@id";
 					cmd.Parameters.AddWithValue("@l1", OpenDate == DateTime.MinValue ? null : OpenDate.ToString("yyyy-MM-dd hh:mm:ss"));
 					cmd.Parameters.AddWithValue("@l2", CloseDate == DateTime.MinValue ? null : CloseDate.ToString("yyyy-MM-dd hh:mm:ss"));
@@ -300,6 +310,8 @@ namespace SearchProcurement.Models
 					cmd.Parameters.AddWithValue("@l6", Contact);
 					cmd.Parameters.AddWithValue("@l7", ActionSteps);
 					cmd.Parameters.AddWithValue("@l8", Status);
+					cmd.Parameters.AddWithValue("@l9", IntentToAward);
+					cmd.Parameters.AddWithValue("@l10", NoticeToProceed);
                     cmd.Parameters.AddWithValue("@id", ListingId);
 
 					// Run the DB command
@@ -328,6 +340,53 @@ namespace SearchProcurement.Models
             return true;
 
         }
+
+
+
+
+        /**
+         * Update the listing status
+         * @param string status
+         * @return none
+         */
+        public bool updateStatus(string myStatus)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE listing SET status=@status WHERE listing_id=@id";
+					cmd.Parameters.AddWithValue("@status", myStatus);
+                    cmd.Parameters.AddWithValue("@id", ListingId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't update the listing");
+                }
+
+                // And, if there are subcontracts, do those too...
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "UPDATE listing SET status=@status WHERE listing_parent_id=@id";
+                    cmd.Parameters.AddWithValue("@status", myStatus);
+                    cmd.Parameters.AddWithValue("@id", ListingId);
+                    cmd.ExecuteNonQuery();
+                }
+
+            }
+
+            // And set the object status
+            Status = myStatus;
+            return true;
+
+        }
+
+
 
 
 
@@ -423,7 +482,9 @@ namespace SearchProcurement.Models
                         "action_steps, " +
                         "status, " +
                         "listing_type, " +
-                        "listing_parent_id " +
+                        "listing_parent_id, " +
+                        "intent_to_award, " +
+                        "notice_to_proceed " +
                         "FROM listing WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
 
@@ -444,6 +505,8 @@ namespace SearchProcurement.Models
                             ActionSteps = r.IsDBNull(6) ? "" : r.GetString(6);
                             Status = r.GetString(7);
                             Type = r.GetString(8);
+                            IntentToAward = r.IsDBNull(10) ? "" : r.GetString(10);
+                            NoticeToProceed = r.IsDBNull(11) ? "" : r.GetString(11);
 
                             if( r.IsDBNull(9) )
                                 ParentId = null;
@@ -568,8 +631,8 @@ namespace SearchProcurement.Models
                     // Now pull out the locations for this entry .. first, pull out just the state.
                     // Everyone will have a state.
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT attachment_id, title, url, redirect_url, is_staged "+
-                        "FROM attachment WHERE listing_id = @id";
+					cmd.CommandText = "SELECT attachment_id, title, url, redirect_url, is_staged, " +
+                        "is_intent_to_award, is_notice_to_proceed FROM attachment WHERE listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", ListingId);
 
                     // And execute the query
@@ -589,7 +652,9 @@ namespace SearchProcurement.Models
                                     DocumentName = r.GetString(1),
                                     Url = r.IsDBNull(2) ? "" : r.GetString(2),
                                     RedirectUrl = r.IsDBNull(3) ? null : r.GetString(3),
-                                    IsStaged = Convert.ToBoolean(r.GetInt32(4))
+                                    IsStaged = Convert.ToBoolean(r.GetInt32(4)),
+                                    IsIntentToAward = Convert.ToBoolean(r.GetInt32(5)),
+                                    IsNoticeToProceed = Convert.ToBoolean(r.GetBoolean(6))
                                 });
                             }
 

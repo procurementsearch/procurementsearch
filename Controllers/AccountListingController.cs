@@ -52,13 +52,18 @@ namespace SearchProcurement.Controllers
         [Route("/Account/setupUmbrella")]
         public IActionResult SetupUmbrella(int id)
         {
-            // Have we seen this unique identifier before?  If no, send them to the new account page
-            if( !Agency.isKnownAgency(this.readNameIdentifier()) )
-                return Redirect("/account/NewAccount");
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/newAccount");
 
             // Let's try to load the listing
             Listing l = new Listing();
             l.loadById(id);
+
+            // Make sure we own it
+            if( l.AgencyId != a.AgencyId )
+                return Redirect("/account");
 
             return View(l);
 
@@ -161,6 +166,33 @@ namespace SearchProcurement.Controllers
 
         }
 
+
+
+
+
+        [Authorize]
+        [Route("/Account/closeListing")]
+        public IActionResult closeListing(int? id)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Load the listing
+            Listing l = new Listing();
+            l.loadById(id.Value);
+
+            // Make sure we own it
+            if( l.AgencyId != a.AgencyId )
+                return Redirect("/Account");
+
+            // Update the status
+            l.updateStatus(ListingStatus.Closed);
+
+            return View("CloseListing");
+
+        }
 
 
 
@@ -504,140 +536,6 @@ namespace SearchProcurement.Controllers
 
 
 
-
-
-
-
-
-
-
-
-        [Authorize]
-        [HttpPost]
-        [DisableFormValueModelBinding]
-        [Route("/Account/saveUpload")]
-        public async Task<IActionResult> SaveUpload()
-        {
-            Attachment myFile = new Attachment {};
-            FormValueProvider formModel;
-
-            // Get a GUID for naming the file temporarily
-            Guid myUploadId = Guid.NewGuid();
-            string uploadTempFile = Path.GetTempFileName();
-
-            using (var stream = System.IO.File.Create(uploadTempFile))
-            {
-                formModel = await Request.StreamFile(stream);
-            }
-
-
-            // OK, we've got a file.  Let's copy it to the on-server temp storage
-            myFile.DocumentName = formModel.GetValue("uploadFilename").ToString();
-
-            // Just to be clear, the filename is:  the tidied original document name (minus
-            // extension), the document GUID, and the extension...
-            myFile.FileName = Library.tidyString(Path.GetFileNameWithoutExtension(myFile.DocumentName)) + "-" + myUploadId.ToString() + Path.GetExtension(myFile.DocumentName);
-            myFile.Url = Defines.AppSettings.UploadStorageUrl + Defines.UploadDocumentPath + "/" + myFile.FileName;
-            myFile.IsStaged = true;
-
-            // Copy the file to the staging area and delete the uploaded file
-            string myFilePath = Defines.AppSettings.UploadStoragePath + Defines.UploadDocumentPath + "/" + myFile.FileName;
-            System.IO.File.Copy(uploadTempFile, myFilePath);
-            System.IO.File.Delete(uploadTempFile);
-
-            // Set the file permissions on the new file
-            Chmod.chmod644(myFilePath);
-
-            // And get the file size
-            FileInfo f = new FileInfo(myFilePath);
-
-            // And save the GUID
-            myFile.Guid = myUploadId.ToString();
-
-            // And now, do we already have some files for this session?  If so, let's get them
-            string sessionFilesJson;
-            List<Attachment> sessionFiles;
-
-            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
-            if( sessionFilesJson != null )
-                sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-            else
-                sessionFiles = new List<Attachment>();
-
-            // Add this file to the list
-            sessionFiles.Add(myFile);
-
-            // Save the list of files back to the session
-            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(sessionFiles.ToArray()));
-
-            // And send the file data back
-            UploadFiles myFiles = new UploadFiles
-            {
-                files = new UploadFile []
-                {
-                    new UploadFile
-                    {
-                        name = myFile.DocumentName,
-                        type = MimeTypes.MimeTypeMap.GetMimeType(Path.GetExtension(myFile.DocumentName)),
-                        size = f.Length,
-                        error = "",
-                        uploadId = myFile.Guid
-                    }
-                }
-            };
-
-            return Json(myFiles);
-
-        }
-
-
-
-
-
-        [Authorize]
-        [Route("/Account/removeAttachment")]
-        public IActionResult RemoveAttachment(string id)
-        {
-            // And now, do we already have some files for this session?  If so, let's get them
-            string sessionFilesJson;
-            List<Attachment> sessionFiles;
-
-            sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
-            if( sessionFilesJson == null )
-                return StatusCode(418); // No session files??  what are they trying to remove?
-
-            sessionFiles = JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson).ToList();
-            foreach (var myFile in sessionFiles)
-            {
-                // Is this the one?
-                if( myFile.Guid == id )
-                {
-                    // Are we deleting an attachment that hasn't yet been saved
-                    // to a listing?  If so, we can just remove the file itself, and
-                    // remove the file from our attachment listing..
-                    if( myFile.AttachmentId == 0 )
-                    {
-                        System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + "/" + myFile.FileName);
-                        sessionFiles.Remove(myFile);
-                    }
-                    else
-                        // Otherwise, mark it for deletion when they save their changes
-                        myFile.ToDelete = true;
-
-                    break;
-                }
-            }
-
-            // Save the list of files back to the session
-            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(sessionFiles.ToArray()));
-
-            return StatusCode(200);
-        }
-
-
-
-
-
         /**
          * Remove the sublisting from an umbrella contract
          * @param int id The listing ID of the subcontract to remove
@@ -665,6 +563,166 @@ namespace SearchProcurement.Controllers
             else
                 // It is not!  Do nothing...
                 return StatusCode(418);
+
+        }
+
+
+
+
+        /**
+         * Show the screen to add an intent to award
+         * @param int id The listing ID to show intent to award for
+         */
+        [Authorize]
+        [Route("/Account/addIntentToAward")]
+        public IActionResult AddIntentToAward(int id)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/newAccount");
+
+            // Let's try to load the listing
+            Listing l = new Listing();
+            l.loadById(id);
+
+            // Make sure we own it
+            if( l.AgencyId != a.AgencyId )
+                return Redirect("/account");
+
+            // Now save these files to the session, so we can access them by GUID
+            Attachment[] documents = AttachmentHelper.filterIntentToAward(l.BidDocuments);
+            HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(documents));
+
+            // Stash some data in the ViewBag
+            ViewBag.id = id;
+            ViewBag.awardDocuments = documents;
+
+            return View(l);
+
+        }
+
+
+
+
+
+        /**
+         * The POST endpoint for adding an intent to award
+         */
+        [Authorize]
+        [HttpPost]
+        [Route("/Account/addIntentToAward")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddIntentToAwardPost(int? id, Listing listing)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Cancel!  Also, no ID?  No whiskey!
+            if( id == null || HttpContext.Request.Form["action"] == "cancel" )
+                return Redirect("/account");
+
+            // Be sure to set the old listing ID, since the model binding doesn't
+            // catch this
+            listing.loadById(id.Value);
+
+            // A failsafe, in case they're trying to be tricky
+            if( listing.getAgencyId() != a.AgencyId )
+                return Redirect("/account");  // This should never happen!
+
+            // And, update!
+            listing.IntentToAward = HttpContext.Request.Form["IntentToAward"];
+            listing.update(ListingUpdateMode.Revision);
+
+            // And save new attachments, if we have any new attachments
+            string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+            if( sessionFilesJson != null )
+            {
+                AttachmentHelper.processFiles(
+                    AttachmentHelper.toggleIntentToAward(
+                        JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), true), HttpContext, listing);
+            }
+
+            // Empty out the session data
+            HttpContext.Session.Remove(Defines.SessionKeys.Files);
+            return View("AddIntentToAwardPost");
+
+        }
+
+
+        /**
+         * Show the screen to add a notice to proceed
+         * @param int id The listing ID to show notice to proceed for
+         */
+        [Authorize]
+        [Route("/Account/addNoticeToProceed")]
+        public IActionResult AddNoticeToProceed(int id)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/newAccount");
+
+            // Let's try to load the listing
+            Listing l = new Listing();
+            l.loadById(id);
+
+            // Make sure we own it
+            if( l.AgencyId != a.AgencyId )
+                return Redirect("/account");
+
+            // Stash some data in the ViewBag
+            ViewBag.id = id;
+
+            return View(l);
+
+        }
+
+
+        /**
+         * The POST endpoint for adding a notice to proceed
+         */
+        [Authorize]
+        [HttpPost]
+        [Route("/Account/addNoticeToProceed")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddNoticeToProceed(int? id, Listing listing)
+        {
+            // Have we seen this unique identifier before?
+            Agency a = new Agency(this.readNameIdentifier());
+            if( a.AgencyId == 0 )
+                return Redirect("/account/NewAccount");
+
+            // Cancel!  Also, no ID?  No whiskey!
+            if( id == null || HttpContext.Request.Form["action"] == "cancel" )
+                return Redirect("/account");
+
+            // Be sure to set the old listing ID, since the model binding doesn't
+            // catch this
+            listing.loadById(id.Value);
+
+            // A failsafe, in case they're trying to be tricky
+            if( listing.getAgencyId() != a.AgencyId )
+                return Redirect("/account");  // This should never happen!
+
+            // And, update!
+            listing.IntentToAward = HttpContext.Request.Form["NoticeToProceed"];
+            listing.update(ListingUpdateMode.Revision);
+
+            // And save new attachments, if we have any new attachments
+            string sessionFilesJson = HttpContext.Session.GetString(Defines.SessionKeys.Files);
+            if( sessionFilesJson != null )
+            {
+                AttachmentHelper.processFiles(
+                    AttachmentHelper.toggleNoticeToProceed(
+                        JsonConvert.DeserializeObject<Attachment []>(sessionFilesJson), true), HttpContext, listing);
+            }
+
+            // Empty out the session data
+            HttpContext.Session.Remove(Defines.SessionKeys.Files);
+            return View("AddNoticeToProceedPost");
 
         }
 
