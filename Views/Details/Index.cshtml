@@ -1,4 +1,6 @@
-﻿@{
+﻿@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+@{
     Layout = "~/Views/Shared/_Details.cshtml";
 }
 
@@ -26,6 +28,13 @@
         }
         @Html.Raw(Library.nl2br(Model.description))
     </div>
+
+    @if (Model.status == ListingStatus.Closed)
+    {
+    <div class="message">
+        <span class="attention">Attention:</span> This opportunity has closed.
+    </div>
+    }
 
     @if (Model.snippets.Length > 0 )
     {
@@ -79,13 +88,31 @@
             }
         </ul>
     </div>
-        
     }
 
+    @if (!String.IsNullOrEmpty(Model.actionSteps))
+    {
+    <h2>Your Next Steps</h2>
+    <div class="view-action-steps">
+        @Html.Raw(Library.nl2br(Model.actionSteps))
+    </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.contactInformation))
+    {
+    <h2>Contact Information</h2>
+    <div class="view-action-steps">
+        @Html.Raw(Library.nl2br(Model.contactInformation))
+    </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.agencyAboutText))
+    {
     <h2>About @Model.agencyName</h2>
     <div class="view-action-steps">
-        @Html.Raw(Model.actionSteps)
+        @Html.Raw(Model.agencyAboutText)
     </div>
+    }
 
     <p class="share-title">
         Share with a friend!

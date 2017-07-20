@@ -288,6 +288,7 @@ namespace SearchProcurement
 		{
 			var items = new List<SelectListItem>
 			{
+				new SelectListItem() { Value = "US", Text = "United States"},
 				new SelectListItem() { Value = "AF", Text = "Afghanistan"},
 				new SelectListItem() { Value = "AL", Text = "Albania"},
 				new SelectListItem() { Value = "DZ", Text = "Algeria"},
@@ -537,7 +538,6 @@ namespace SearchProcurement
 				new SelectListItem() { Value = "SU", Text = "Union of Soviet Socialist Republics"},
 				new SelectListItem() { Value = "AE", Text = "United Arab Emirates"},
 				new SelectListItem() { Value = "GB", Text = "United Kingdom"},
-				new SelectListItem() { Value = "US", Text = "United States"},
 				new SelectListItem() { Value = "ZZ", Text = "Unknown or Invalid Region"},
 				new SelectListItem() { Value = "UY", Text = "Uruguay"},
 				new SelectListItem() { Value = "UZ", Text = "Uzbekistan"},

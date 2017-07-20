@@ -45,6 +45,8 @@ namespace SearchProcurement.Models
 		public int parentId { get; private set; }
 		public string status;
 		public string actionSteps { get; private set; }
+		public string contactInformation { get; private set; }
+		public string agencyAboutText { get; private set; }
 		public bool isExternalFeed { get; private set; }
 
 		/* The attachments */
@@ -87,7 +89,8 @@ namespace SearchProcurement.Models
 						"a.feed_id, " + // 10
 						"a.agency_logo_url, " + // 11
 						"l.status, " + // 12
-						"l.agency_id " + // 13
+						"l.agency_id, " + // 13
+						"l.action_steps " + // 14
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -97,17 +100,17 @@ namespace SearchProcurement.Models
 					using(MySqlDataReader r = cmd.ExecuteReader())
 					{
 						r.Read();
-	
+
 						// Store the item data
 						agencyName = r.GetString(0);
 						title = r.GetString(1);
 						if(r.IsDBNull(2))
 						{
-							actionSteps = "";
+							agencyAboutText = "";
 						}
 						else
 						{
-							actionSteps = r.GetString(2).
+							agencyAboutText = r.GetString(2).
 								Replace("%TITLE%", title).
 								Replace("%ORIGIN_ID%", r.IsDBNull(3) ? "" : r.GetString(3)).
 								Replace("%ORIGIN_OPPORTUNITY_NO%", r.IsDBNull(5) ? "" : r.GetString(5)).
@@ -121,6 +124,17 @@ namespace SearchProcurement.Models
 						agencyLogo = r.IsDBNull(11) ? "" : r.GetString(11);
 						status = r.GetString(12);
 						agencyId = r.GetInt32(13);
+
+						// No Feed ID?  We might need to store the contact info and about steps.
+						// This is complicated, because in feed-driven listings action steps are blank,
+						// and contact info is always pulled from the listing data.  In self-published
+						// listings, however, the agency can provide action steps and specific contact
+						// information, and we want to show that on the details view.
+						if( !isExternalFeed )
+						{
+							actionSteps = r.IsDBNull(14) ? "" : r.GetString(14);
+							contactInformation = r.IsDBNull(6) ? "" : r.GetString(6);
+						}
 
 						// Has a parent ID?  If so...
 						if( !r.IsDBNull(8) )
