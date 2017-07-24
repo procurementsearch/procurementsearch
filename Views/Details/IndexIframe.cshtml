@@ -19,6 +19,13 @@
 
     <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
 
+    @if (Model.status == ListingStatus.Closed)
+    {
+    <div class="message">
+        <span class="attention">Attention:</span> This opportunity has closed.
+    </div>
+    }
+
     @if (Model.snippets.Length > 0 )
     {
     <div class="snippets">
