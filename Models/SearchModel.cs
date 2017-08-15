@@ -11,6 +11,7 @@ namespace SearchProcurement.Models
 		public int searchCount { get; private set; }
 		public string searchString { get; private set; }
 		public string searchUrl { get; private set; }
+		public string searchUrlEncoded { get; private set; }
 
 		/* The search results themselves */
 		public searchItem[] searchResults { get; private set; }
@@ -32,6 +33,7 @@ namespace SearchProcurement.Models
 			// Pull out the search data
 			searchString = s.searchString;
 			searchUrl = s.searchUrl;
+			searchUrlEncoded = s.searchUrlEncoded;
 			searchCount = s.count();
 
 			// no result?

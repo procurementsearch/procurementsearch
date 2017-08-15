@@ -19,6 +19,7 @@ namespace SteveHavelka.SphinxFTS
 
 		public string searchString { get; private set; }
 		public string searchUrl { get; private set; }
+		public string searchUrlEncoded { get; private set; }
 		public string resultCount { get; private set; }
 	
 		public string searchUrlSeparator { get; set; } = "&";
@@ -64,6 +65,7 @@ namespace SteveHavelka.SphinxFTS
 
 			/* set the search URL */
 			searchUrl = "kw=" + WebUtility.UrlEncode(words).Replace(" ", "+") + searchUrlSeparator;
+			searchUrlEncoded = WebUtility.UrlEncode(searchUrl);
 			return words;
 		}
 
