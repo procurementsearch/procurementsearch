@@ -42,16 +42,16 @@
         <div class="header minisearch">
             <div class="pure-menu pure-menu-horizontal">
                 <a class="pure-menu-heading rss small-hide"
-                   href="/rss"><img src="/images/rss-icon.png" alt="RSS"></a>
+                   href="/rss"><img src="/images/rss-icon.png" alt="RSS feed for all contracts"></a>
 
                 <a class="pure-menu-heading logo"
                    href="/">
-                    <img src="/images/Logo-sm.png" alt="Home
-                                                          Logo">
+                    <img src="/images/Logo-sm.png" alt="Home">
                 </a>
                 <div class="search-container">
-                    <form method="get" action="/search/">
-                        <input name="kw" type="text"><input type="image"
+                    <form method="get" action="/search/" role="search">
+                        <input name="kw" type="text" title="Search"><input type="image"
+                                                            alt="Search now"
                                                             src="/images/search.png">
                     </form>
                 </div>
@@ -62,7 +62,7 @@
         <div class="subheader small-hide">
             <div class="pure-menu pure-menu-horizontal">
                 <!-- <a class="pure-menu-heading" href="">Home</a> -->
-                <ul class="pure-menu-list">
+                <ul class="pure-menu-list" role="navigation">
                     @Html.Partial("Pages-nav")
                 </ul>
             </div>
@@ -75,7 +75,7 @@
 
     <div class="footer pure-g">
 
-        <div class="pure-u-1 pure-u-md-1-3 l2-box">
+        <div class="pure-u-1 pure-u-md-1-3 l2-box" role="complementary">
             <b>ProcurementSearch.com is your one-stop shop for
             discovering government contracting opportunities.</b><br><br>
             You can search for and find up-to-date procurement
@@ -84,7 +84,7 @@
             buying what you're selling.
         </div>
 
-        <div class="pure-u-1 pure-u-md-1-3 l2-box">
+        <div class="pure-u-1 pure-u-md-1-3 l2-box" role="navigation">
             <span class="listhead">Our Member Agencies</span>
             <ul>
                 <li><a class="green" href="/search/?agency=12">Chemeketa Community College</a></li>
@@ -111,7 +111,7 @@
             </ul>                
         </div>
 
-        <div class="pure-u-1 pure-u-md-1-3 l2-box">
+        <div class="pure-u-1 pure-u-md-1-3 l2-box" role="complementary">
             <span class="green steve">Steve Havelka Software LLC</span><br>
             1327 SE Tacoma St #110<br>
             Portland, OR 97202<br>

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Details.cshtml";
 }
 
-<div class="view-box">
+<div class="view-box" role="main">
 
     <div class="title">Viewing @Model.agencyName Opportunity:</div>
 
@@ -146,7 +146,7 @@ window.onload = window.onresize = resizedetails;
 
             <div class="pages large-hide">
                 <div class="head">Pages</div>
-                <ul>
+                <ul role="navigation">
                     @Html.Partial("Pages-menu")
                 </ul>
             </div>
