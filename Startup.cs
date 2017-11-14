@@ -105,6 +105,9 @@ namespace SearchProcurement
             // And the session
             app.UseSession();
 
+            // And, load the per-request location settings
+            app.UseLocationSettings();
+
             // Add the Stripe configuration
             StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 

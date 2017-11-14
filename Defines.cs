@@ -3,9 +3,6 @@ namespace SearchProcurement
 
 	public sealed class Defines
 	{
-		/* My locations */
-		public static readonly int[] myLocations = { 1, 2, 3, 4, 5 };  // Oregon (Portland, Eugene), Washington (Seattle)
-
 		/* The keyword table I'm using */
 		public const string mySphinxTable = "search_all";
 		public const string mySphinxIndex = "kw_all";
@@ -47,6 +44,8 @@ namespace SearchProcurement
 		public const string RssUrl = "http://ProcurementSearch.com";
 		public const string RssDetailsUrl = "http://ProcurementSearch.com/details";
 		public const string RssLimit = "80";
+		public static readonly int[] RssLocations = { 1, 2, 3, 4, 5 };  // Oregon (Portland, Eugene), Washington (Seattle)
+
 
 
 		/* Key names for session data */
@@ -78,6 +77,39 @@ namespace SearchProcurement
 			public static string StripeKey;
 
 		}
+
+
+
+		/* Settings loaded from the database at runtime */
+		public static class LocationSettings
+		{
+			public static int myLocationId;
+			public static string siteTitle;
+
+			/* Asset URLs */
+			public static string logoUrl;
+			public static string logoUrlSmall;
+			public static string cssUrl;
+			public static string gaGuid;
+
+			/* RSS text */
+			public static string rssTitle;
+			public static string rssDescription;
+			public static string rssUrl;
+			public static string rssDetailsUrl;
+			public static int rssFilterByLocation;
+
+			/* Home page text */
+			public static string homeTitle;
+			public static string homeButtonText;
+			public static string homeGreetingText;
+
+			/* Footer elements */
+			public static string footerText;
+			public static string socialTwitter;
+			public static string socialFacebook;
+		}
+
 
 	}
 
