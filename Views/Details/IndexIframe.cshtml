@@ -1,6 +1,6 @@
 ﻿@using SearchProcurement.Models
 @using SearchProcurement.Helpers
-<div class="view-box">
+<div class="view-box" role="main">
     <h2>Viewing @Model.agencyName Opportunity:</h2>
 
     @if (Model.parentId != 0)
@@ -19,7 +19,7 @@
     </div>
     }
 
-    <iframe id="detailsframe" src="/details/@Model.id/iframe"></iframe>
+    <iframe id="detailsframe" src="/details/@Model.id/iframe" aria-hidden="true"></iframe>
 
     @if (Model.status == ListingStatus.Closed)
     {
@@ -120,7 +120,7 @@ window.onload = window.onresize = resizedetailsframe;
 
             <div class="pages large-hide">
                 <div class="head">Pages</div>
-                <ul>
+                <ul role="navigation">
                     @Html.Partial("Pages-menu")
                 </ul>
             </div>

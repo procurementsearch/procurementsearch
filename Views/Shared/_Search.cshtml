@@ -46,16 +46,16 @@
         <div class="header minisearch">
             <div class="pure-menu pure-menu-horizontal">
                 <a class="pure-menu-heading rss small-hide"
-                   href="/rss"><img src="/images/rss-icon.png" alt="RSS"></a>
+                   href="/rss"><img src="/images/rss-icon.png" alt="RSS feed for all contracts"></a>
 
                 <a class="pure-menu-heading logo"
                    href="/">
-                    <img src="/images/Logo-sm.png" alt="Home
-                                                          Logo">
+                    <img src="/images/Logo-sm.png" alt="Home">
                 </a>
                 <div class="search-container">
-                    <form method="get" action="/search/">
-                        <input name="kw" type="text"><input type="image"
+                    <form method="get" action="/search/" role="search">
+                        <input name="kw" type="text" title="Search"><input type="image"
+                                                            alt="Search now"
                                                             src="/images/search.png">
                     </form>
                 </div>
@@ -66,7 +66,7 @@
         <div class="subheader small-hide">
             <div class="pure-menu pure-menu-horizontal">
                 <!-- <a class="pure-menu-heading" href="">Home</a> -->
-                <ul class="pure-menu-list">
+                <ul class="pure-menu-list" role="navigation">
                     @Html.Partial("Pages-nav")
                 </ul>
             </div>

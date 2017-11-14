@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Search.cshtml";
 }
-<div class="search-rss">
+<div class="search-rss" role="complementary">
     <a href="/rss/@ViewBag.searchUrl">
         <img src="/images/rss-box.png"
              alt="RSS for this search" height="40" width="40">
@@ -13,7 +13,7 @@
     <hr>
 </div>
 
-<div class="search-results">
+<div class="search-results" role="main">
     <p class="head">
         <b>RESULTS for</b> @ViewBag.searchString:
     </p>
@@ -25,8 +25,8 @@
         <div class="item">
             <span class="title"><a href="/details/@res.Id@ViewBag.kwMatch">@res.Title</a></span><br>
             <div class="preview">@res.Description</div>
-            <span class="link"><a href="/details/@res.Id@ViewBag.kwMatch">View details</a></span> |
-            <span class="source"><a href="/search?agency=@res.AgencyId">@res.AgencyName</a></span>
+            <span class="link"><a title="View details for @res.Title" href="/details/@res.Id@ViewBag.kwMatch">View details</a></span> |
+            <span class="source"><a title="View all for @res.AgencyName" href="/search?agency=@res.AgencyId">@res.AgencyName</a></span>
         </div>
         }
     </div>
