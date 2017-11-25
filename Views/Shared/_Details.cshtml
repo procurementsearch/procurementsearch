@@ -12,14 +12,14 @@
           href="@Defines.LocationSettings.rssUrl/rss">
 
     <environment names="Development">
-        <link rel="stylesheet" href="/css/fonts.css">
-        <link rel="stylesheet" href="/css/pure-min.css">
-        <link rel="stylesheet" href="/css/grids-responsive-min.css">
-        <link rel="stylesheet" href="/css/styles.css">
+        <link rel="stylesheet" href="~/css/fonts.css">
+        <link rel="stylesheet" href="~/css/pure-min.css">
+        <link rel="stylesheet" href="~/css/grids-responsive-min.css">
+        <link rel="stylesheet" href="@Defines.LocationSettings.cssUrl">
     </environment>
 
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="~/css/site.micro.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="@Defines.LocationSettings.cssMicroUrl" asp-append-version="true" />
     </environment>
 
     <script type="text/javascript"

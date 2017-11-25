@@ -58,7 +58,9 @@ namespace SearchProcurement
                         "footer_text, " + // 13
                         "social_twitter, " + // 14
                         "social_facebook, " + // 15
-                        "location_id " + // 16
+                        "location_id, " + // 16
+                        "css_mini_url, " + // 17
+                        "css_micro_url " + // 18
                         "FROM location WHERE location_domain = @id OR location_altdomain = @id";
 					cmd.Parameters.AddWithValue("@id",hostname);
 					cmd.Prepare();
@@ -88,6 +90,8 @@ namespace SearchProcurement
                             Defines.LocationSettings.socialTwitter = r.IsDBNull(14) ? "" : r.GetString(14);
                             Defines.LocationSettings.socialFacebook = r.IsDBNull(15) ? "" : r.GetString(15);
                             Defines.LocationSettings.myLocationId = r.GetInt32(16);
+                            Defines.LocationSettings.cssMiniUrl = r.GetString(17);
+                            Defines.LocationSettings.cssMicroUrl = r.GetString(18);
                         }
                         else
                             throw new System.ArgumentException("Couldn't find a site for this hostname!!");

@@ -90,6 +90,8 @@ namespace SearchProcurement
 			public static string logoUrl;
 			public static string logoUrlSmall;
 			public static string cssUrl;
+			public static string cssMiniUrl;
+			public static string cssMicroUrl;
 			public static string gaGuid;
 
 			/* RSS text */

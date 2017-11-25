@@ -14,14 +14,14 @@
 
 
     <environment names="Development">
+        <link rel="stylesheet" href="~/css/fonts.css">
         <link rel="stylesheet" href="~/css/pure-min.css">
         <link rel="stylesheet" href="~/css/grids-responsive-min.css">
-        <link rel="stylesheet" href="~/css/fonts.css">
         <link rel="stylesheet" href="~/lib/jquery-modal/jquery.modal.css">
         <link rel="stylesheet" href="~/lib/Croppie/croppie.css">
         <link rel="stylesheet" href="~/lib/datetimepicker/jquery.datetimepicker.css">
         <link rel="stylesheet" href="~/lib/blueimp-file-upload/css/jquery.fileupload.css">
-        <link rel="stylesheet" href="~/css/styles.css"> <!-- site styles have to go last -->
+        <link rel="stylesheet" href="@Defines.LocationSettings.cssUrl"> <!-- site styles have to go last -->
 
         <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
         <script type="text/javascript" src="~/lib/jquery-modal/jquery.modal.js" charset="utf-8"></script>
@@ -35,7 +35,7 @@
     </environment>
 
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="@Defines.LocationSettings.cssMiniUrl" asp-append-version="true" />
         <script type="text/javascript" src="~/js/site.min.js"></script>
     </environment>
 

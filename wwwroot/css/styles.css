@@ -139,11 +139,25 @@ input[type=text] {
     text-align: center;
 }
 
-.green {
+/* Colors and highlights */
+
+.highlight { /* variant:  home page, footer, some text on search page */
     color: #486A29;
 }
 
-.blue {
+.highlight-alt { /* variant:  footer */
+    color: #486A29;
+}
+
+.rss-text { /* variant:  rss text on search page */
+    color: #486A29;
+}
+
+.rss-email-text { /* variant:  rss emailed results text on search page */
+    color: #486A29;
+}
+
+.search-results-link-extra { /* variant: link on search page, right now just in rss email block */
     color: #008484;
 }
 

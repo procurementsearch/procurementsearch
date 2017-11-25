@@ -17,7 +17,6 @@
   },
   {
     "outputFileName": "wwwroot/css/site.micro.css",
-    // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
       "wwwroot/css/fonts.css",
       "wwwroot/css/pure-min.css",
@@ -25,6 +24,7 @@
       "wwwroot/css/styles.css",
     ]
   },
+
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
