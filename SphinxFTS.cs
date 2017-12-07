@@ -27,9 +27,11 @@ namespace SteveHavelka.SphinxFTS
 		public bool absoluteMatch  { get; set; } = true;
 		public bool buildPartial  { get; set; } = false;
 		public string kwTable  { get; set; } = "kw";
-	
+		public int locationId { get; set; }
+
 		/* for internal use */
 		private string query { get; set; }
+		public string lastUsedQuery { get; private set; }
 
 
 
@@ -94,8 +96,14 @@ namespace SteveHavelka.SphinxFTS
                     // SELECT COUNT(*) FROM search_pdx WHERE query='\\"concrete formwork\\"; groupby=attr:listing_id; mode=extended;';
 					cmd.CommandText =
 						"SELECT SQL_NO_CACHE COUNT(*) FROM " + kwTable +
-                        " WHERE query='" + words + "; groupby=attr:listing_id; mode=extended;'";
+                        " WHERE query='" + words + ";" +
+						" groupby=attr:listing_id;" +
+						(locationId != 0 ? " filter=location_id," + locationId + ";" : "" ) +
+						" mode=extended;'";
 					cmd.Prepare();
+
+					/* save this for debug capture */
+					lastUsedQuery = cmd.CommandText;
 
 					/* And we're done */
 					return Convert.ToInt32(cmd.ExecuteScalar());
@@ -145,10 +153,18 @@ namespace SteveHavelka.SphinxFTS
 						// select listing_id from search_pdx where query='\\"concrete formwork\\"; groupby=attr:listing_id; limit=20; groupsort=@weight desc; mode=extended;';
 						cmd.CommandText =
 							"SELECT SQL_NO_CACHE listing_id FROM " + kwTable +
-							" WHERE query='" + words + "; groupby=attr:listing_id; limit=" + my_limit + "; offset=" + my_offset +
-							"; groupsort=@weight desc; mode=extended;'";
+							" WHERE query='" + words + ";" +
+							" groupby=attr:listing_id;" +
+							" limit=" + my_limit + ";" +
+							" offset=" + my_offset + ";" +
+							(locationId != 0 ? " filter=location_id," + locationId + ";" : "" ) +
+							" groupsort=@weight desc;" +
+							" mode=extended;'";
 						cmd.Prepare();
 
+						/* save this for debug capture */
+						lastUsedQuery = cmd.CommandText;
+Console.WriteLine(lastUsedQuery);
 						// Get the number of results, for the case where this latest paging
 						// through the results returned nothing
 						bool got_results = false;

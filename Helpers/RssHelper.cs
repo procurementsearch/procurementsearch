@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Text;
 using System.IO;
+using MySql.Data.MySqlClient;
+
 using WilderMinds.RssSyndication;
 
 namespace SearchProcurement.Helpers
@@ -46,6 +48,31 @@ namespace SearchProcurement.Helpers
             // And generate the text itself
             return my_feed.Serialize();
 
+        }
+
+
+
+        /**
+         * Look up the id of an agency by its short name, for RSS feeds
+         * @param string shortname The agency short name
+         * @return int The agency ID
+         */
+        public static int getAgencyByShortname(string shortname)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT agency_id FROM agency WHERE agencyshortname = @name";
+					cmd.Parameters.AddWithValue("@name",shortname);
+					cmd.Prepare();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
         }
 
     }

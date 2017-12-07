@@ -28,6 +28,7 @@ namespace SearchProcurement.Models
 			SphinxFTS s = new SphinxFTS();
 			s.kwTable = Defines.mySphinxTable;
 			s.searchUrlSeparator = "";
+			s.locationId = Defines.LocationSettings.myLocationId;
 			s.setWords(kw);
 
 			// Pull out the search data

@@ -103,6 +103,7 @@ namespace SearchProcurement.Models
 			// Instantiate the search object
 			SphinxFTS s = new SphinxFTS();
 			s.kwTable = Defines.mySphinxTable;
+			s.locationId = Defines.LocationSettings.myLocationId;
 			s.setWords(kw);
 
 			// Run the search
