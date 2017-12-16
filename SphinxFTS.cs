@@ -164,7 +164,7 @@ namespace SteveHavelka.SphinxFTS
 
 						/* save this for debug capture */
 						lastUsedQuery = cmd.CommandText;
-Console.WriteLine(lastUsedQuery);
+
 						// Get the number of results, for the case where this latest paging
 						// through the results returned nothing
 						bool got_results = false;
