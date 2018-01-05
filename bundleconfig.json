@@ -95,5 +95,30 @@
       "wwwroot/css/grids-responsive-min.css",
       "wwwroot/css/site-specific/salem-styles.css",
     ]
+  },
+
+  {
+    "outputFileName": "wwwroot/css/site-or.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "wwwroot/css/fonts.css",
+      "wwwroot/css/pure-min.css",
+      "wwwroot/css/grids-responsive-min.css",
+      "wwwroot/lib/jquery-modal/jquery.modal.css",
+      "wwwroot/lib/Croppie/croppie.css",
+      "wwwroot/lib/datetimepicker/jquery.datetimepicker.css",
+      "wwwroot/lib/blueimp-file-upload/css/jquery.fileupload.css",
+      "wwwroot/css/site-specific/or-styles.css",
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site-or.micro.css",
+    "inputFiles": [
+      "wwwroot/css/fonts.css",
+      "wwwroot/css/pure-min.css",
+      "wwwroot/css/grids-responsive-min.css",
+      "wwwroot/css/site-specific/or-styles.css",
+    ]
   }
+
 ]
