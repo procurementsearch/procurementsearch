@@ -33,8 +33,8 @@ namespace SearchProcurement.Helpers
             {
                 var my_item = new Item()
                 {
-                    Title = item.Title,
-                    Body = item.Description,
+                    Title = Library.trimNonAscii(item.Title),
+                    Body = Library.trimNonAscii(item.Description),
                     Link = new Uri(Defines.RssDetailsUrl + "/" + item.Id.ToString()),
                     Permalink = Defines.RssDetailsUrl + "/" + item.Id.ToString(),
                     PublishDate = item.Created.DateTime

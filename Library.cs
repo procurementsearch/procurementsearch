@@ -174,6 +174,18 @@ namespace SearchProcurement
 		}
 
 
+		/**
+		 * Remove nonprintable characters
+		 * @param string stg The source strong
+		 * @return string The ASCII-printable string
+		 */
+		public static string trimNonAscii(this string stg)
+		{
+		    string pattern = "[^ -~]+";
+		    Regex reg_exp = new Regex(pattern);
+		    return reg_exp.Replace(stg, "");
+		}
+
 
         /**
          * Generate an excerpt of max length l from the text
