@@ -234,7 +234,7 @@ namespace SearchProcurement
                 routes.MapRoute(
                     name: "Rss for Agency (by short name)",
                     template: "rss_{agencyshortname}",
-                    defaults: new { controller = "Rss", action = "ByAgency" });
+                    defaults: new { controller = "Rss", action = "ByAgencyShortname" });
             });
         }
     }

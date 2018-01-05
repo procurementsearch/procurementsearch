@@ -66,7 +66,7 @@ namespace SearchProcurement.Controllers
 
 
 
-        public IActionResult ByAgency(string agencyshortname)
+        public IActionResult ByAgencyShortname(string agencyshortname)
         {
             // Set up the RSS model and results
             Rss r = new Rss();
