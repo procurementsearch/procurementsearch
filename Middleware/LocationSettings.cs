@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 using MySql.Data.MySqlClient;
 using SearchProcurement.Helpers;
@@ -23,6 +24,7 @@ namespace SearchProcurement
             string myHostname = context.Request.Host.Host;
 
             // Load up the site-specific data structure
+            myHostname = Regex.Replace(myHostname, "^www.", "", RegexOptions.IgnoreCase);
             loadByDomainName(myHostname);
 
             // And that's it-- we're done!
