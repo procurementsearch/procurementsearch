@@ -223,6 +223,9 @@ a {
     color: #111;
 }
 
+.agency-header {
+    margin: 1em;
+}
 
 .search-rss {
     margin: 1em;

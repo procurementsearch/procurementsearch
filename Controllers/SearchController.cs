@@ -18,6 +18,7 @@ namespace SearchProcurement.Controllers
             if( kw == null ) {
                 s = Search.loadByAgency(agency.GetValueOrDefault());
                 ViewBag.extraTitle = "Showing all " + s.searchString + " opportunities";
+                ViewBag.agencyHeader = SearchHelper.loadAgencyHeader(agency.GetValueOrDefault());
             }
             else
             {

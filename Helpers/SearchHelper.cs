@@ -156,6 +156,41 @@ namespace SearchProcurement.Helpers
 
 
 
+        /**
+         * Load the agency "show me everything" header for the agency ID
+         * @param int id The agency ID
+         * @return string header The agency header
+         */
+        public static string loadAgencyHeader(int id)
+		{
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "select agency_header from agency where agency_id = @id";
+					cmd.Parameters.AddWithValue("@id", id);
+					cmd.Prepare();
+
+					// Run the DB command
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+                        // Return the source name or that it is not a known source 
+						r.Read();
+						return r.IsDBNull(0) ? null : r.GetString(0);
+                    }
+
+                }
+
+            }
+
+        }
+
+
+
 		/**
 		 * Filter search items according to an array of location IDs
 		 * @param int[] searchIds The listing IDs
