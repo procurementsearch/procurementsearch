@@ -5,7 +5,7 @@
 @if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
 {
 <div class="agency-header" role="complementary">
-@ViewBag.agencyHeader
+@Html.Raw(ViewBag.agencyHeader)
 </div>
 }
 
