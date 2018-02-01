@@ -25,7 +25,8 @@ namespace SearchProcurement
 
             // Load up the site-specific data structure
             myHostname = Regex.Replace(myHostname, "^www.", "", RegexOptions.IgnoreCase);
-            loadByDomainName(myHostname);
+            if( !loadByDomainName(myHostname) )
+                loadByDomainName(Defines.defaultSiteName);
 
             // And that's it-- we're done!
 
@@ -35,7 +36,7 @@ namespace SearchProcurement
 
 
 
-        private void loadByDomainName(string hostname)
+        private bool loadByDomainName(string hostname)
         {
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
@@ -95,9 +96,10 @@ namespace SearchProcurement
                             Defines.LocationSettings.myLocationId = r.GetInt32(16);
                             Defines.LocationSettings.cssMiniUrl = r.GetString(17);
                             Defines.LocationSettings.cssMicroUrl = r.GetString(18);
+                            return true;
                         }
                         else
-                            throw new System.ArgumentException("Couldn't find a site for this hostname!!");
+                            return false;
 
                     }
                 }

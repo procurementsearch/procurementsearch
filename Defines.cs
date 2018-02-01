@@ -24,6 +24,8 @@ namespace SearchProcurement
 		public const string RssLimit = "80";
 		public static readonly int[] RssLocations = { 1, 2, 3, 4, 5 };  // Oregon (Portland, Eugene), Washington (Seattle)
 
+		/* The default site, if we've been requested one that hasn't been set up or doesn't exist */
+		public const string defaultSiteName = "ProcurementSearch.com";
 
 
 		/* Key names for session data */
