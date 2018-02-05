@@ -15,7 +15,14 @@
     else
     {
     <div class="title">
-        @Model.title
+        <b>Project Title:</b> @Model.title
+    </div>
+    }
+
+    @if (Model.CloseDate != null)
+    {
+    <div class="subtitle">
+        <b>Bids Due:</b> @Model.CloseDate.ToString("M/d/yyyy")
     </div>
     }
 
@@ -26,11 +33,6 @@
     <div class="message">
         <span class="attention">Attention:</span> This opportunity has closed.
     </div>
-    }
-
-    @if (Model.CloseDate != null)
-    {
-        <h3>Bids Due: @Model.CloseDate.ToString("M/d/yyyy")</h3>
     }
 
     @if (Model.snippets.Length > 0 )
