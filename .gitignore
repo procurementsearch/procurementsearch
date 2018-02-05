@@ -7,11 +7,6 @@
 *.userosscache
 *.sln.docstates
 
-wwwroot/css/site.micro.css
-wwwroot/css/site.micro.min.css
-wwwroot/css/site.min.css
-wwwroot/js/site.min.js
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
