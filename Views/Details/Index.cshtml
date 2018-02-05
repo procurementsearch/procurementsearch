@@ -36,6 +36,11 @@
     </div>
     }
 
+    @if (Model.CloseDate != null)
+    {
+        <h3>Bids Due: @Model.CloseDate.ToString("M/d/yyyy")</h3>
+    }
+
     @if (Model.snippets.Length > 0 )
     {
     <div class="snippets">

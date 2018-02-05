@@ -12,6 +12,7 @@ namespace SearchProcurement.Helpers
         public int AgencyId;
         public string AgencyName;
 		public DateTimeOffset Created;
+		public DateTimeOffset? CloseDate;
 		public int ParentId;
 	}
 
@@ -35,7 +36,14 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT l.title, l.description, l.created, l.agency_id, a.agency_name, l.listing_parent_id " +
+					cmd.CommandText = "SELECT " +
+					    "l.title, " +        // 0
+						"l.description, " +  // 1
+						"l.created,  " +     // 2
+						"l.agency_id, " +    // 3
+						"a.agency_name, " +  // 4
+						"l.listing_parent_id, " +  // 5
+						"l.close_date " +          // 6
                         "FROM listing AS l " +
                         "LEFT JOIN agency AS a ON a.agency_id = l.agency_id " +
                         "where listing_id = @id";
@@ -67,6 +75,12 @@ namespace SearchProcurement.Helpers
 						}
 						else
 							item.ParentId = 0;
+
+						// And handle potentially null close dates
+						if( !r.IsDBNull(6) )
+							item.CloseDate = r.GetDateTime(6);
+						else
+							item.CloseDate = null;
 
 					}
 				}

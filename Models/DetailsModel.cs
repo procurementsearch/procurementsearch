@@ -40,6 +40,7 @@ namespace SearchProcurement.Models
 		public string title { get; private set; }
 		public string subtitle { get; private set; }
 		public string description { get; private set; }
+		public DateTimeOffset? CloseDate { get; private set; }
 		public string agencyLogo { get; private set; }
 		public int id { get; private set; }
 		public int parentId { get; private set; }
@@ -90,7 +91,8 @@ namespace SearchProcurement.Models
 						"a.agency_logo_url, " + // 11
 						"l.status, " + // 12
 						"l.agency_id, " + // 13
-						"l.action_steps " + // 14
+						"l.action_steps, " + // 14
+						"l.close_date " + // 15
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -142,6 +144,10 @@ namespace SearchProcurement.Models
 							subtitle = DetailsHelper.loadTitle(r.GetInt32(8));
 							parentId = r.GetInt32(8);
 						}
+
+						// Has a close date?  If so...
+						if( !r.IsDBNull(15) )
+							CloseDate = r.GetDateTime(15);
 
 						// And, get the attachments if the agency wants to show them or
 						// if we're showing some matching search terms

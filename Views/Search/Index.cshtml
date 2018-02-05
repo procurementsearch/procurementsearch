@@ -34,7 +34,11 @@
             <span class="title"><a href="/details/@res.Id@ViewBag.kwMatch">@res.Title</a></span><br>
             <div class="preview">@res.Description</div>
             <span class="link"><a title="View details for @res.Title" href="/details/@res.Id@ViewBag.kwMatch">View details</a></span> |
-            <span class="source"><a title="View all for @res.AgencyName" href="/search?agency=@res.AgencyId">@res.AgencyName</a></span>
+            <span class="source"><a title="View all for @res.AgencyName" href="/search?agency=@res.AgencyId">@res.AgencyName</a></span> |
+            @if ( res.CloseDate != null )
+            {
+            <span class="close_date small">Bids Due: @res.CloseDate.ToString("M/d/yyyy")</span>
+            }
         </div>
         }
     </div>
