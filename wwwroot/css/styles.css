@@ -42,7 +42,7 @@ html, body { /* for sticky footer */
 
 body, .modal {
     color: #555;
-    background-color: #f5f9f4;
+    background-color: #fff;
 }
 
 .modal {
@@ -75,7 +75,6 @@ input[type=text] {
 }
 
 .header .pure-menu {
-    border-bottom: solid thin #CCCCCC;
     border-radius: 0;
 }
 
@@ -142,11 +141,11 @@ input[type=text] {
 /* Colors and highlights */
 
 .highlight { /* variant:  home page, footer, some text on search page */
-    color: #486A29;
+    color: #fff;
 }
 
 .highlight-alt { /* variant:  footer */
-    color: #486A29;
+    color: #fff;
 }
 
 .rss-text { /* variant:  rss text on search page */
@@ -209,6 +208,10 @@ a {
     padding: 1.5em;
 }
 
+.footer, .footer a {
+    color: #fff;
+}
+
 .footer .listhead {
     font-weight: bold;
 }
@@ -234,7 +237,7 @@ a {
     text-transform: uppercase;
     border-top: solid thin #ccc;
     border-bottom: solid thin #ccc;
-    color: #111;
+    color: #fff;
 }
 
 .agency-header {
@@ -321,7 +324,7 @@ a {
 }
 
 .footer {
-    background: #d5ecd1;
+    background: #03B5A5;
     font-size: 10.5pt;
 }
 
