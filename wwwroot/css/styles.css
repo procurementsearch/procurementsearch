@@ -50,45 +50,12 @@ input[type=text] {
     font-weight: bold;
 }
 
-.l-box {
-    padding: 2em;
-}
-
 .header .rss {
     float: right;
 }
 
 .header .pure-menu {
     border-radius: 0;
-}
-
-.minisearch {
-}
-
-.minisearch input[type=text] {
-    height: 37px;
-    font-size: 14pt;
-    vertical-align: top;
-    border-color: #ccc;
-    color: #333;
-    margin: 0;
-    padding: 0 2px;
-    width: 100%;
-    max-width: 500px;
-}
-
-.minisearch .logo {
-    padding-right: 10px;
-    padding-top: 1em;
-    float: left;
-}
-
-.minisearch form {
-    padding: 1em 0;
-}
-
-.minisearch .search-container {
-    margin-right: 120px;
 }
 
 .pure-menu-link {
@@ -101,27 +68,6 @@ input[type=text] {
     margin-bottom: 1em;
 }
 
-.content-box .head {
-    font-size: 26pt;
-    font-weight: 500;
-    text-align: center;
-    line-height: 100%;
-}
-
-.content-box input {
-    width: 95%;
-    font-size: 18pt;
-    padding: 6px 4px;
-}
-
-.content-box button {
-    margin: 1em auto 0 auto;
-}
-
-.content-box form {
-    text-align: center;
-}
-
 /* Colors and highlights */
 
 .highlight { /* variant:  home page, footer, some text on search page */
@@ -132,18 +78,6 @@ input[type=text] {
     color: #fff;
 }
 
-.rss-text { /* variant:  rss text on search page */
-    color: #486A29;
-}
-
-.rss-email-text { /* variant:  rss emailed results text on search page */
-    color: #486A29;
-}
-
-.search-results-link-extra { /* variant: link on search page, right now just in rss email block */
-    color: #008484;
-}
-
 .red {
     color: #a12;
 }
@@ -152,31 +86,11 @@ a {
     color: #666;
 }
 
-
-.content-box p {
-    font-size: 10.5pt;
-    margin: 1em auto;
-}
-
-.content-box ul li {
-    font-size: 10.5pt;
-}
-
-.content-box p.tip {
-    font-style: italic;
-    text-align: center;
-    margin-top: 1em;
-    margin-bottom: 2em;
-    color: #B1AAA0;
-}
-
 .footnote p.tip {
     font-style: italic;
     font-size: 10.5pt;
     padding-top: 2em;
 }
-
-
 
 .pure-g > div {
     -webkit-box-sizing: border-box;
@@ -210,103 +124,6 @@ a {
     line-height: 150%;
 }
 
-.pages {
-    font-size: 10pt;
-    margin: .5em auto 3em;
-}
-
-.pages .head {
-    margin: .5em;
-    padding: .5em 0;
-    text-transform: uppercase;
-    border-top: solid thin #ccc;
-    border-bottom: solid thin #ccc;
-    color: #fff;
-}
-
-.agency-header {
-    margin: 1em;
-}
-
-.search-rss {
-    margin: 1em;
-    font-size: 11pt;
-    font-style: normal;
-    font-weight: bold;
-    line-height: 120%;
-    background-color: #F8F1E8;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.search-rss p {
-    padding: 0.5em;
-    padding-bottom: 1em;
-}
-
-.search-rss img {
-    float: left;
-    padding: 4px;
-}
-
-.search-rss.by-email img {
-    float: right;
-}
-
-.search-rss hr {
-    display: block;
-    clear: left;
-    margin: -0.66em 0.5em;
-    visibility: hidden;
-}
-
-.search-results {
-    margin: 1.5em 1em;
-    padding-bottom: 2em;
-}
-
-.search-results .head {
-    font-size: 18pt;
-    color: #4B4642;
-}
-
-.search-results .count {
-    font-size: 13pt;
-}
-
-.search-results .results {
-    margin-top: 20px;
-    margin-left: 20px;
-}
-
-.search-results .results .item {
-    margin-top: 20px;
-}
-
-.search-results .results .item .title {
-    font-size: 13pt;
-    font-weight: bold;
-    color: #4B4642;
-}
-
-.search-results .results .item .title a {
-    color: #555;
-}
-
-.search-results .results .item .preview {
-    font-size: 12pt;
-    color: #4B4642;
-}
-
-.search-results .results .item .link a {
-    font-size: 12pt;
-    color: #008484;
-}
-
-.search-results .results .item .source a {
-    font-size: 12pt;
-    color: #186f2c;
-}
-
 .footer {
     background: #03B5A5;
     font-size: 10.5pt;
@@ -317,7 +134,45 @@ a {
 }
 
 .account-content {
-    
+
+}
+
+.content-box .head {
+    font-size: 26pt;
+    font-weight: 500;
+    text-align: center;
+    line-height: 100%;
+}
+
+.content-box input {
+    width: 95%;
+    font-size: 18pt;
+    padding: 6px 4px;
+}
+
+.content-box button {
+    margin: 1em auto 0 auto;
+}
+
+.content-box form {
+    text-align: center;
+}
+
+.content-box p {
+    font-size: 10.5pt;
+    margin: 1em auto;
+}
+
+.content-box ul li {
+    font-size: 10.5pt;
+}
+
+.content-box p.tip {
+    font-style: italic;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    color: #B1AAA0;
 }
 
 .view-box h2 {
@@ -420,63 +275,9 @@ a {
 }
 
 
-
+/* INCLUDE SEARCH */
 /* INCLUDE HAMBURGER MENU */
 /* INCLUDE ACCOUNT */
 /* INCLUDE PROGRESS BAR */
-
-/* Used on listing setup */
-#fileupload {
-    margin: 0;
-}
-
 /* INCLUDE LISTING BREADCRUMBS */
-
-
-
-
-
-@media screen and (max-width: 48em) {
-    /* small screens */
-    .small-hide {
-	display: none !important;
-    }
-
-    .view-box {
-	margin: 2em 1em 1em;
-    }
-
-    .search-rss {
-    }
-
-    .minisearch input[type=text] {
-    }
-
-    .view-box form {
-        margin: 1em 1em;
-    }
-
-}
-
-@media screen and (min-width: 48em) {
-    /* large screens */
-    .large-hide {
-	display: none !important;
-    }
-
-    .view-box {
-	margin: 4em 3em 2em;
-    }
-
-    .search-rss {
-	width: 60%;
-    }
-
-    .minisearch input[type=text] {
-    }
-
-    .view-box form {
-        margin: auto 5em;
-    }
-
-}
+/* INCLUDE MOBILE */

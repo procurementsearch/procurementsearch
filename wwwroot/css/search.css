@@ -1,0 +1,123 @@
+.minisearch {
+}
+
+.minisearch input[type=text] {
+    height: 37px;
+    font-size: 14pt;
+    vertical-align: top;
+    border-color: #ccc;
+    color: #333;
+    margin: 0;
+    padding: 0 2px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.minisearch .logo {
+    padding-right: 10px;
+    padding-top: 1em;
+    float: left;
+}
+
+.minisearch form {
+    padding: 1em 0;
+}
+
+.minisearch .search-container {
+    margin-right: 120px;
+}
+
+.agency-header {
+    margin: 1em;
+}
+
+.search-rss {
+    margin: 1em;
+    font-size: 11pt;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 120%;
+    background-color: #F8F1E8;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.search-rss p {
+    padding: 0.5em;
+    padding-bottom: 1em;
+}
+
+.search-rss img {
+    float: left;
+    padding: 4px;
+}
+
+.search-rss.by-email img {
+    float: right;
+}
+
+.search-rss hr {
+    display: block;
+    clear: left;
+    margin: -0.66em 0.5em;
+    visibility: hidden;
+}
+
+.search-results {
+    margin: 1.5em 1em;
+    padding-bottom: 2em;
+}
+
+.search-results .head {
+    font-size: 18pt;
+    color: #4B4642;
+}
+
+.search-results .count {
+    font-size: 13pt;
+}
+
+.search-results .results {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.search-results .results .item {
+    margin-top: 20px;
+}
+
+.search-results .results .item .title {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #4B4642;
+}
+
+.search-results .results .item .title a {
+    color: #555;
+}
+
+.search-results .results .item .preview {
+    font-size: 12pt;
+    color: #4B4642;
+}
+
+.search-results .results .item .link a {
+    font-size: 12pt;
+    color: #008484;
+}
+
+.search-results .results .item .source a {
+    font-size: 12pt;
+    color: #186f2c;
+}
+
+.rss-text { /* variant:  rss text on search page */
+    color: #486A29;
+}
+
+.rss-email-text { /* variant:  rss emailed results text on search page */
+    color: #486A29;
+}
+
+.search-results-link-extra { /* variant: link on search page, right now just in rss email block */
+    color: #008484;
+}

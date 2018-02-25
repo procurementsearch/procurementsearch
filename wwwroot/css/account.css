@@ -11,3 +11,8 @@
     height: 100%;
     opacity: 0;
 }
+
+/* Used on listing setup */
+#fileupload {
+    margin: 0;
+}

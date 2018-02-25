@@ -1,0 +1,59 @@
+/* Responsiveness for mobile */
+.pages {
+    font-size: 10pt;
+    margin: .5em auto 3em;
+}
+
+.pages .head {
+    margin: .5em;
+    padding: .5em 0;
+    text-transform: uppercase;
+    border-top: solid thin #ccc;
+    border-bottom: solid thin #ccc;
+    color: #fff;
+}
+
+@media screen and (max-width: 48em) {
+    /* small screens */
+    .small-hide {
+	display: none !important;
+    }
+
+    .view-box {
+	margin: 2em 1em 1em;
+    }
+
+    .search-rss {
+    }
+
+    .minisearch input[type=text] {
+    }
+
+    .view-box form {
+        margin: 1em 1em;
+    }
+
+}
+
+@media screen and (min-width: 48em) {
+    /* large screens */
+    .large-hide {
+	display: none !important;
+    }
+
+    .view-box {
+	margin: 4em 3em 2em;
+    }
+
+    .search-rss {
+	width: 60%;
+    }
+
+    .minisearch input[type=text] {
+    }
+
+    .view-box form {
+        margin: auto 5em;
+    }
+
+}
