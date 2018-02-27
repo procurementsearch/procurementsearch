@@ -21,7 +21,13 @@
         <link rel="stylesheet" href="~/lib/Croppie/croppie.css">
         <link rel="stylesheet" href="~/lib/datetimepicker/jquery.datetimepicker.css">
         <link rel="stylesheet" href="~/lib/blueimp-file-upload/css/jquery.fileupload.css">
-        <link rel="stylesheet" href="@Defines.LocationSettings.cssUrl"> <!-- site styles have to go last -->
+        <link rel="stylesheet" href="~/css/styles.css">
+        <link rel="stylesheet" href="~/css/search.css">
+        <link rel="stylesheet" href="~/css/hamburger-menu.css">
+        <link rel="stylesheet" href="~/css/account.css">
+        <link rel="stylesheet" href="~/css/progress-bar.css">
+        <link rel="stylesheet" href="~/css/listing-breadcrumbs.css">
+        <link rel="stylesheet" href="~/css/mobile.css">
 
         <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
         <script type="text/javascript" src="~/lib/jquery-modal/jquery.modal.js" charset="utf-8"></script>
@@ -32,10 +38,12 @@
         <script type="text/javascript" src="~/lib/blueimp-file-upload/js/vendor/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="~/lib/blueimp-file-upload/js/jquery.iframe-transport.js"></script>
         <script type="text/javascript" src="~/lib/blueimp-file-upload/js/jquery.fileupload.js"></script>
+        <script type="text/javascript" src="~/js/site.js"></script>
+        <script type="text/javascript" src="~/js/ui.js"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="@Defines.LocationSettings.cssMiniUrl" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         <script type="text/javascript" src="~/js/site.min.js"></script>
     </environment>
 

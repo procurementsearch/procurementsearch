@@ -1,6 +1,23 @@
-﻿@{
-    Layout = "~/Views/Shared/_Search.cshtml";
-}
+﻿<div class="header minisearch">
+    <div class="pure-menu pure-menu-horizontal">
+        <a class="pure-menu-heading rss small-hide"
+            href="/rss"><img src="/images/rss-icon.png" alt="RSS feed for all contracts"></a>
+
+        <a class="pure-menu-heading logo"
+            href="/">
+            <img src="/images/PS-logo-small.png" alt="Home">
+        </a>
+        <div class="search-container">
+            <form method="get" action="/search/" role="search">
+                <input name="kw" type="text" title="Search"><input type="image"
+                                                    alt="Search now"
+                                                    src="/images/search.png">
+            </form>
+        </div>
+    </div>
+
+</div>
+
 
 @if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
 {

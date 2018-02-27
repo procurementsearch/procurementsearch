@@ -1,42 +1,16 @@
-<div class="pure-g">
-    <div class="pure-u-1 pure-u-md-1-4 small-hide"></div>
-    <div class="pure-u-1 pure-u-md-1-2 content-box">
-        <div id="main-logo-container"><img src="/images/PS-logo.png" class="pure-img" style="margin-left: auto; margin-right: auto;"></div>
-        <div class="head">
-            @Html.Raw(Defines.LocationSettings.homeTitle)
-        </div>
-    </div>
-    <div class="pure-u-1 pure-u-md-1-4 small-hide"></div>
-</div>
 
-<div class="pure-g">
-    <div class="pure-u-1 pure-u-md-7-24 small-hide"></div>
-    <div class="pure-u-1 pure-u-md-10-24 content-box l-box" role="main">
-        <form method="get" action="/search" role="search">
-            <input type="text" name="kw" placeholder="Search...">
-            <button type="submit" class="pure-button">@Html.Raw(Defines.LocationSettings.homeButtonText)</button>
-        </form>
-        <p class="tip">
-            Example: landscape architecture<br>
-        </p>
-        @Html.Raw(Defines.LocationSettings.homeGreetingText)
+<div id="main-logo-container">
+    <div id="main-logo-image"><img src="/images/logo.png" class="pure-img"></div>
+    <div id="main-logo-logotype">
+        procurement search
+        <div id="main-logo-place">@Html.Raw(Defines.LocationSettings.homeTitle)</div>
     </div>
 </div>
+<div style="clear: both;"></div>
 
-<div class="pure-g">
-    <div class="pure-u-1 l-box">
-        <div class="footnote">
-
-            <div class="pages large-hide">
-                <div class="head">Pages</div>
-                <ul role="navigation">
-                    @Html.Partial("Pages-menu")
-                </ul>
-            </div>
-
-            <p class="tip">
-                Got questions?  Oh yes you do.
-            </p>
-        </div>
-    </div>
+<div id="main-search-container">
+    <form method="get" action="/search" role="search">
+        <input type="text" name="kw" placeholder="Looking for bids and RFPs?">
+        <button type="submit" id="main-search" class="pure-button button-primary">search</button>
+    </form>
 </div>

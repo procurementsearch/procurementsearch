@@ -20,6 +20,11 @@
     font-size: 125%;
 }
 
+.button-primary {
+    background: #02b6a5;
+    color: white;
+}
+
 .button-secondary {
     background: rgb(66, 184, 221); /* this is a light blue */
 }
@@ -35,7 +40,7 @@ body, .modal {
 
 html, button, input, select, textarea,
 .pure-g [class *= "pure-u"] {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'metropolislight', sans-serif;
 }
 
 input[type=text] {
@@ -60,12 +65,6 @@ input[type=text] {
 
 .pure-menu-link {
     padding: 1em 1em;
-}
-
-#main-logo-container {
-    text-align: center;
-    margin-top: 2.5em;
-    margin-bottom: 1em;
 }
 
 /* Colors and highlights */
@@ -133,48 +132,110 @@ a {
     font-weight: 600;
 }
 
-.account-content {
 
+/* The home page logo and search box for full-size displays */
+#main-search-container form input::placeholder {
+    color: #aaa;
 }
 
-.content-box .head {
-    font-size: 26pt;
-    font-weight: 500;
+#main-search-container form {
     text-align: center;
-    line-height: 100%;
 }
 
-.content-box input {
-    width: 95%;
-    font-size: 18pt;
-    padding: 6px 4px;
+#main-search-container form input {
+    display: block;
+    border-color: #999;
+    border-width: 2px;
+    width: 100%;
+    font-size: 20pt;
+    /* font-family: 'metropolissemi_bold'; */
+    padding: 12pt 8pt;
 }
 
-.content-box button {
+#main-search {
     margin: 1em auto 0 auto;
+    margin-top: 1.5em;
+    font-size: 24pt;
+    font-family: 'metropolissemi_bold';
+    width: 50%;
 }
 
-.content-box form {
-    text-align: center;
+/* Large screens */
+@media screen and (min-width: 640px) {
+    #main-logo-container {
+        text-align: center;
+        margin: 10% auto 0 auto;
+        max-width: 600px;
+    }
+
+    #main-logo-image {
+        float: left;
+        margin: 1em auto;
+    }
+
+    #main-logo-logotype {
+        font-size: 41pt;
+        font-weight: lighter;
+        float: right;
+        color: black;
+    }
+
+    #main-logo-place {
+        margin: .5em auto;
+        font-size: 18pt;
+        font-weight: bold;
+        color: #555;
+        text-align: right;
+        text-transform: uppercase;
+    }
+
+    #main-search-container {
+        max-width: 600px;
+        margin: 2em auto;
+    }
 }
 
-.content-box p {
-    font-size: 10.5pt;
-    margin: 1em auto;
+/* Small screens */
+@media screen and (max-width: 639px) {
+    #main-logo-container {
+        text-align: center;
+        margin: 25% 1em 0 1em;
+    }
+
+    #main-logo-image {
+        margin: 2em auto;
+    }
+    #main-logo-image img {
+        display: inline;
+    }
+
+    #main-logo-logotype {
+        font-size: 26pt;
+        font-weight: lighter;
+        color: black;
+    }
+
+    #main-logo-place {
+        margin: .5em auto;
+        font-size: 14pt;
+        font-weight: bold;
+        color: #555;
+        text-transform: uppercase;
+    }
+
+    #main-search-container {
+        width: 90%;
+        margin: 2em auto;
+    }
+
+    #main-search {
+        margin-top: 1em;
+    }
 }
 
-.content-box ul li {
-    font-size: 10.5pt;
-}
 
-.content-box p.tip {
-    font-style: italic;
-    text-align: center;
-    margin-top: 1em;
-    margin-bottom: 2em;
-    color: #B1AAA0;
-}
 
+/* Main page content */
 .view-box h2 {
     font-size: 17pt;
     font-weight: bold;
@@ -273,11 +334,3 @@ a {
     color: #a12;
     border: solid thin #4B4642;
 }
-
-
-/* INCLUDE SEARCH */
-/* INCLUDE HAMBURGER MENU */
-/* INCLUDE ACCOUNT */
-/* INCLUDE PROGRESS BAR */
-/* INCLUDE LISTING BREADCRUMBS */
-/* INCLUDE MOBILE */

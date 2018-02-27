@@ -16,11 +16,21 @@
         <link rel="stylesheet" href="~/css/fonts.css">
         <link rel="stylesheet" href="~/css/pure-min.css">
         <link rel="stylesheet" href="~/css/grids-responsive-min.css">
-        <link rel="stylesheet" href="@Defines.LocationSettings.cssUrl">
+        <link rel="stylesheet" href="~/css/styles.css">
+        <link rel="stylesheet" href="~/css/search.css">
+        <link rel="stylesheet" href="~/css/hamburger-menu.css">
+        <link rel="stylesheet" href="~/css/account.css">
+        <link rel="stylesheet" href="~/css/progress-bar.css">
+        <link rel="stylesheet" href="~/css/listing-breadcrumbs.css">
+        <link rel="stylesheet" href="~/css/mobile.css">
+
+        <script type="text/javascript" src="~/js/site.js"></script>
+        <script type="text/javascript" src="~/js/ui.js"></script>
     </environment>
 
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="@Defines.LocationSettings.cssMicroUrl" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.micro.min.css" asp-append-version="true" />
+        <script type="text/javascript" src="~/js/site.micro.min.js"></script>
     </environment>
 
     @if (Defines.LocationSettings.gaGuid != "")
@@ -50,39 +60,32 @@
 
         <div id="menu">
             <div class="pure-menu">
-                <a class="pure-menu-heading" href="#">Company</a>
+                <a class="pure-menu-heading" href="#">Login</a>
                 <ul class="pure-menu-list">
-                    @Html.Partial("Pages-nav")
+                    @Html.Partial("Pages-login")
+                </ul>
+                <a class="pure-menu-heading" href="#">Menu</a>
+                <ul class="pure-menu-list">
+                    @Html.Partial("Pages-menu")
+                </ul>
+                <a class="pure-menu-heading" href="#">Social Media</a>
+                <ul class="pure-menu-list">
+                    @Html.Partial("Pages-social-media")
+                </ul>
+                <a class="pure-menu-heading" style="text-transform: none;" href="#">Procurement Search, LLC</a>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">(503) 395-5303</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">help @@ procurementsearch.com</a></li>
                 </ul>
             </div>
         </div>
 
-
-        <!-- <div class="header small-hide">
-            <div class="pure-menu pure-menu-horizontal">
-                <a class="pure-menu-heading rss" title="RSS Feed for all new contracts" href="/rss"><img alt="RSS Icon" src="/images/rss-icon.png"></a>
-                <ul class="pure-menu-list" role="navigation">
-                    @Html.Partial("Pages-nav")
-                </ul>
-            </div>
-        </div> -->
-
-
         <div id="main" class="my_content">
-            <div class="header"></div>
             <div class="content"></div>
             @RenderBody()
         </div>
 
-
-        <footer class="footer pure-g">
-            @Html.Partial("Footer-three-columns")
-        </footer>
-
     </div>
-
-
-    <script src="js/ui.js"></script>
 
 </body>
 </html>

@@ -1,18 +1,4 @@
 /* Responsiveness for mobile */
-.pages {
-    font-size: 10pt;
-    margin: .5em auto 3em;
-}
-
-.pages .head {
-    margin: .5em;
-    padding: .5em 0;
-    text-transform: uppercase;
-    border-top: solid thin #ccc;
-    border-bottom: solid thin #ccc;
-    color: #fff;
-}
-
 @media screen and (max-width: 48em) {
     /* small screens */
     .small-hide {
