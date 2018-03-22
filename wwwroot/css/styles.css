@@ -134,6 +134,14 @@ a {
 
 
 /* The home page logo and search box for full-size displays */
+#main-logo-place {
+    margin: .5em auto;
+    font-size: 14pt;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+}
+
 #main-search-container form input::placeholder {
     color: #aaa;
 }
@@ -181,12 +189,7 @@ a {
     }
 
     #main-logo-place {
-        margin: .5em auto;
-        font-size: 18pt;
-        font-weight: bold;
-        color: #555;
         text-align: right;
-        text-transform: uppercase;
     }
 
     #main-search-container {
@@ -213,14 +216,6 @@ a {
         font-size: 26pt;
         font-weight: lighter;
         color: black;
-    }
-
-    #main-logo-place {
-        margin: .5em auto;
-        font-size: 14pt;
-        font-weight: bold;
-        color: #555;
-        text-transform: uppercase;
     }
 
     #main-search-container {

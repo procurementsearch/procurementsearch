@@ -1,22 +1,21 @@
 .minisearch {
+    padding: 2em 3em 1em 3em;
 }
 
 .minisearch input[type=text] {
-    height: 37px;
+    height: 50px;
     font-size: 14pt;
     vertical-align: top;
     border-color: #ccc;
     color: #333;
     margin: 0;
     padding: 0 2px;
-    width: 100%;
-    max-width: 500px;
+    width: 800px;
 }
 
 .minisearch .logo {
     padding-right: 10px;
     padding-top: 1em;
-    float: left;
 }
 
 .minisearch form {
@@ -24,46 +23,38 @@
 }
 
 .minisearch .search-container {
-    margin-right: 120px;
+    margin-left: 1em;
+    background-color: red;
+}
+
+#mini-search {
+    margin: 0 auto 0 1em;
+    padding: 0 2em;
+    height: 50px;
+    vertical-align: top;
+    font-family: 'metropolissemi_bold';
 }
 
 .agency-header {
     margin: 1em;
 }
 
-.search-rss {
-    margin: 1em;
-    font-size: 11pt;
-    font-style: normal;
-    font-weight: bold;
-    line-height: 120%;
-    background-color: #F8F1E8;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+.search-options {
+    margin: 0em 5.5em;
 }
 
-.search-rss p {
-    padding: 0.5em;
-    padding-bottom: 1em;
+.search-options span {
+    margin-right: 20px;
+    padding: .5em;
 }
 
-.search-rss img {
-    float: left;
-    padding: 4px;
-}
-
-.search-rss.by-email img {
-    float: right;
-}
-
-.search-rss hr {
-    display: block;
-    clear: left;
-    margin: -0.66em 0.5em;
-    visibility: hidden;
+.search-options span::after {
+    font-family: FontAwesome;
+    content: " \f0d7";
 }
 
 .search-results {
-    margin: 1.5em 1em;
+    margin: 1.5em 6em;
     padding-bottom: 2em;
 }
 
@@ -73,51 +64,57 @@
 }
 
 .search-results .count {
-    font-size: 13pt;
+}
+
+.search-results .save a {
+    color: #dc6d42;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .search-results .results {
-    margin-top: 20px;
-    margin-left: 20px;
+    font-size: 14pt;
+    text-decoration: none;
 }
 
 .search-results .results .item {
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .search-results .results .item .title {
-    font-size: 13pt;
     font-weight: bold;
-    color: #4B4642;
 }
 
 .search-results .results .item .title a {
-    color: #555;
+    color: #008e81;
+    text-decoration: none;
 }
 
 .search-results .results .item .preview {
     font-size: 12pt;
-    color: #4B4642;
+    margin: .5em auto;
+    color: #333;
 }
 
 .search-results .results .item .link a {
     font-size: 12pt;
-    color: #008484;
+    font-weight: bold;
+    text-decoration: none;
+    color: #008e81;
 }
 
 .search-results .results .item .source a {
     font-size: 12pt;
-    color: #186f2c;
+    font-weight: bold;
+    text-decoration: none;
+    color: #008e81;
 }
 
-.rss-text { /* variant:  rss text on search page */
-    color: #486A29;
-}
-
-.rss-email-text { /* variant:  rss emailed results text on search page */
-    color: #486A29;
-}
-
-.search-results-link-extra { /* variant: link on search page, right now just in rss email block */
-    color: #008484;
+.search-options-overlay {
+    display: none;
+    position: absolute;
+    width: fit-content;
+    border: solid thin black;
+    background-color: white;
+    padding: 10px;
 }

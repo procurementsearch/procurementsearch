@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic);
+@import url(/fonts/stylesheet.css);
 
 /*!
 Pure v0.6.0
@@ -40,6 +40,11 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
     font-size: 125%;
 }
 
+.button-primary {
+    background: #02b6a5;
+    color: white;
+}
+
 .button-secondary {
     background: rgb(66, 184, 221); /* this is a light blue */
 }
@@ -55,7 +60,7 @@ body, .modal {
 
 html, button, input, select, textarea,
 .pure-g [class *= "pure-u"] {
-    font-family: 'Metropolis', sans-serif;
+    font-family: 'metropolislight', sans-serif;
 }
 
 input[type=text] {
@@ -80,12 +85,6 @@ input[type=text] {
 
 .pure-menu-link {
     padding: 1em 1em;
-}
-
-#main-logo-container {
-    text-align: center;
-    margin-top: 2.5em;
-    margin-bottom: 1em;
 }
 
 /* Colors and highlights */
@@ -153,48 +152,105 @@ a {
     font-weight: 600;
 }
 
-.account-content {
 
+/* The home page logo and search box for full-size displays */
+#main-logo-place {
+    margin: .5em auto;
+    font-size: 14pt;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
 }
 
-.content-box .head {
-    font-size: 26pt;
-    font-weight: 500;
+#main-search-container form input::placeholder {
+    color: #aaa;
+}
+
+#main-search-container form {
     text-align: center;
-    line-height: 100%;
 }
 
-.content-box input {
-    width: 95%;
-    font-size: 18pt;
-    padding: 6px 4px;
+#main-search-container form input {
+    display: block;
+    border-color: #999;
+    border-width: 2px;
+    width: 100%;
+    font-size: 20pt;
+    /* font-family: 'metropolissemi_bold'; */
+    padding: 12pt 8pt;
 }
 
-.content-box button {
+#main-search {
     margin: 1em auto 0 auto;
+    margin-top: 1.5em;
+    font-size: 24pt;
+    font-family: 'metropolissemi_bold';
+    width: 50%;
 }
 
-.content-box form {
-    text-align: center;
+/* Large screens */
+@media screen and (min-width: 640px) {
+    #main-logo-container {
+        text-align: center;
+        margin: 10% auto 0 auto;
+        max-width: 600px;
+    }
+
+    #main-logo-image {
+        float: left;
+        margin: 1em auto;
+    }
+
+    #main-logo-logotype {
+        font-size: 41pt;
+        font-weight: lighter;
+        float: right;
+        color: black;
+    }
+
+    #main-logo-place {
+        text-align: right;
+    }
+
+    #main-search-container {
+        max-width: 600px;
+        margin: 2em auto;
+    }
 }
 
-.content-box p {
-    font-size: 10.5pt;
-    margin: 1em auto;
+/* Small screens */
+@media screen and (max-width: 639px) {
+    #main-logo-container {
+        text-align: center;
+        margin: 25% 1em 0 1em;
+    }
+
+    #main-logo-image {
+        margin: 2em auto;
+    }
+    #main-logo-image img {
+        display: inline;
+    }
+
+    #main-logo-logotype {
+        font-size: 26pt;
+        font-weight: lighter;
+        color: black;
+    }
+
+    #main-search-container {
+        width: 90%;
+        margin: 2em auto;
+    }
+
+    #main-search {
+        margin-top: 1em;
+    }
 }
 
-.content-box ul li {
-    font-size: 10.5pt;
-}
 
-.content-box p.tip {
-    font-style: italic;
-    text-align: center;
-    margin-top: 1em;
-    margin-bottom: 2em;
-    color: #B1AAA0;
-}
 
+/* Main page content */
 .view-box h2 {
     font-size: 17pt;
     font-weight: bold;
@@ -295,24 +351,23 @@ a {
 }
 
 .minisearch {
+    padding: 2em 3em 1em 3em;
 }
 
 .minisearch input[type=text] {
-    height: 37px;
+    height: 50px;
     font-size: 14pt;
     vertical-align: top;
     border-color: #ccc;
     color: #333;
     margin: 0;
     padding: 0 2px;
-    width: 100%;
-    max-width: 500px;
+    width: 800px;
 }
 
 .minisearch .logo {
     padding-right: 10px;
     padding-top: 1em;
-    float: left;
 }
 
 .minisearch form {
@@ -320,46 +375,38 @@ a {
 }
 
 .minisearch .search-container {
-    margin-right: 120px;
+    margin-left: 1em;
+    background-color: red;
+}
+
+#mini-search {
+    margin: 0 auto 0 1em;
+    padding: 0 2em;
+    height: 50px;
+    vertical-align: top;
+    font-family: 'metropolissemi_bold';
 }
 
 .agency-header {
     margin: 1em;
 }
 
-.search-rss {
-    margin: 1em;
-    font-size: 11pt;
-    font-style: normal;
-    font-weight: bold;
-    line-height: 120%;
-    background-color: #F8F1E8;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+.search-options {
+    margin: 0em 5.5em;
 }
 
-.search-rss p {
-    padding: 0.5em;
-    padding-bottom: 1em;
+.search-options span {
+    margin-right: 20px;
+    padding: .5em;
 }
 
-.search-rss img {
-    float: left;
-    padding: 4px;
-}
-
-.search-rss.by-email img {
-    float: right;
-}
-
-.search-rss hr {
-    display: block;
-    clear: left;
-    margin: -0.66em 0.5em;
-    visibility: hidden;
+.search-options span::after {
+    font-family: FontAwesome;
+    content: " \f0d7";
 }
 
 .search-results {
-    margin: 1.5em 1em;
+    margin: 1.5em 6em;
     padding-bottom: 2em;
 }
 
@@ -369,53 +416,50 @@ a {
 }
 
 .search-results .count {
-    font-size: 13pt;
+}
+
+.search-results .save a {
+    color: #dc6d42;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .search-results .results {
-    margin-top: 20px;
-    margin-left: 20px;
+    font-size: 14pt;
+    text-decoration: none;
 }
 
 .search-results .results .item {
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .search-results .results .item .title {
-    font-size: 13pt;
     font-weight: bold;
-    color: #4B4642;
 }
 
 .search-results .results .item .title a {
-    color: #555;
+    color: #008e81;
+    text-decoration: none;
 }
 
 .search-results .results .item .preview {
     font-size: 12pt;
-    color: #4B4642;
+    margin: .5em auto;
+    color: #333;
 }
 
 .search-results .results .item .link a {
     font-size: 12pt;
-    color: #008484;
+    font-weight: bold;
+    text-decoration: none;
+    color: #008e81;
 }
 
 .search-results .results .item .source a {
     font-size: 12pt;
-    color: #186f2c;
-}
-
-.rss-text { /* variant:  rss text on search page */
-    color: #486A29;
-}
-
-.rss-email-text { /* variant:  rss emailed results text on search page */
-    color: #486A29;
-}
-
-.search-results-link-extra { /* variant: link on search page, right now just in rss email block */
-    color: #008484;
+    font-weight: bold;
+    text-decoration: none;
+    color: #008e81;
 }
 
 .pure-img-responsive {
@@ -445,12 +489,12 @@ This is the parent `<div>` that contains the menu and the content area.
     padding-right: 0;
 }
     #layout.active #menu {
-        right: 150px;
-        width: 150px;
+        right: 300px;
+        width: 300px;
     }
 
     #layout.active .menu-link {
-        right: 150px;
+        right: 300px;
     }
 /*
 The content `<div>` is where all your content goes.
@@ -496,14 +540,14 @@ appears on the left side of the page.
 */
 
 #menu {
-    margin-right: -150px; /* "#menu" width */
-    width: 150px;
+    margin-right: -300px; /* "#menu" width */
+    width: 300px;
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     z-index: 1000; /* so the menu or its navicon stays above all content */
-    background: #191818;
+    background:#EBEBEB;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -511,9 +555,10 @@ appears on the left side of the page.
     All anchors inside the menu should be styled like this.
     */
     #menu a {
-        color: #999;
+        color: #333;
         border: none;
-        padding: 0.6em 0 0.6em 0.6em;
+        padding: 0.5em 0 0.5em 1.5em;
+        font-size: 11pt;
     }
 
     /*
@@ -530,14 +575,14 @@ appears on the left side of the page.
     */
     #menu .pure-menu ul,
     #menu .pure-menu .menu-item-divided {
-        border-top: 1px solid #333;
+        /* border-top: 1px solid #333; */
     }
         /*
         Change color of the anchor links on hover/focus.
         */
         #menu .pure-menu li a:hover,
         #menu .pure-menu li a:focus {
-            background: #333;
+            /* background:#EBEBEB; */
         }
 
     /*
@@ -545,22 +590,23 @@ appears on the left side of the page.
     */
     #menu .pure-menu-selected,
     #menu .pure-menu-heading {
-        background: #1f8dd6;
+        /* background: #1f8dd6; */
     }
         /*
         This styles a link within a selected menu item `<li>`.
         */
         #menu .pure-menu-selected a {
-            color: #fff;
+            color: #444;
         }
 
     /*
     This styles the menu heading.
     */
     #menu .pure-menu-heading {
-        font-size: 110%;
-        color: #fff;
-        margin: 0;
+        /* font-size: 110%; */
+        color: #444;
+        margin: 1.8em 0 0 0;
+        font-weight: 600;
     }
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
@@ -579,8 +625,8 @@ small screens.
     display: block; /* show this only on small screens */
     top: 0;
     right: 0; /* "#menu width" */
-    background: #000;
-    background: rgba(0,0,0,0.7);
+    color: #02b6a5;
+    /* background: rgba(0,0,0,0.7); */
     font-size: 10px; /* change this value to increase/decrease button size */
     z-index: 10;
     width: 2em;
@@ -590,7 +636,7 @@ small screens.
 
     .menu-link:hover,
     .menu-link:focus {
-        background: #000;
+        /* background: #000; */
     }
 
     .menu-link span {
@@ -601,7 +647,7 @@ small screens.
     .menu-link span,
     .menu-link span:before,
     .menu-link span:after {
-        background-color: #fff;
+        background-color: #02b6a5;
         width: 100%;
         height: 0.2em;
     }
@@ -632,21 +678,21 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     }
 
     #layout {
-        padding-right: 150px; /* left col width "#menu" */
+        padding-right: 300px; /* left col width "#menu" */
         right: 0;
     }
     #menu {
-        right: 150px;
+        right: 300px;
     }
 
     .menu-link {
         position: fixed;
-        right: 150px;
+        right: 300px;
         display: none;
     }
 
     #layout.active .menu-link {
-        right: 150px;
+        right: 300px;
     }
 }
 
@@ -659,25 +705,11 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     */
     #layout.active {
         position: relative;
-        right: 150px;
+        right: 300px;
     }
 }
 
 /* Responsiveness for mobile */
-.pages {
-    font-size: 10pt;
-    margin: .5em auto 3em;
-}
-
-.pages .head {
-    margin: .5em;
-    padding: .5em 0;
-    text-transform: uppercase;
-    border-top: solid thin #ccc;
-    border-bottom: solid thin #ccc;
-    color: #fff;
-}
-
 @media screen and (max-width: 48em) {
     /* small screens */
     .small-hide {

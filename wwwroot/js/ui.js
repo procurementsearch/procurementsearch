@@ -45,6 +45,6 @@ function menu(window, document) {
 
 }
 
-ready(function(){
+jQuery(document).ready(function(){
     menu(window, window .document);
 });

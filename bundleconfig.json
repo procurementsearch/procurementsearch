@@ -59,6 +59,7 @@
   {
     "outputFileName": "wwwroot/js/site.micro.min.js",
     "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],
