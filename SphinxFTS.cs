@@ -9,6 +9,11 @@ using SearchProcurement;
 
 namespace SteveHavelka.SphinxFTS
 {
+	public static class ShowStatus
+	{
+		public const string Open = "1";
+		public const string Closed = "2";
+	}
 
     public class SphinxFTS
 	{
@@ -28,6 +33,10 @@ namespace SteveHavelka.SphinxFTS
 		public bool buildPartial  { get; set; } = false;
 		public string kwTable  { get; set; } = "kw";
 		public int locationId { get; set; }
+
+		public string sortBy;
+		public string show = ShowStatus.Open;
+		public int[] agencyLimit;
 
 		/* for internal use */
 		private string query { get; set; }
@@ -99,6 +108,8 @@ namespace SteveHavelka.SphinxFTS
                         " WHERE query='" + words + ";" +
 						" groupby=attr:listing_id;" +
 						(locationId != 0 ? " filter=location_id," + locationId + ";" : "" ) +
+						(agencyLimit.Length > 0 ? " filter=agency_id," + String.Join(",", agencyLimit) + ";" : "" ) +
+						(show != null ? " filter=status," + show + ";" : "" ) +
 						" mode=extended;'";
 					cmd.Prepare();
 
@@ -158,6 +169,8 @@ namespace SteveHavelka.SphinxFTS
 							" limit=" + my_limit + ";" +
 							" offset=" + my_offset + ";" +
 							(locationId != 0 ? " filter=location_id," + locationId + ";" : "" ) +
+							(agencyLimit.Length > 0 ? " filter=agency_id," + String.Join(",", agencyLimit) + ";" : "" ) +
+							(show != null ? " filter=status," + show + ";" : "" ) +
 							" groupsort=@weight desc;" +
 							" mode=extended;'";
 						cmd.Prepare();

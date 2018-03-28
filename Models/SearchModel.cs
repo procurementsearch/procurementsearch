@@ -6,6 +6,20 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
 {
+
+	public static class SortBy
+	{
+		public const string Relevance = "relevance";
+		public const string BidsDueFirst = "bidsduefirst";
+		public const string BidsDueLast = "bidsduelast";
+	}
+
+	public static class Show
+	{
+		public const string Open = "open";
+		public const string Closed = "closed";
+	}
+
 	public class Search
 	{
 		public int searchCount { get; private set; }
@@ -16,6 +30,8 @@ namespace SearchProcurement.Models
 		/* The search results themselves */
 		public searchItem[] searchResults { get; private set; }
 
+		/* The Sphinx search object */
+		private SphinxFTS mySphinx;
 
 		public Search(string kw)
 		{
@@ -25,17 +41,44 @@ namespace SearchProcurement.Models
                 return;
 
 			// Instantiate the search object
-			SphinxFTS s = new SphinxFTS();
-			s.kwTable = Defines.mySphinxTable;
-			s.searchUrlSeparator = "";
-			s.locationId = Defines.LocationSettings.myLocationId;
-			s.setWords(kw);
+			mySphinx = new SphinxFTS();
+			mySphinx.kwTable = Defines.mySphinxTable;
+			mySphinx.searchUrlSeparator = "";
+			mySphinx.locationId = Defines.LocationSettings.myLocationId;
+			mySphinx.setWords(kw);
 
 			// Pull out the search data
-			searchString = s.searchString;
-			searchUrl = s.searchUrl;
-			searchUrlEncoded = s.searchUrlEncoded;
-			searchCount = s.count();
+			searchString = mySphinx.searchString;
+			searchUrl = mySphinx.searchUrl;
+			searchUrlEncoded = mySphinx.searchUrlEncoded;
+
+		}
+
+
+		public void setAgencies(int[] agencies)
+		{
+			mySphinx.agencyLimit = agencies;
+		}
+
+		public void setSortBy(string sortBy)
+		{
+			mySphinx.sortBy = sortBy;
+		}
+
+		public void setShow(string show)
+		{
+			mySphinx.show = show;
+		}
+
+
+
+		/**
+		 * Run the search itself
+		 * @return void Returns nothing but populates the search
+		 */
+		public void run()
+		{
+			searchCount = mySphinx.count();
 
 			// no result?
 			if( searchCount == 0 ) {
@@ -48,7 +91,7 @@ namespace SearchProcurement.Models
 			{
 
 				// Run the search
-				int[] searchIds = s.search();
+				int[] searchIds = mySphinx.search();
 
 				// And filter down to allowed agencies
 				searchCount = searchIds.Length;

@@ -462,6 +462,34 @@ a {
     color: #008e81;
 }
 
+.search-options-overlay {
+    display: none;
+    position: absolute;
+    width: fit-content;
+    border: solid thin black;
+    background-color: white;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-options-overlay .smallpad {
+    padding: 2px;
+    font-size: 90%;
+}
+
+.search-options-overlay .parent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-options-overlay .parent .options {
+    flex-grow: 1;
+}
+
+.search-options-overlay .parent .check {
+    padding-left: 10px;
+}
 .pure-img-responsive {
     max-width: 100%;
     height: auto;

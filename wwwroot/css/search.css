@@ -1,3 +1,12 @@
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none;
+}
+
 .minisearch {
     padding: 2em 3em 1em 3em;
 }
@@ -117,4 +126,24 @@
     border: solid thin black;
     background-color: white;
     padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-options-overlay .smallpad {
+    padding: 2px;
+    font-size: 90%;
+}
+
+.search-options-overlay .parent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-options-overlay .parent .options {
+    flex-grow: 1;
+}
+
+.search-options-overlay .parent .check {
+    padding-left: 10px;
 }

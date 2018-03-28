@@ -1,4 +1,5 @@
 ﻿@using SearchProcurement.Helpers
+@using Microsoft.AspNetCore.Routing
 
 <div class="minisearch">
     <form method="get" action="/search/" role="search">
@@ -17,10 +18,10 @@
 }
 
 <div class="search-options" role="complementary">
-    <span id="search-region">Region</span>
-    <span id="search-agencies">Agencies</span>
-    <span id="search-sortby">Sort by</span>
-    <span id="search-show">Show</span>
+    <span class="noselect" id="search-region">Region</span>
+    <span class="noselect" id="search-agencies">Agencies</span>
+    <span class="noselect" id="search-sortby">Sort by</span>
+    <span class="noselect" id="search-show">Show</span>
 </div>
 
 
@@ -63,35 +64,82 @@
 </div>
 
 <div class="search-options-overlay" id="agencies-options">
-    Limit results to:
-    <ul>
+    <b>Show results from</b>:
+    <div class="smallpad">
+        <div class="parent">
+            <div class="options"><b>All agencies</b></div>
+            <div class="check"><input type="checkbox" name="agencies[]" value="__all" checked></div>
+        </div>
         @foreach (var a in SiteNavHelper.getAgencies(Defines.LocationSettings.myLocationId))
         {
-        <li><a href="/search/?agency=@a.agencyId">@a.name</a></li>
+        <div class="parent">
+            <div class="options">@a.name</div>
+            <div class="check"><input type="checkbox" name="agencies[]" value="@a.agencyId"></div>
+        </div>
         }
-    </ul>
+    </div>
 </div>
 
 <div class="search-options-overlay" id="sortby-options">
-    Relevance &#10003;<br>
-    Bids Due Date (earliest first)<br>
-    Bids Due Date (latest first)
+    <div class="parent">
+        <div class="options">Relevance</div>
+        @if (ViewBag.urlparams["sortBy"] != "bidsduefirst" && ViewBag.urlparams["sortBy"] != "bidsduelast" ) {
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        }
+        else
+        {
+        <div class="check"></div>
+        }
+    </div>
+    <div class="parent">
+        <div class="options">Bids Due Date (earliest first)</div>
+        @if (ViewBag.urlparams["sortBy"] == "bidsduefirst" ) {
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        }
+        else
+        {
+        <div class="check"></div>
+        }
+    </div>
+    <div class="parent">
+        <div class="options">Bids Due Date (latest first)</div>
+        @if (ViewBag.urlparams["sortBy"] == "bidsduelast" ) {
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        }
+        else
+        {
+        <div class="check"></div>
+        }
+    </div>
 </div>
 
 <div class="search-options-overlay" id="show-options">
-    Open Procurement Opportunities &#10003;<br>
-    Closed Procurement Opportunities<br>
+    <div class="parent">
+        <div class="options"><a href="">Open Procurement Opportunities</a></div>
+        @if (ViewBag.urlparams["show"] != "closed" ) {
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        }
+    </div>
+    <div class="parent">
+        <div class="options"><a href="">Closed Procurement Opportunities</a></div>
+        @if (ViewBag.urlparams["show"] == "closed" ) {
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        }
+    </div>
 </div>
 
 
 <script type="text/javascript">
+
+var change = false;
+var showing = "";
 
 function makeClickable(clickable, overlay) {
     // Correctly position the option overlay
     var np = jQuery(clickable);
     var pos = np.offset();
     jQuery(overlay).offset({
-      top: pos.top + np.height() - 2,
+      top: pos.top + np.height() + 0,
       left: pos.left
     });
 
@@ -100,15 +148,24 @@ function makeClickable(clickable, overlay) {
     var over = jQuery(overlay);
 
     // show the overlay
-    el.click(function(){
-        over.show();
+    el.click(function(e){
+        if( showing == e.target ) {
+            over.hide();
+            showing = "";
+        } else {
+            over.show();
+            showing = e.target;
+        }
     });
 
     // and make everything else hideable
     jQuery(document).mouseup(function(e){
         var el = jQuery(overlay);
+        console.log(e.target);
         if (!el.is(e.target) && el.has(e.target).length === 0) {
-            el.hide();                
+            el.hide();
+            if( change )
+                alert("Changed - trigger reload");
         }
     });
 }
@@ -118,5 +175,38 @@ jQuery(document).ready(function(){
     makeClickable('#search-agencies', '#agencies-options');
     makeClickable('#search-sortby', '#sortby-options');
     makeClickable('#search-show', '#show-options');
+
+
+    // Wire up the agency limit checkboxes
+    jQuery("input[name='agencies[]']").click(function(e){
+        var box = jQuery(e.target);
+
+        // if they're toggling the "all" checkbox on, deselect everything else
+        if( box[0].value == "__all" ) {
+            if( box[0].checked ) {
+                jQuery("input[name='agencies[]']").prop("checked", false);
+                jQuery(box[0]).prop("checked", true);
+            }
+        } else {
+
+            // if every other checkbox is unchecked, toggle All back on
+            var ct = 0;
+            jQuery("input[name='agencies[]']").each(function(idx, el){
+                console.log(el);
+                if( el.checked )
+                    ct++;
+            })
+
+            if( ct )
+                jQuery("input[name='agencies[]'][value='__all']").prop("checked", false);
+            else
+                jQuery("input[name='agencies[]'][value='__all']").prop("checked", true);
+
+        }
+
+        change = true;
+
+    });
+
 })
 </script>
