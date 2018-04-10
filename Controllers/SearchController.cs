@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Routing;
@@ -18,8 +19,8 @@ namespace SearchProcurement.Controllers
 
             // Get the search model ready
             Search s = new Search(kw);
-            RouteValueDictionary urlparams = new RouteValueDictionary();
-            urlparams.Add("kw", kw);
+            Dictionary<string, dynamic> SearchOpts = new Dictionary<string, dynamic>();
+            SearchOpts.Add("kw", kw);
 
             // Do we have a list of agency limits?
             if( agencies != null )
@@ -28,29 +29,43 @@ namespace SearchProcurement.Controllers
                 {
                     int[] myAgencies = agencies.Split(',').Select(Int32.Parse).ToArray();
                     s.setAgencies(myAgencies);
-                    urlparams.Add("agencies", agencies);
+                    SearchOpts.Add("agencies", myAgencies);
                 }
-                catch(FormatException e) {};  // if they gave us a bad string, we really don't care
+                catch(FormatException e) {
+                    SearchOpts.Add("agencies", new int[]{});
+                };  // if they gave us a bad string, we really don't care
             }
+            else
+                SearchOpts.Add("agencies", new int[]{});
 
             // do we have a sortBy string?
-            if( sortBy == SortBy.Relevance || sortBy == SortBy.BidsDueFirst || sortBy == SortBy.BidsDueLast )
+            if( sortBy != null && SearchParam.SortByOptions.ContainsKey(sortBy) )
             {
                 s.setSortBy(sortBy);
-                urlparams.Add("sortBy", sortBy);
+                SearchOpts.Add("sortBy", sortBy);
+            }
+            else
+            {
+                s.setSortBy("relevance");
+                SearchOpts.Add("sortBy", "");
             }
 
             // do we have a show open/closed string?
-            if( show == Show.Open || show == Show.Closed )
+            if( show != null && SearchParam.ShowOptions.ContainsKey(show) )
             {
                 s.setShow(show);
-                urlparams.Add("show", show);
+                SearchOpts.Add("show", show);
+            }
+            else
+            {
+                s.setShow("open");
+                SearchOpts.Add("show", "");
             }
 
             // And finally, run the search
             s.run();
 
-            ViewBag.urlparams = urlparams;
+            ViewBag.SearchOpts = SearchOpts;
             ViewBag.extraTitle = "Searching Opportunities: " + s.searchString;
             ViewBag.kwMatch = "?" + s.searchUrl;
 

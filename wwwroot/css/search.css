@@ -7,64 +7,146 @@
               user-select: none;
 }
 
-.minisearch {
-    padding: 2em 3em 1em 3em;
+@media screen and (min-width: 800px) {
+    .full-hide {
+        display: none !important;
+    }
+
+    .minisearch {
+        padding: 2em 3em 1em 3em;
+    }
+
+    .minisearch input[type=text] {
+        height: 50px;
+        font-size: 14pt;
+        vertical-align: top;
+        border-color: #ccc;
+        color: #333;
+        margin: 0;
+        padding: 0 2px;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .minisearch .logo {
+        padding-right: 10px;
+        padding-top: 1em;
+    }
+
+    .minisearch form {
+        padding: 1em 0;
+    }
+
+    .minisearch .search-container {
+        margin-left: 1em;
+        background-color: red;
+    }
+
+    #mini-search {
+        margin: 0 auto 0 .5em;
+        padding: 0 2em;
+        height: 50px;
+        vertical-align: top;
+        font-family: 'metropolissemi_bold';
+    }
+
+    .search-results {
+        margin: 1.5em 6em;
+        padding-bottom: 2em;
+    }
+
+    .search-options {
+        margin: 0em 5.5em;
+    }
+
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7";
+    }
+
 }
 
-.minisearch input[type=text] {
-    height: 50px;
-    font-size: 14pt;
-    vertical-align: top;
-    border-color: #ccc;
-    color: #333;
-    margin: 0;
-    padding: 0 2px;
-    width: 800px;
+
+@media screen and (max-width: 799px) {
+    .mobile-hide {
+        display: none !important;
+    }
+
+    .minisearch {
+        padding: 2em 3em 1em 3em;
+    }
+
+    .minisearch input[type=text] {
+        height: 50px;
+        font-size: 14pt;
+        vertical-align: top;
+        border-color: #ccc;
+        color: #333;
+        margin: 0;
+        padding: 0 2px;
+        max-width: 500px;
+        width: calc(90% - 100px);
+    }
+
+    .minisearch .logo {
+        padding-right: 10px;
+        padding-top: 1em;
+    }
+
+    .minisearch form {
+        padding: 1em 0;
+    }
+
+    .minisearch .search-container {
+        margin-left: 1em;
+        background-color: red;
+    }
+
+    #mini-search {
+        margin: 0 0 0 -4px;
+        padding: 0 .4em;
+        height: 50px;
+        vertical-align: top;
+        font-size: 24pt;
+        font-family: 'metropolissemi_bold';
+    }
+
+
+    .search-results {
+        margin: 1.5em 2em;
+        padding-bottom: 2em;
+    }
+
+    .search-options {
+        margin: 0em 1.5em;
+    }
+
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7";
+    }
+
 }
 
-.minisearch .logo {
-    padding-right: 10px;
-    padding-top: 1em;
+
+@media screen and (max-width: 500px) {
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7\a";
+        white-space: pre;
+    }
 }
 
-.minisearch form {
-    padding: 1em 0;
-}
 
-.minisearch .search-container {
-    margin-left: 1em;
-    background-color: red;
-}
 
-#mini-search {
-    margin: 0 auto 0 1em;
-    padding: 0 2em;
-    height: 50px;
-    vertical-align: top;
-    font-family: 'metropolissemi_bold';
-}
 
 .agency-header {
     margin: 1em;
 }
 
-.search-options {
-    margin: 0em 5.5em;
-}
-
 .search-options span {
     margin-right: 20px;
     padding: .5em;
-}
-
-.search-options span::after {
-    font-family: FontAwesome;
-    content: " \f0d7";
-}
-
-.search-results {
-    margin: 1.5em 6em;
-    padding-bottom: 2em;
 }
 
 .search-results .head {
@@ -136,12 +218,12 @@
 }
 
 .search-options-overlay .parent {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 32px;
 }
 
 .search-options-overlay .parent .options {
-    flex-grow: 1;
+    white-space: nowrap;
 }
 
 .search-options-overlay .parent .check {

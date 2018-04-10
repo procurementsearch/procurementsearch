@@ -4,6 +4,22 @@ using MySql.Data.MySqlClient;
 
 namespace SearchProcurement.Helpers
 {
+	public static class SearchParam
+	{
+		public static Dictionary<string, string> ShowOptions = new Dictionary<string, string>
+		{
+			{ "open", "1" },
+			{ "closed", "2" }
+		};
+
+		public static Dictionary<string, string> SortByOptions = new Dictionary<string, string>
+		{
+			{ "relevance", "relevance" },
+			{ "bidsduefirst", "bidsduefirst" },
+			{ "bidsduelast", "bidsduelast" }
+		};
+	}
+
 	public struct searchItem
 	{
 		public int Id;

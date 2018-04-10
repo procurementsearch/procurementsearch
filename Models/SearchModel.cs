@@ -7,19 +7,6 @@ using SearchProcurement.Helpers;
 namespace SearchProcurement.Models
 {
 
-	public static class SortBy
-	{
-		public const string Relevance = "relevance";
-		public const string BidsDueFirst = "bidsduefirst";
-		public const string BidsDueLast = "bidsduelast";
-	}
-
-	public static class Show
-	{
-		public const string Open = "open";
-		public const string Closed = "closed";
-	}
-
 	public class Search
 	{
 		public int searchCount { get; private set; }
@@ -62,12 +49,12 @@ namespace SearchProcurement.Models
 
 		public void setSortBy(string sortBy)
 		{
-			mySphinx.sortBy = sortBy;
+			mySphinx.sortBy = SearchParam.SortByOptions[sortBy];
 		}
 
 		public void setShow(string show)
 		{
-			mySphinx.show = show;
+			mySphinx.show = SearchParam.ShowOptions[show];
 		}
 
 

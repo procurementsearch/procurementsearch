@@ -1,13 +1,22 @@
 ﻿@using SearchProcurement.Helpers
 @using Microsoft.AspNetCore.Routing
 
-<div class="minisearch">
+<div class="minisearch mobile-hide">
     <form method="get" action="/search/" role="search">
         <a class="logo" href="/"><img src="/images/logo-sm.png" alt="Home"></a>
         <input name="kw" type="text" title="Search">
         <button type="submit" id="mini-search" class="pure-button button-primary">search</button>
     </form>
 </div>
+
+<div class="minisearch full-hide">
+    <form method="get" action="/search/" role="search">
+        <a class="logo" href="/"><img src="/images/logo-sm.png" alt="Home"></a>
+        <input name="kw" type="text" title="Search">
+        <button type="submit" id="mini-search" class="pure-button button-primary"><i class="fas fa-search"></i></button>
+    </form>
+</div>
+
 
 
 @if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
@@ -68,13 +77,25 @@
     <div class="smallpad">
         <div class="parent">
             <div class="options"><b>All agencies</b></div>
+            @if ( ViewBag.SearchOpts["agencies"].Length > 0 ) {
+            <div class="check"><input type="checkbox" name="agencies[]" value="__all"></div>
+            }
+            else
+            {
             <div class="check"><input type="checkbox" name="agencies[]" value="__all" checked></div>
+            }
         </div>
         @foreach (var a in SiteNavHelper.getAgencies(Defines.LocationSettings.myLocationId))
         {
         <div class="parent">
             <div class="options">@a.name</div>
+            @if ( ViewBag.SearchOpts["agencies"].Length > 0 && Array.IndexOf(ViewBag.SearchOpts["agencies"], a.agencyId) != -1 ) {
+            <div class="check"><input type="checkbox" name="agencies[]" value="@a.agencyId" checked></div>
+            }
+            else
+            {
             <div class="check"><input type="checkbox" name="agencies[]" value="@a.agencyId"></div>
+            }
         </div>
         }
     </div>
@@ -82,56 +103,34 @@
 
 <div class="search-options-overlay" id="sortby-options">
     <div class="parent">
-        <div class="options">Relevance</div>
-        @if (ViewBag.urlparams["sortBy"] != "bidsduefirst" && ViewBag.urlparams["sortBy"] != "bidsduelast" ) {
-        <div class="check"><i class="fas fa-check-circle"></i></div>
-        }
-        else
-        {
-        <div class="check"></div>
-        }
+        <div class="options" data-option="sortBy" data-value="relevance">Relevance</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] != "bidsduefirst" && ViewBag.SearchOpts["sortBy"] != "bidsduelast" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
     </div>
     <div class="parent">
-        <div class="options">Bids Due Date (earliest first)</div>
-        @if (ViewBag.urlparams["sortBy"] == "bidsduefirst" ) {
-        <div class="check"><i class="fas fa-check-circle"></i></div>
-        }
-        else
-        {
-        <div class="check"></div>
-        }
+        <div class="options" data-option="sortBy" data-value="bidsduefirst">Bids Due Date (earliest first)</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] == "bidsduefirst" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
     </div>
     <div class="parent">
-        <div class="options">Bids Due Date (latest first)</div>
-        @if (ViewBag.urlparams["sortBy"] == "bidsduelast" ) {
-        <div class="check"><i class="fas fa-check-circle"></i></div>
-        }
-        else
-        {
-        <div class="check"></div>
-        }
+        <div class="options" data-option="sortBy" data-value="bidsduelast">Bids Due Date (latest first)</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] == "bidsduelast" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
     </div>
 </div>
 
 <div class="search-options-overlay" id="show-options">
     <div class="parent">
-        <div class="options"><a href="">Open Procurement Opportunities</a></div>
-        @if (ViewBag.urlparams["show"] != "closed" ) {
-        <div class="check"><i class="fas fa-check-circle"></i></div>
-        }
+        <div class="options" data-option="show" data-value="open">Open Opportunities</div>
+        <div class="check">@(ViewBag.SearchOpts["show"] != "closed" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
     </div>
     <div class="parent">
-        <div class="options"><a href="">Closed Procurement Opportunities</a></div>
-        @if (ViewBag.urlparams["show"] == "closed" ) {
-        <div class="check"><i class="fas fa-check-circle"></i></div>
-        }
+        <div class="options" data-option="show" data-value="closed">Closed Opportunities</div>
+        <div class="check">@(ViewBag.SearchOpts["show"] == "closed" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
     </div>
 </div>
 
 
 <script type="text/javascript">
 
-var change = false;
+var selectedAgencies = [];
 var showing = "";
 
 function makeClickable(clickable, overlay) {
@@ -149,26 +148,58 @@ function makeClickable(clickable, overlay) {
 
     // show the overlay
     el.click(function(e){
-        if( showing == e.target ) {
-            over.hide();
-            showing = "";
-        } else {
-            over.show();
-            showing = e.target;
-        }
+        over.show();
     });
 
     // and make everything else hideable
     jQuery(document).mouseup(function(e){
         var el = jQuery(overlay);
-        console.log(e.target);
         if (!el.is(e.target) && el.has(e.target).length === 0) {
+
+            if( jQuery(el).attr("id") == "agencies-options" && el.is(":visible") ) {
+
+                // Build the change array for the checkboxes
+                var newSelectedAgencies = [];
+                $("input:checkbox[name='agencies[]']:checked").each(function(){
+                    newSelectedAgencies.push($(this).val());
+                });
+
+                // are they changed?
+                if( !isEqual(selectedAgencies, newSelectedAgencies) ) {
+
+                    var agencies = [];
+                    $("input:checkbox[name='agencies[]']:checked").each(function(idx, el){
+                        agencies.push(jQuery(el).val());
+                    });
+
+                    // and we're done
+                    if( agencies.join(",").indexOf("__all") != -1 )
+                        updateSearch("agencies", "");
+                    else
+                        updateSearch("agencies", agencies.join(","));
+
+                }
+
+            }
+
+
             el.hide();
-            if( change )
-                alert("Changed - trigger reload");
+            showing = "";
+
         }
     });
 }
+
+
+function updateSearch(opt, val) {
+    var SearchOpts = new URLSearchParams(window.location.search);
+    if( val )
+        SearchOpts.set(opt, val);
+    else
+        SearchOpts.delete(opt);
+    location.assign("?" + SearchOpts.toString());
+}
+
 
 jQuery(document).ready(function(){
     makeClickable('#search-region', '#region-options');
@@ -192,7 +223,6 @@ jQuery(document).ready(function(){
             // if every other checkbox is unchecked, toggle All back on
             var ct = 0;
             jQuery("input[name='agencies[]']").each(function(idx, el){
-                console.log(el);
                 if( el.checked )
                     ct++;
             })
@@ -203,10 +233,23 @@ jQuery(document).ready(function(){
                 jQuery("input[name='agencies[]'][value='__all']").prop("checked", true);
 
         }
-
-        change = true;
-
     });
+
+
+    // Wire up the single click options
+    jQuery(".search-options-overlay .parent .options").click(function(e){
+        var el = jQuery(e.target);
+        var option = el.data("option");
+        var value = el.data("value");
+        updateSearch(option, value);
+    });
+
+
+    // Build the change array for the checkboxes
+    $("input:checkbox[name='agencies[]']:checked").each(function(){
+        selectedAgencies.push($(this).val());
+    });
+
 
 })
 </script>
