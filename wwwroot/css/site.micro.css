@@ -41,12 +41,13 @@ https://github.com/yahoo/pure/blob/master/LICENSE.md
 }
 
 .button-primary {
-    background: #02b6a5;
-    color: white;
+    background: #02b6a5 !important;
+    color: white !important;
 }
 
 .button-secondary {
-    background: rgb(66, 184, 221); /* this is a light blue */
+    background: #DC6D42 !important;
+    color: white !important;
 }
 
 body, .modal {
@@ -359,8 +360,11 @@ a {
               user-select: none;
 }
 
-
 @media screen and (min-width: 800px) {
+    .full-hide {
+        display: none !important;
+    }
+
     .minisearch {
         padding: 2em 3em 1em 3em;
     }
@@ -398,29 +402,104 @@ a {
         vertical-align: top;
         font-family: 'metropolissemi_bold';
     }
-}
- 
-.agency-header {
-    margin: 1em;
+
+    .search-results {
+        margin: 1.5em 6em;
+        padding-bottom: 2em;
+    }
+
+    .search-options {
+        margin: 0em 5.5em;
+    }
+
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7";
+    }
+
 }
 
-.search-options {
-    margin: 0em 5.5em;
+
+@media screen and (max-width: 799px) {
+    .mobile-hide {
+        display: none !important;
+    }
+
+    .minisearch {
+        padding: 2em 3em 1em 3em;
+    }
+
+    .minisearch input[type=text] {
+        height: 50px;
+        font-size: 14pt;
+        vertical-align: top;
+        border-color: #ccc;
+        color: #333;
+        margin: 0;
+        padding: 0 2px;
+        max-width: 500px;
+        width: calc(90% - 100px);
+    }
+
+    .minisearch .logo {
+        padding-right: 10px;
+        padding-top: 1em;
+    }
+
+    .minisearch form {
+        padding: 1em 0;
+    }
+
+    .minisearch .search-container {
+        margin-left: 1em;
+        background-color: red;
+    }
+
+    #mini-search {
+        margin: 0 0 0 -4px;
+        padding: 0 .4em;
+        height: 50px;
+        vertical-align: top;
+        font-size: 24pt;
+        font-family: 'metropolissemi_bold';
+    }
+
+
+    .search-results {
+        margin: 1.5em 2em;
+        padding-bottom: 2em;
+    }
+
+    .search-options {
+        margin: 0em 1.5em;
+    }
+
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7";
+    }
+
+}
+
+
+@media screen and (max-width: 500px) {
+    .search-options span::after {
+        font-family: FontAwesome;
+        content: " \f0d7\a";
+        white-space: pre;
+    }
+}
+
+
+
+
+.agency-header {
+    margin: 1em;
 }
 
 .search-options span {
     margin-right: 20px;
     padding: .5em;
-}
-
-.search-options span::after {
-    font-family: FontAwesome;
-    content: " \f0d7";
-}
-
-.search-results {
-    margin: 1.5em 6em;
-    padding-bottom: 2em;
 }
 
 .search-results .head {
@@ -502,6 +581,53 @@ a {
 
 .search-options-overlay .parent .check {
     padding-left: 10px;
+}
+@media screen and (min-width: 800px) {
+    .detail-results {
+        margin: 1.5em 6em;
+        padding-bottom: 2em;
+    }
+
+}
+
+@media screen and (max-width: 799px) {
+    .detail-results {
+        margin: 1.5em 2em;
+        padding-bottom: 2em;
+    }
+}
+
+div.detail-results {
+    line-height: 1.5em;
+}
+
+div.detail-results table {
+    border: none;
+}
+
+div.detail-results table tbody tr th, div.detail-results table tbody tr td {
+    border: none;
+}
+
+
+div.detail-results table tbody tr th {
+    padding-left: 0;
+    text-align: left;
+}
+
+div.detail-results a {
+    font-weight: bold;
+    color: #02b6a5;
+    text-decoration: none;
+}
+
+div.detail-results dl dt {
+    font-weight: bold;
+    color: #02b6a5;
+}
+
+div.detail-results dl dd {
+    margin-left: 0;
 }
 .pure-img-responsive {
     max-width: 100%;

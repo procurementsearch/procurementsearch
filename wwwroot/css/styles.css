@@ -21,12 +21,13 @@
 }
 
 .button-primary {
-    background: #02b6a5;
-    color: white;
+    background: #02b6a5 !important;
+    color: white !important;
 }
 
 .button-secondary {
-    background: rgb(66, 184, 221); /* this is a light blue */
+    background: #DC6D42 !important;
+    color: white !important;
 }
 
 body, .modal {
@@ -322,10 +323,3 @@ a {
     font-size: 16pt;
 }
 
-.view-box .message {
-    padding: 1em;
-    margin: 1em auto;
-    background-color: #ccc;
-    color: #a12;
-    border: solid thin #4B4642;
-}

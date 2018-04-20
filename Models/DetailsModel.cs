@@ -37,9 +37,12 @@ namespace SearchProcurement.Models
 	{
 		public int agencyId { get; private set; }
 		public string agencyName { get; private set; }
+		public string agencyUrl { get; private set; }
 		public string title { get; private set; }
+		public string opportunityNo { get; private set; }
 		public string subtitle { get; private set; }
 		public string description { get; private set; }
+		public DateTimeOffset? PublishDate { get; private set; }
 		public DateTimeOffset? CloseDate { get; private set; }
 		public string agencyLogo { get; private set; }
 		public int id { get; private set; }
@@ -92,7 +95,9 @@ namespace SearchProcurement.Models
 						"l.status, " + // 12
 						"l.agency_id, " + // 13
 						"l.action_steps, " + // 14
-						"l.close_date " + // 15
+						"l.close_date, " + // 15
+						"l.created, " + // 16
+						"a.agency_url " + // 17
                         "FROM listing AS l LEFT JOIN agency AS a ON l.agency_id = a.agency_id " +
 	                    "WHERE l.listing_id = @id";
 					cmd.Parameters.AddWithValue("@id", id);
@@ -105,6 +110,8 @@ namespace SearchProcurement.Models
 
 						// Store the item data
 						agencyName = r.GetString(0);
+						agencyUrl = r.IsDBNull(17) ? "" : r.GetString(17);
+						opportunityNo = r.IsDBNull(5) ? "" : r.GetString(5);
 						title = r.GetString(1);
 						if(r.IsDBNull(2))
 						{
@@ -126,6 +133,7 @@ namespace SearchProcurement.Models
 						agencyLogo = r.IsDBNull(11) ? "" : r.GetString(11);
 						status = r.GetString(12);
 						agencyId = r.GetInt32(13);
+						contactInformation = r.IsDBNull(6) ? "" : r.GetString(6);
 
 						// No Feed ID?  We might need to store the contact info and about steps.
 						// This is complicated, because in feed-driven listings action steps are blank,
@@ -148,6 +156,10 @@ namespace SearchProcurement.Models
 						// Has a close date?  If so...
 						if( !r.IsDBNull(15) )
 							CloseDate = r.GetDateTime(15);
+
+						// Has an open date?  If so...
+						if( !r.IsDBNull(16) )
+							PublishDate = r.GetDateTime(16);
 
 						// And, get the attachments if the agency wants to show them or
 						// if we're showing some matching search terms

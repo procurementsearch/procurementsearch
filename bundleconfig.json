@@ -14,6 +14,7 @@
       "wwwroot/lib/blueimp-file-upload/css/jquery.fileupload.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
+      "wwwroot/css/detail.css",
       "wwwroot/css/hamburger-menu.css",
       "wwwroot/css/account.css",
       "wwwroot/css/progress-bar.css",
@@ -29,6 +30,7 @@
       "wwwroot/css/grids-responsive-min.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
+      "wwwroot/css/detail.css",
       "wwwroot/css/hamburger-menu.css",
       "wwwroot/css/mobile.css",
     ]

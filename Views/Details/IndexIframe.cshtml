@@ -1,59 +1,101 @@
 ﻿@using SearchProcurement.Models
 @using SearchProcurement.Helpers
-<div class="view-box" role="main">
-    <h2>Viewing @Model.agencyName Opportunity:</h2>
 
-    @if (Model.parentId != 0)
-    {
-    <div class="subtitle">
-        <span class="attention">Project</span>:  <a href="/details/@Model.parentId">@Model.subtitle</a>
-    </div>
-    <div class="title">
-        <span class="attention">Subcontract:</span> @Model.title
-    </div>
-    }
-    else
-    {
-    <div class="title">
-        <b>Project Title:</b> @Model.title
-    </div>
-    }
+@Html.Partial("Search-header")
 
-    @if (Model.CloseDate != null)
-    {
-    <div class="subtitle">
-        <b>Bids Due:</b> @Model.CloseDate.ToString("M/d/yyyy")
-    </div>
-    }
+<div class="detail-results" role="main">
+
+    <table class="pure-table">
+        <tbody>
+            <tr>
+                <th valign="top">Project Title:</th>
+                <td>@Model.title</td>
+            </tr>
+            <tr>
+                <th valign="top">Project #:</th>
+                <td>@Model.opportunityNo</td>
+            </tr>
+            <tr>
+                <th valign="top">Issued by:</th>
+                <td>
+                    @if (Model.agencyUrl != "" )
+                    {
+                    <a target=_blank href="@Model.agencyUrl">@Model.agencyName</a>
+                    <a target=_blank href="@Model.agencyUrl" class="pure-button button-primary button-xsmall">view agency website</a>
+                    }
+                    else
+                    {
+                    @Model.agencyName
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th valign="top">Publish Date:</th>
+                <td>@Model.PublishDate.ToString("M/d/yyyy")</td>
+            </tr>
+            <tr>
+                <th valign="top">Due Date:</th>
+                <td>
+                    @Model.CloseDate.ToString("M/d/yyyy")
+
+                    @if (Model.status == ListingStatus.Closed)
+                    {
+                        <span class="message-no-box">This opportunity has closed.</span>
+                    }
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <a href="#" id="toggleiframe" class="pure-button button-primary">view original RFP</a>
+        <a href="/details/@Model.id/iframe" target=_blank class="pure-button button-primary">open original RFP in new window</a>
+    </p>
 
     <iframe id="detailsframe" src="/details/@Model.id/iframe" aria-hidden="true"></iframe>
 
-    @if (Model.status == ListingStatus.Closed)
-    {
-    <div class="message">
-        <span class="attention">Attention:</span> This opportunity has closed.
+    <!-- <p>
+        <a href="" class="pure-button button-secondary"><i class="fas fa-star"></i> save to watchlist</a>
+    </p> -->
+
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-2"><hr></div>
     </div>
-    }
+
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-2-3">
+            <h2>Description</h2>
+            @Model.description
+            <br><br>
+        </div>
+    </div>
 
     @if (Model.snippets.Length > 0 )
     {
     <div class="snippets">
-        Bid document preview for <b>@ViewBag.kw</b>:
-        <dl>
-            @foreach (var res in Model.snippets)
-            {
-            <dt>@res.Title:</dt>
-            <dd>@Html.Raw(res.Snippet)</dd>
-            }
-        </dl>
+        <h3>Bid document preview for search <i>@ViewBag.kw</i>:</h3>
+
+        <div class="pure-g">
+            <div class="pure-u-1 pure-u-md-2-3">
+                <dl>
+                    @foreach (var res in Model.snippets)
+                    {
+                    <dt>@res.Title:</dt>
+                    <dd>@Html.Raw(res.Snippet)</dd>
+                    }
+                </dl>
+            </div>
+        </div>
     </div>
     }
 
+
     @if (Model.attachments.Length > 0 )
     {
-    <h2>Bid Documents</h2>
+    <h2>Attachments</h2>
     <div class="attachments">
-        <p>This project has the following bid documents.  You may need to log into the project owner's website to review these documents.</p>
+        <p>This project has the following bid documents.  You may need to log into the project owner website to review these documents.</p>
         <table class="pure-table pure-table-horizontal pure-table-striped">
             <thead>
                 <tr>
@@ -75,6 +117,54 @@
     </div>
     }
 
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-2-3">
+            <h2>Contact</h2>
+            @Html.Raw(Model.contactInformation)
+            <br><br>
+        </div>
+    </div>
+
+
+    <p class="share-title">
+        Share: 
+        <span class="st_sharethis_large" displaytext="ShareThis"></span>
+        <span class="st_facebook_large" displaytext="Facebook"></span>
+        <span class="st_twitter_large" displaytext="Tweet"></span>
+        <span class="st_linkedin_large" displaytext="LinkedIn"></span>
+        <span class="st_googleplus_large" displaytext="Google +"></span>
+        <span class="st_email_large" displaytext="Email"></span>
+    </p>
+
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-2"><hr></div>
+    </div>
+
+    <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-2-3">
+            <h2>About @Model.agencyName</h2>
+            @Html.Raw(Model.agencyAboutText)
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="view-box" role="main">
+
+    @if (Model.parentId != 0)
+    {
+    <div class="subtitle">
+        <span class="attention">Project</span>:  <a href="/details/@Model.parentId">@Model.subtitle</a>
+    </div>
+    <div class="title">
+        <span class="attention">Subcontract:</span> @Model.title
+    </div>
+    }
+
+
+
     @if (Model.subcontracts.Length > 0 )
     {
     <h2>Subcontracts</h2>
@@ -87,54 +177,16 @@
             }
         </ul>
     </div>
-        
+
     }
 
-    <h2>About @Model.agencyName</h2>
-    <div class="view-action-steps">
-        @Html.Raw(Model.agencyAboutText)
-    </div>
 
-    <p class="share-title">
-        Share with a friend!
-    </p>
-    <p>
-        <span class="st_sharethis_large" displaytext="ShareThis"></span>
-        <span class="st_facebook_large" displaytext="Facebook"></span>
-        <span class="st_twitter_large" displaytext="Tweet"></span>
-        <span class="st_linkedin_large" displaytext="LinkedIn"></span>
-        <span class="st_googleplus_large" displaytext="Google +"></span>
-        <span class="st_email_large" displaytext="Email"></span>
-    </p>
 </div>
 
 <script type="text/javascript">
-function resizedetailsframe(){
-    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    var buffer = 150; // how many pixels to subtract from window height to fit the iframe
-    if( h <= 450 )
-        document.getElementById('detailsframe').style.height = (h - buffer) + 'px';
-    else
-        document.getElementById('detailsframe').style.height = '300px';
-};
-window.onload = window.onresize = resizedetailsframe;
+
+jQuery("#toggleiframe").click(function(){
+    jQuery("#detailsframe").toggle();
+});
+
 </script>
-
-
-<div class="pure-g">
-    <div class="pure-u-1 l-box">
-        <div class="footnote">
-
-            <div class="pages large-hide">
-                <div class="head">Pages</div>
-                <ul role="navigation">
-                    @Html.Partial("Pages-menu")
-                </ul>
-            </div>
-
-            <p class="tip">
-                Got questions?  Oh yes you do.
-            </p>
-        </div>
-    </div>
-</div>
