@@ -1,16 +1,67 @@
+<div class="home-container" id="stage1">
+    <div id="main-logo-container">
+        <div id="main-logo-padding">
+        <div id="main-logo-image"><img src="/images/logo.png" class="pure-img"></div>
+        <div id="main-logo-logotype">
+            procurement search
+            <div id="main-logo-place">@Html.Raw(Defines.LocationSettings.homeTitle)</div>
+        </div></div>
+    </div>
+    <div style="clear: both;"></div>
 
-<div id="main-logo-container">
-    <div id="main-logo-image"><img src="/images/logo.png" class="pure-img"></div>
-    <div id="main-logo-logotype">
-        procurement search
-        <div id="main-logo-place">@Html.Raw(Defines.LocationSettings.homeTitle)</div>
+    <div id="main-search-container">
+        <form method="get" action="/search" role="search">
+            <input type="text" name="kw" placeholder="Looking for bids and RFPs?">
+            <button type="submit" id="main-search" class="pure-button button-primary">search</button>
+        </form>
+    </div>
+    <div style="clear: both;"></div>
+    <div id="stage1_jump"><i class="fas fa-chevron-down"></i></div>
+</div>
+
+
+<div class="home-container" id="stage2">
+    <div class="pure-g">
+        <div class="pure-u-md-1-2">
+            <p class="stage2_title">Do you want to discover more government contracts?</p>
+            <p class="stage2_icon"><i class="fas fa-gavel"></i></p>
+            <p class="stage2_text">
+                Search for open contracting and procurement
+                opportunities from cities, universities, and
+                more, all quickly and easily.
+            </p>
+        </div>
+        <div class="pure-u-md-1-2">
+            <p class="stage2_title">Are you a government buyer, and want to promote your RFPs to a wider, more diverse audience?</p>
+            <p class="stage2_icon"><i class="fas fa-binoculars"></i></p>
+            <p class="stage2_text">
+                List RFPs and procurement opportunities where
+                local businesses can find them, so you can reach
+                new vendors in your community, and get a better
+                contracting dollar utilization.
+            </p>
+        </div>
     </div>
 </div>
-<div style="clear: both;"></div>
 
-<div id="main-search-container">
-    <form method="get" action="/search" role="search">
-        <input type="text" name="kw" placeholder="Looking for bids and RFPs?">
-        <button type="submit" id="main-search" class="pure-button button-primary">search</button>
-    </form>
-</div>
+
+<div class="home-container" id="stage3">xyz</div>
+<div class="home-container" id="stage4">xyz</div>
+
+
+<script type="text/javascript">
+var stage1_h = jQuery("#stage1").height();
+
+function resetdivs() {
+    var h = jQuery(window).height();
+    jQuery(".home-container").css("height", h + "px");
+    if( stage1_h > h )
+        jQuery("#stage1").height(stage1_h + "px");
+}
+
+jQuery(document).ready(function(){
+    resetdivs();
+    jQuery(window).resize(resetdivs);
+});
+
+</script>

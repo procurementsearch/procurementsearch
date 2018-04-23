@@ -250,105 +250,19 @@ a {
 }
 
 
-
-/* Main page content */
-.view-box h2 {
-    font-size: 17pt;
-    font-weight: bold;
-    margin: 1em auto;
+.home-container {
 }
 
-.view-box .title {
-    font-size: 16pt;
-    margin: 1em auto;
+#stage2 {
+    background-color: green;
 }
 
-.view-box .subtitle {
-    font-size: 14pt;
-    margin-bottom: .5em;
+#stage3 {
+    background-color: blue;
 }
 
-.view-box iframe {
-    margin: 1em auto;
-    width: 99%;
-    height: 300px;
-    border: solid thin black;
-}
-
-.view-box .view-action-steps {
-    line-height: 150%;
-    font-size: 14pt;
-}
-
-.view-box .view-action-steps ol {
-    list-style-type: decimal;
-    list-style-position: inside;
-    padding: 1em;
-}
-
-.view-box .snippets {
-    padding-bottom: 1em;
-}
-
-.view-box .snippets dl {
-    padding: .5em;
-}
-
-.view-box .snippets dl dt {
-    font-weight: bold;
-}
-
-.view-box .snippets dl dd {
-    padding-left: .5em;
-    padding-bottom: .5em;
-    font-style: italic;
-}
-
-.view-box .description {
-    border: solid thin #4B4642;
-    padding: .5em;
-    overflow-y: scroll;
-}
-
-.view-box .subcontracts {
-    padding-bottom: 1em;
-}
-
-.view-box .attachments {
-    padding-bottom: 1em;
-}
-
-.view-box .attachments p {
-    font-size: 13pt;
-}
-
-.view-box .subcontracts p {
-    font-size: 13pt;
-}
-
-.view-box p {
-    margin: 1em auto;
-}
-
-.view-box .share-title {
-    font-size: 14pt;
-    font-weight: bold;
-}
-
-.view-box .pure-form fieldset {
-    margin-top: 2em;
-}
-
-.view-box .pure-form fieldset legend {
-    font-size: 16pt;
-}
-
-.view-box .message {
-    padding: 1em;
-    margin: 1em auto;
-    background-color: #ccc;
-    color: #a12;
-    border: solid thin #4B4642;
+#stage4 {
+    background-color: red;
 }
 
 .noselect {
@@ -584,7 +498,7 @@ a {
 }
 @media screen and (min-width: 800px) {
     .detail-results {
-        margin: 1.5em 6em;
+        margin: 0 6em 1.5em 6em;
         padding-bottom: 2em;
     }
 
@@ -592,7 +506,7 @@ a {
 
 @media screen and (max-width: 799px) {
     .detail-results {
-        margin: 1.5em 2em;
+        margin: 0 2em 1.5em 2em;
         padding-bottom: 2em;
     }
 }
@@ -615,6 +529,14 @@ div.detail-results table tbody tr th {
     text-align: left;
 }
 
+div.detail-results h2 {
+    margin-top: 1.5em;
+}
+
+div.detail-results h3 {
+    color: #02b6a5;
+}
+
 div.detail-results a {
     font-weight: bold;
     color: #02b6a5;
@@ -628,6 +550,39 @@ div.detail-results dl dt {
 
 div.detail-results dl dd {
     margin-left: 0;
+}
+
+div.detail-results .snippets {
+    border: solid thin #4B4642;
+    padding: 0 1em 0 1em;
+    margin: 1em auto;
+    background-color: #fafafa;
+}
+
+div.detail-results .message-no-box {
+    color: #a12;
+    font-style: italic;
+}
+
+div.detail-results .message {
+    padding: 1em;
+    margin: 1em auto;
+    background-color: #ccc;
+    color: #a12;
+    border: solid thin #4B4642;
+}
+
+div.detail-results .share-title {
+    margin: 1.5em auto;
+    font-size: 18pt;
+}
+
+div.detail-results iframe {
+    margin: 1em auto;
+    width: 99%;
+    height: 300px;
+    border: solid thin black;
+    display: none;
 }
 .pure-img-responsive {
     max-width: 100%;

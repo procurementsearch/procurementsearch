@@ -173,8 +173,12 @@ a {
 @media screen and (min-width: 640px) {
     #main-logo-container {
         text-align: center;
-        margin: 10% auto 0 auto;
+        margin: 0 auto;
         max-width: 600px;
+    }
+
+    #main-logo-padding {
+        padding-top: 20%;
     }
 
     #main-logo-image {
@@ -203,7 +207,11 @@ a {
 @media screen and (max-width: 639px) {
     #main-logo-container {
         text-align: center;
-        margin: 25% 1em 0 1em;
+        margin: 0 1em;
+    }
+
+    #main-logo-padding {
+        padding-top: 25%;
     }
 
     #main-logo-image {
@@ -230,96 +238,65 @@ a {
 }
 
 
-
-/* Main page content */
-.view-box h2 {
-    font-size: 17pt;
-    font-weight: bold;
-    margin: 1em auto;
+.home-container {
+    position: relative;
 }
 
-.view-box .title {
+#stage1 {
+    /* background-color: yellowgreen; */
+}
+
+#stage1_jump {
+    position: absolute;
+    left: calc(50% - 50px);
+    bottom: -50px;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    color: white;
+    font-size: 28pt;
+    line-height: 80pt;
+    background-color: #88c13c;
+    border-radius: 100px;
+    z-index: 100;
+    cursor: pointer;
+}
+
+
+#stage2 {
+    background-color: #88c13c;
+}
+
+#stage2 div {
+    padding: 2em;
+}
+
+#stage2 div div p.stage2_title {
+    color: white;
+    font-weight: bold;
+    font-size: 20pt;
+    text-align: center;
+}
+
+#stage2 div div p.stage2_icon {
+    color: white;
+    font-weight: bold;
+    font-size: 84pt;
+    margin: .2em auto;
+    text-align: center;
+}
+
+#stage2 div div p.stage2_text {
+    color: white;
     font-size: 16pt;
-    margin: 1em auto;
+    text-align: center;
 }
 
-.view-box .subtitle {
-    font-size: 14pt;
-    margin-bottom: .5em;
+
+#stage3 {
+    /* background-color: red; */
 }
 
-.view-box iframe {
-    margin: 1em auto;
-    width: 99%;
-    height: 300px;
-    border: solid thin black;
+#stage4 {
+    background-color: #00a6ca;
 }
-
-.view-box .view-action-steps {
-    line-height: 150%;
-    font-size: 14pt;
-}
-
-.view-box .view-action-steps ol {
-    list-style-type: decimal;
-    list-style-position: inside;
-    padding: 1em;
-}
-
-.view-box .snippets {
-    padding-bottom: 1em;
-}
-
-.view-box .snippets dl {
-    padding: .5em;
-}
-
-.view-box .snippets dl dt {
-    font-weight: bold;
-}
-
-.view-box .snippets dl dd {
-    padding-left: .5em;
-    padding-bottom: .5em;
-    font-style: italic;
-}
-
-.view-box .description {
-    border: solid thin #4B4642;
-    padding: .5em;
-    overflow-y: scroll;
-}
-
-.view-box .subcontracts {
-    padding-bottom: 1em;
-}
-
-.view-box .attachments {
-    padding-bottom: 1em;
-}
-
-.view-box .attachments p {
-    font-size: 13pt;
-}
-
-.view-box .subcontracts p {
-    font-size: 13pt;
-}
-
-.view-box p {
-    margin: 1em auto;
-}
-
-.view-box .share-title {
-    font-size: 14pt;
-    font-weight: bold;
-}
-
-.view-box .pure-form fieldset {
-    margin-top: 2em;
-}
-
-.view-box .pure-form fieldset legend {
-    font-size: 16pt;
-}
-
