@@ -193,8 +193,12 @@ a {
 @media screen and (min-width: 640px) {
     #main-logo-container {
         text-align: center;
-        margin: 10% auto 0 auto;
+        margin: 0 auto;
         max-width: 600px;
+    }
+
+    #main-logo-padding {
+        padding-top: 20%;
     }
 
     #main-logo-image {
@@ -223,7 +227,11 @@ a {
 @media screen and (max-width: 639px) {
     #main-logo-container {
         text-align: center;
-        margin: 25% 1em 0 1em;
+        margin: 0 1em;
+    }
+
+    #main-logo-padding {
+        padding-top: 25%;
     }
 
     #main-logo-image {
@@ -251,18 +259,66 @@ a {
 
 
 .home-container {
+    position: relative;
 }
+
+#stage1 {
+    /* background-color: yellowgreen; */
+}
+
+#stage1_jump {
+    position: absolute;
+    left: calc(50% - 40px);
+    bottom: -25px;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    color: white;
+    font-size: 28pt;
+    line-height: 64pt;
+    background-color: #88c13c;
+    border-radius: 80px;
+    z-index: 100;
+    cursor: pointer;
+}
+
 
 #stage2 {
-    background-color: green;
+    background-color: #88c13c;
 }
 
+#stage2 div {
+    padding: 2em;
+}
+
+#stage2 div div p.stage2_title {
+    color: white;
+    font-weight: bold;
+    font-size: 20pt;
+    text-align: center;
+}
+
+#stage2 div div p.stage2_icon {
+    color: white;
+    font-weight: bold;
+    font-size: 84pt;
+    margin: .2em auto;
+    text-align: center;
+}
+
+#stage2 div div p.stage2_text {
+    color: white;
+    font-size: 16pt;
+    text-align: center;
+}
+
+
 #stage3 {
-    background-color: blue;
+    /* background-color: red; */
 }
 
 #stage4 {
-    background-color: red;
+    background-color: #00a6ca;
 }
 
 .noselect {

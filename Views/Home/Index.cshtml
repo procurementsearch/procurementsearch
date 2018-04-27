@@ -42,10 +42,32 @@
             </p>
         </div>
     </div>
+    <div style="clear: both;"></div>
+    <div id="stage2_jump"><i class="fas fa-chevron-down"></i></div>
 </div>
 
 
-<div class="home-container" id="stage3">xyz</div>
+<div class="home-container" id="stage3">
+
+    <h2>who we work with</h2>
+    <div class="slider">
+    @foreach (string url in ViewBag.agencyUrls)
+    {
+        <div><img src="@url" /></div>
+    }
+    </div>
+
+    <p class="pullquote">
+        "I am happy to say that Procurement Search saved us time on our outreach,
+        and has expanded our outreach activities, giving us the results we were
+        seeking."
+    </p>
+    <p class="pullquoteattrib">
+         - Kimberly Mitchell-Phillips, Small Business Development Program
+        Manager, Port of Portland
+    </p>
+</div>
+
 <div class="home-container" id="stage4">xyz</div>
 
 
@@ -62,6 +84,20 @@ function resetdivs() {
 jQuery(document).ready(function(){
     resetdivs();
     jQuery(window).resize(resetdivs);
+
+    // set up the carousel
+    $('.slider').slick({
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        centerMode: true,
+        variableWidth: true,
+        autoplay: true,
+        autoplaySpeed: 3000
+    });
+
 });
 
 </script>

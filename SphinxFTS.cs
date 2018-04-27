@@ -147,9 +147,9 @@ namespace SteveHavelka.SphinxFTS
 					// ha_sphinx.cc, so what we have to do is page through the results
 					// on our own, here, up to the limit requested by the user.
 					//
-					// We'll use a limit of 20 results at a time, to make sure we never
+					// We'll use a limit of 10 results at a time, to make sure we never
 					// exceed the sphinxse hard-coded limit.
-					int my_limit = 20;
+					int my_limit = 10;
 					int my_offset = offset;
 					List<int> ids = new List<int>();
 

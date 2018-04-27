@@ -50,5 +50,42 @@ namespace SearchProcurement.Helpers
                 }
             }
         }
+
+
+
+
+
+        public static string[] getAgencyLogoUrls()
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT agency_logo_url " +
+                        "FROM agency " +
+                        "WHERE agency_logo_url IS NOT NULL " +
+                        "ORDER BY agency_name ASC";
+					cmd.Prepare();
+
+					// Run the DB command
+					using(MySqlDataReader r = cmd.ExecuteReader())
+					{
+			            List<string> l = new List<string>();
+
+						while(r.Read())
+						{
+                            l.Add(r.GetString(0));
+                        }
+
+                        // And we're done
+                        return l.ToArray();
+                    }
+                }
+            }
+        }
     }
 }

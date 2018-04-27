@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+using SearchProcurement.Helpers;
+
 namespace SearchProcurement.Controllers
 {
     public class HomeController : Controller
@@ -11,6 +13,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Index()
         {
             // The home page has a default title prefix
+            ViewBag.agencyUrls = SiteNavHelper.getAgencyLogoUrls();
             ViewBag.extraTitle = "Your one-stop shop for discovering government contracting opportunities";
             return View();
         }

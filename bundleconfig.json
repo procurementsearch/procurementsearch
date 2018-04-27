@@ -12,6 +12,8 @@
       "wwwroot/lib/Croppie/croppie.css",
       "wwwroot/lib/datetimepicker/jquery.datetimepicker.css",
       "wwwroot/lib/blueimp-file-upload/css/jquery.fileupload.css",
+      "wwwroot/lib/slick-carousel/slick/slick.css",
+      "wwwroot/lib/slick-carousel/slick/slick-theme.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
       "wwwroot/css/detail.css",
@@ -25,6 +27,8 @@
   {
     "outputFileName": "wwwroot/css/site.micro.css",
     "inputFiles": [
+      "wwwroot/lib/slick-carousel/slick/slick.css",
+      "wwwroot/lib/slick-carousel/slick/slick-theme.css",
       "wwwroot/css/fonts.css",
       "wwwroot/css/pure-min.css",
       "wwwroot/css/grids-responsive-min.css",
@@ -47,6 +51,7 @@
       "wwwroot/lib/blueimp-file-upload/js/vendor/jquery.ui.widget.js",
       "wwwroot/lib/blueimp-file-upload/js/jquery.iframe-transport.js",
       "wwwroot/lib/blueimp-file-upload/js/jquery.fileupload.js",
+      "wwwroot/lib/slick-carousel/slick/slick.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],
@@ -62,6 +67,7 @@
     "outputFileName": "wwwroot/js/site.micro.min.js",
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/slick-carousel/slick/slick.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],
