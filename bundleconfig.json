@@ -27,9 +27,9 @@
   {
     "outputFileName": "wwwroot/css/site.micro.css",
     "inputFiles": [
+      "wwwroot/css/fonts.css",
       "wwwroot/lib/slick-carousel/slick/slick.css",
       "wwwroot/lib/slick-carousel/slick/slick-theme.css",
-      "wwwroot/css/fonts.css",
       "wwwroot/css/pure-min.css",
       "wwwroot/css/grids-responsive-min.css",
       "wwwroot/css/styles.css",
