@@ -26,6 +26,7 @@ namespace SearchProcurement
 
 		/* The default site, if we've been requested one that hasn't been set up or doesn't exist */
 		public const string defaultSiteName = "ProcurementSearch.com";
+		public const int defaultSiteId = 17;
 
 
 		/* Key names for session data */

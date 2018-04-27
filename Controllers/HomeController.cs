@@ -13,7 +13,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Index()
         {
             // The home page has a default title prefix
-            ViewBag.agencyUrls = SiteNavHelper.getAgencyLogoUrls();
+            ViewBag.agencyUrls = SiteNavHelper.getAgencyLogoUrls(Defines.defaultSiteId);
             ViewBag.extraTitle = "Your one-stop shop for discovering government contracting opportunities";
             return View();
         }

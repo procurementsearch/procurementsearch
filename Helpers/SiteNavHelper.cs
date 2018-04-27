@@ -55,7 +55,7 @@ namespace SearchProcurement.Helpers
 
 
 
-        public static string[] getAgencyLogoUrls()
+        public static string[] getAgencyLogoUrls(int locId)
         {
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
@@ -65,10 +65,12 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT agency_logo_url " +
-                        "FROM agency " +
-                        "WHERE agency_logo_url IS NOT NULL " +
-                        "ORDER BY agency_name ASC";
+					cmd.CommandText = "SELECT a.agency_logo_url " +
+                        "FROM agency AS a " +
+                        "LEFT JOIN agency_location_defaults AS ald ON a.agency_id = ald.agency_id " +
+                        "WHERE a.agency_logo_url IS NOT NULL AND ald.location_id = @id " +
+                        "ORDER BY a.agency_name ASC";
+					cmd.Parameters.AddWithValue("@id", locId);
 					cmd.Prepare();
 
 					// Run the DB command
