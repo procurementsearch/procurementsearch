@@ -1,11 +1,14 @@
-<div class="home-container" id="stage1">
+@using SearchProcurement.Helpers
+
+<div class="home-container">
     <div id="main-logo-container">
         <div id="main-logo-padding">
-        <div id="main-logo-image"><img src="/images/logo.png" class="pure-img"></div>
-        <div id="main-logo-logotype">
-            procurement search
-            <div id="main-logo-place">@Html.Raw(Defines.LocationSettings.homeTitle)</div>
-        </div></div>
+            <div id="main-logo-image"><img src="/images/logo.png" class="pure-img"></div>
+            <div id="main-logo-logotype">
+                procurement search
+                <div id="main-logo-place">@Html.Raw(Defines.LocationSettings.homeTitle)</div>
+            </div>
+        </div>
     </div>
     <div style="clear: both;"></div>
 
@@ -15,10 +18,14 @@
             <button type="submit" id="main-search" class="pure-button button-primary">search</button>
         </form>
     </div>
-    <div style="clear: both;"></div>
-    <div id="stage1_jump"><i class="fas fa-chevron-down"></i></div>
 </div>
 
+<div class="home-breakout">
+    <h2>
+        <b><a href="http://ProcurementSearch.com">ProcurementSearch.com</a></b> is your
+        one-stop shop for discovering government contracting opportunities.
+    </h2>
+</div>
 
 <div class="home-container" id="stage2">
     <div class="pure-g">
@@ -42,48 +49,61 @@
             </p>
         </div>
     </div>
-    <div style="clear: both;"></div>
-    <div id="stage2_jump"><i class="fas fa-chevron-down"></i></div>
 </div>
 
 
-<div class="home-container" id="stage3">
+<div class="home-breakout">
+    <p class="pullquote">
+        "It's never been easier."
+    </p>
+    <p class="pullquoteattrib">
+        - Jerry Schneider,<br>
+        HVAC Contractor,<br>
+        River City Mechanical NW
+    </p>
+</div>
 
-    <h2>who we work with</h2>
+
+
+<div class="home-container">
+    <h2 class="sliderheader">who we work with</h2>
     <div class="slider">
     @foreach (string url in ViewBag.agencyUrls)
     {
         <div><img src="@url" /></div>
     }
     </div>
+</div>
 
+
+<div class="home-breakout">
     <p class="pullquote">
         "I am happy to say that Procurement Search saved us time on our outreach,
         and has expanded our outreach activities, giving us the results we were
         seeking."
     </p>
     <p class="pullquoteattrib">
-         - Kimberly Mitchell-Phillips, Small Business Development Program
-        Manager, Port of Portland
+         - Kimberly Mitchell-Phillips,<br>
+        Small Business Development Program Manager,<br>
+        Port of Portland
     </p>
 </div>
 
-<div class="home-container" id="stage4">xyz</div>
+
+<div class="home-members">
+    <h2>Our Member Agencies</h2>
+
+    @foreach (var a in SiteNavHelper.getAgencies(Defines.LocationSettings.myLocationId))
+    {
+        <a href="/search/?agency=@a.agencyId">@a.name</a><br>
+    }
+
+</div>
 
 
 <script type="text/javascript">
-var stage1_h = jQuery("#stage1").height();
-
-function resetdivs() {
-    var h = jQuery(window).height();
-    jQuery(".home-container").css("height", h + "px");
-    if( stage1_h > h )
-        jQuery("#stage1").height(stage1_h + "px");
-}
 
 jQuery(document).ready(function(){
-    resetdivs();
-    jQuery(window).resize(resetdivs);
 
     // set up the carousel
     $('.slider').slick({
