@@ -274,12 +274,12 @@ a {
     }
 
     .home-breakout {
-        margin-left: 1em;
-        margin-right: 1em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
 
     .home-breakout p.pullquote {
-        color: #7b6f7b;
+        color: white;
         font-size: 20pt;
         font-weight: 500;
         text-align: center;
@@ -287,7 +287,7 @@ a {
     }
 
     .home-breakout p.pullquoteattrib {
-        color: #bf9ac0;
+        color: white;
         font-size: 16pt;
         font-weight: bold;
         text-align: center;
@@ -317,9 +317,6 @@ a {
 }
 
 
-#stage3 {
-    /* background-color: red; */
-}
 
 .home-container h2.sliderheader {
     color: #00a6ca;
@@ -342,10 +339,44 @@ a {
 .home-container div.slider div img {
 }
 
-.slick-prev, .slick-next, .slick-prev:before, .slick-next:before {
-    color: lightgray !important;
+.panel_header {
+    color: #dc6d42;
+    font-size: 28pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
-#stage4 {
-    background-color: #00a6ca;
+.panel_header_small {
+    font-size: 24pt;
+}
+
+.panel_text {
+    color: #636466;
+    font-size: 24pt;
+    text-align: center;
+    margin: 1em;
+}
+
+.panel_text_small {
+    font-size: 20pt;
+}
+
+.panel_signup {
+    text-align: center;
+    margin-top: 4em;
+}
+
+.panel_button {
+    color: #02b6a5;
+    border: solid 3px #02b6a5;
+    text-decoration: none;
+    font-size: 28pt;
+    font-weight: bold;
+    padding: 8pt;
+}
+
+.slick-prev, .slick-next, .slick-prev:before, .slick-next:before {
+    color: lightgray !important;
 }

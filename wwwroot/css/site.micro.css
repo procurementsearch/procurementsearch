@@ -619,12 +619,12 @@ a {
     }
 
     .home-breakout {
-        margin-left: 1em;
-        margin-right: 1em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
 
     .home-breakout p.pullquote {
-        color: #7b6f7b;
+        color: white;
         font-size: 20pt;
         font-weight: 500;
         text-align: center;
@@ -632,7 +632,7 @@ a {
     }
 
     .home-breakout p.pullquoteattrib {
-        color: #bf9ac0;
+        color: white;
         font-size: 16pt;
         font-weight: bold;
         text-align: center;

@@ -27,30 +27,34 @@
     </h2>
 </div>
 
-<div class="home-container" id="stage2">
+<div class="home-container">
     <div class="pure-g">
-        <div class="pure-u-md-1-2">
-            <p class="stage2_title">Do you want to discover more government contracts?</p>
-            <p class="stage2_icon"><i class="fas fa-gavel"></i></p>
-            <p class="stage2_text">
-                Search for open contracting and procurement
-                opportunities from cities, universities, and
-                more, all quickly and easily.
+        <div class="pure-u-md-1-2 pure-u-1">
+            <p class="panel_header">Want to find more contracts?</p>
+            <p class="panel_text">
+                Search for open procurement opportunities and RFPs
+                from cities, universities, and more, quickly and
+                easily.
+            </p>
+            <p class="panel_signup">
+                <a href="/VendorInfo" class="panel_button">sign up as a vendor</a>
             </p>
         </div>
-        <div class="pure-u-md-1-2">
-            <p class="stage2_title">Are you a government buyer, and want to promote your RFPs to a wider, more diverse audience?</p>
-            <p class="stage2_icon"><i class="fas fa-binoculars"></i></p>
-            <p class="stage2_text">
-                List RFPs and procurement opportunities where
-                local businesses can find them, so you can reach
-                new vendors in your community, and get a better
-                contracting dollar utilization.
-            </p>
+        <div class="pure-u-md-1-2 pure-u-1">
+            <img src="/images/Panel1img.jpg" class="pure-img"/>
         </div>
     </div>
 </div>
 
+<div class="home-container">
+    <h2 class="sliderheader">who we work with</h2>
+    <div class="slider">
+    @foreach (string url in ViewBag.agencyUrls)
+    {
+        <div><img src="@url" /></div>
+    }
+    </div>
+</div>
 
 <div class="home-breakout">
     <p class="pullquote">
@@ -64,14 +68,24 @@
 </div>
 
 
-
 <div class="home-container">
-    <h2 class="sliderheader">who we work with</h2>
-    <div class="slider">
-    @foreach (string url in ViewBag.agencyUrls)
-    {
-        <div><img src="@url" /></div>
-    }
+    <div class="pure-g">
+        <div class="pure-u-md-1-2 pure-u-1">
+            <p class="panel_header panel_header_small">As a buyer, do you want more bids and proposals from a wider, more diverse audience?</p>
+            <p class="panel_text panel_text_small">
+                We're the next-generation procurement outreach platform, and we're
+                excited to help your agency get your bids and opportunities out
+                in front of a wider, more diverse audience.
+
+                Want to know more?
+            </p>
+            <p class="panel_signup">
+                <a href="/AccountInfo" class="panel_button">learn more</a>
+            </p>
+        </div>
+        <div class="pure-u-md-1-2 pure-u-1">
+            <img src="/images/panel2img.jpg" class="pure-img"/>
+        </div>
     </div>
 </div>
 
