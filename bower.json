@@ -7,7 +7,9 @@
     "parsleyjs": "^2.7.0",
     "datetimepicker": "^2.5.4",
     "blueimp-file-upload": "^9.18.0",
-    "jquery-modal": "^0.8.0"
+    "jquery-modal": "^0.8.0",
+    "Tocca.js": "^2.0.3",
+    "slick-carousel": "^1.8.1"
   },
   "resolutions": {
     "jquery": "^3.2.1"

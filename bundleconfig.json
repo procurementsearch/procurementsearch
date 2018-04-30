@@ -52,6 +52,7 @@
       "wwwroot/lib/blueimp-file-upload/js/jquery.iframe-transport.js",
       "wwwroot/lib/blueimp-file-upload/js/jquery.fileupload.js",
       "wwwroot/lib/slick-carousel/slick/slick.js",
+      "wwwroot/lib/Tocca.js/Tocca.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],
@@ -68,6 +69,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/slick-carousel/slick/slick.js",
+      "wwwroot/lib/Tocca.js/Tocca.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],

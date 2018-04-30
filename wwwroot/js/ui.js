@@ -43,6 +43,12 @@ function menu(window, document) {
         }
     };
 
+
+    jQuery(window).on("swiperight", function(e, data){
+        if( jQuery("#menu").hasClass("active") )   // is the menu open?
+            toggleAll(e);
+    });
+
 }
 
 jQuery(document).ready(function(){
