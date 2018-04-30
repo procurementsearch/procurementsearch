@@ -1019,9 +1019,13 @@ a {
 
 #region-options ul li {
     list-style: none;
-    border-top: solid 1px black;
+    border-top: solid 1px #b5c4c2;
     padding: .5em 1em;
     margin: 0;
+}
+
+#region-options ul li:hover {
+    background-color: #cfefea;
 }
 
 #region-options ul li.region-search-sub {

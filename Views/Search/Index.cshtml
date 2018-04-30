@@ -52,7 +52,7 @@
         <li><b><a href="http://procurementsearch.com/search?@ViewBag.searchUrl">All regions</a></b></li>
         @foreach (var l in SiteNavHelper.getLocations())
         {
-        <li data-name="@l.name" data-url="@l.url" class="@(l.sub == true ? "region-search-sub" : "" )"><a href="http://@l.url/search?@ViewBag.searchUrl">@l.name</li>
+        <li data-name="@l.name" data-url="@l.url" class="region-search-item @(l.sub == true ? "region-search-sub" : "" )"><a href="http://@l.url/search?@ViewBag.searchUrl">@l.name</li>
         }
     </ul>
     </ul>
@@ -185,6 +185,26 @@ function updateSearch(opt, val) {
         SearchOpts.delete(opt);
     location.assign("?" + SearchOpts.toString());
 }
+
+
+// Set up the region search filter
+jQuery("#region-search").keyup(function(){
+    var match = jQuery("#region-search").val().toLowerCase().trim();
+    if( match == "" )
+        jQuery(".region-search-item").show();
+    else {
+        jQuery(".region-search-item").each(function(idx, list_item){
+            var el = jQuery(list_item);
+            var name = el.data("name").toLowerCase();
+            var url = el.data("url").toLowerCase();
+            if( name.includes(match) || url.includes(match) )
+                el.show();
+            else
+                el.hide();
+        });
+    }
+});
+
 
 
 jQuery(document).ready(function(){
