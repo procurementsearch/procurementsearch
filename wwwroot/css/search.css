@@ -229,3 +229,47 @@
 .search-options-overlay .parent .check {
     padding-left: 10px;
 }
+
+#region-options {
+    padding: 0;
+}
+
+#region-search-container {
+    /* border-bottom: solid 1px black; */
+    background-color: #f0f0f0;
+}
+
+#region-search-glass {
+    padding-left: 10px;
+}
+
+#region-search {
+    margin: 0;
+    padding: .5em 0;
+    border: none;
+    background-color: #f0f0f0;
+}
+
+#region-options ul {
+    padding: 0;
+    margin: 0;
+}
+
+#region-options ul li {
+    list-style: none;
+    border-top: solid 1px black;
+    padding: .5em 1em;
+    margin: 0;
+}
+
+#region-options ul li.region-search-sub {
+    font-size: 11pt;
+    list-style: none;
+    padding: .5em 2em;
+    border-top: none;
+    margin: 0;
+}
+
+#region-options ul li a {
+    text-decoration: none;
+}

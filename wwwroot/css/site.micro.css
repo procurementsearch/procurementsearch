@@ -525,6 +525,92 @@ a {
     text-decoration: none;
 }
 
+.home-members {
+    background-color: #8f8f8f;
+    padding: 3em;
+    text-align: center;
+}
+
+.home-members h2 {
+    color: white;
+    margin: 1em 0 .5em 0;
+    font-size: 24pt;
+    font-weight: bold;
+}
+
+.home-members a {
+    color: white;
+    text-decoration: none;
+    font-size: 14pt;
+    font-weight: 100;
+}
+
+
+
+.home-container h2.sliderheader {
+    color: #00a6ca;
+    font-weight: bold;
+    font-size: 28pt;
+    text-align: center;
+    margin: 5% auto;
+}
+
+.home-container div.slider {
+    width: 80%;
+    margin: 3em auto 8em auto;
+    border: solid 2px lightgray;
+}
+
+.home-container div.slider div {
+    padding: 2px 10px;
+}
+
+.home-container div.slider div img {
+}
+
+.panel_header {
+    color: #dc6d42;
+    font-size: 28pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.panel_header_small {
+    font-size: 24pt;
+}
+
+.panel_text {
+    color: #636466;
+    font-size: 24pt;
+    text-align: center;
+    margin: 1em;
+}
+
+.panel_text_small {
+    font-size: 20pt;
+}
+
+.panel_signup {
+    text-align: center;
+    margin-top: 4em;
+}
+
+.panel_button {
+    color: #02b6a5;
+    border: solid 3px #02b6a5;
+    text-decoration: none;
+    font-size: 28pt;
+    font-weight: bold;
+    padding: 8pt;
+}
+
+.slick-prev, .slick-next, .slick-prev:before, .slick-next:before {
+    color: lightgray !important;
+}
+
+
 
 /* Large screens */
 @media screen and (min-width: 640px) {
@@ -616,84 +702,63 @@ a {
 
     #main-search {
         margin-top: 1em;
+        font-size: 16pt;
     }
 
     .home-breakout {
-        padding-left: 1em;
-        padding-right: 1em;
+        padding: 1em;
+    }
+
+    .home-breakout h2 {
+        font-weight: 100;
+        margin: 0;
     }
 
     .home-breakout p.pullquote {
         color: white;
-        font-size: 20pt;
-        font-weight: 500;
+        font-size: 16pt;
+        font-style: italic;
+        font-weight: 600;
         text-align: center;
-        margin: 5% 20% 1em 20%;
     }
 
     .home-breakout p.pullquoteattrib {
         color: white;
+        font-size: 14pt;
+        font-weight: extralight;
+        text-align: right;
+    }
+
+    .home-container h2.sliderheader {
+        font-size: 18pt;
+    }
+
+    .panel_header {
+        font-size: 18pt;
+    }
+
+    .panel_header_small {
         font-size: 16pt;
-        font-weight: bold;
-        text-align: center;
-        margin-left: 20%;
-        margin-right: 20%;
+        margin: 10px;
+    }
+
+    .panel_text {
+        font-size: 14pt;
+    }
+
+    .panel_text_small {
+        font-size: 12pt;
+    }
+
+    .panel_signup {
+        margin: 3em auto;
+    }
+
+    .panel_button {
+        font-size: 16pt;
     }
 }
 
-.home-members {
-    background-color: #8f8f8f;
-    padding: 3em;
-    text-align: center;
-}
-
-.home-members h2 {
-    color: white;
-    margin: 1em 0 .5em 0;
-    font-size: 24pt;
-    font-weight: bold;
-}
-
-.home-members a {
-    color: white;
-    text-decoration: none;
-    font-size: 14pt;
-    font-weight: 100;
-}
-
-
-#stage3 {
-    /* background-color: red; */
-}
-
-.home-container h2.sliderheader {
-    color: #00a6ca;
-    font-weight: bold;
-    font-size: 28pt;
-    text-align: center;
-    margin: 5% auto;
-}
-
-.home-container div.slider {
-    width: 80%;
-    margin: 3em auto 8em auto;
-    border: solid 2px lightgray;
-}
-
-.home-container div.slider div {
-    padding: 2px 10px;
-}
-
-.home-container div.slider div img {
-}
-
-.slick-prev, .slick-next, .slick-prev:before, .slick-next:before {
-    color: lightgray !important;
-}
-
-#stage4 {
-    background-color: #00a6ca;
-}
 
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
@@ -925,6 +990,50 @@ a {
 
 .search-options-overlay .parent .check {
     padding-left: 10px;
+}
+
+#region-options {
+    padding: 0;
+}
+
+#region-search-container {
+    /* border-bottom: solid 1px black; */
+    background-color: #f0f0f0;
+}
+
+#region-search-glass {
+    padding-left: 10px;
+}
+
+#region-search {
+    margin: 0;
+    padding: .5em 0;
+    border: none;
+    background-color: #f0f0f0;
+}
+
+#region-options ul {
+    padding: 0;
+    margin: 0;
+}
+
+#region-options ul li {
+    list-style: none;
+    border-top: solid 1px black;
+    padding: .5em 1em;
+    margin: 0;
+}
+
+#region-options ul li.region-search-sub {
+    font-size: 11pt;
+    list-style: none;
+    padding: .5em 2em;
+    border-top: none;
+    margin: 0;
+}
+
+#region-options ul li a {
+    text-decoration: none;
 }
 @media screen and (min-width: 800px) {
     .detail-results {

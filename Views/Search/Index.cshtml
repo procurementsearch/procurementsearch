@@ -44,15 +44,17 @@
 </div>
 
 <div class="search-options-overlay" id="region-options">
-    Search in region
+    <div id="region-search-container">
+        <span id="region-search-glass"><i class="fas fa-search"></i></span>
+        <input type="text" id="region-search" placeholder="Search">
+    </div>
     <ul>
-        <li><a href="http://or.procurementsearch.com/search?@ViewBag.searchUrl">Oregon</a>
-        <li>&nbsp;<a class="small" href="http://corvallis.procurementsearch.com/search?@ViewBag.searchUrl">Corvallis</a>
-        <li>&nbsp;<a class="small" href="http://eugene.procurementsearch.com/search?@ViewBag.searchUrl">Eugene</a>
-        <li>&nbsp;<a class="small" href="http://pdx.procurementsearch.com/search?@ViewBag.searchUrl">Portland</a>
-        <li>&nbsp;<a class="small" href="http://salem.procurementsearch.com/search?@ViewBag.searchUrl">Salem</a>
-        <li><a href="http://wa.procurementsearch.com/search?@ViewBag.searchUrl">Washington</a>
-        <li><a href="http://procurementsearch.com/search?@ViewBag.searchUrl">All regions</a>
+        <li><b><a href="http://procurementsearch.com/search?@ViewBag.searchUrl">All regions</a></b></li>
+        @foreach (var l in SiteNavHelper.getLocations())
+        {
+        <li data-name="@l.name" data-url="@l.url" class="@(l.sub == true ? "region-search-sub" : "" )"><a href="http://@l.url/search?@ViewBag.searchUrl">@l.name</li>
+        }
+    </ul>
     </ul>
 </div>
 
@@ -233,7 +235,6 @@ jQuery(document).ready(function(){
     $("input:checkbox[name='agencies[]']:checked").each(function(){
         selectedAgencies.push($(this).val());
     });
-
 
 })
 </script>

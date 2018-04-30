@@ -90,7 +90,7 @@ namespace SearchProcurement
                             Defines.LocationSettings.rssFilterByLocation = r.GetInt32(10);
                             Defines.LocationSettings.siteTitle = r.GetString(11);
                             Defines.LocationSettings.gaGuid = r.IsDBNull(12) ? "" : r.GetString(12);
-                            Defines.LocationSettings.footerText = r.GetString(13);
+                            Defines.LocationSettings.footerText = r.IsDBNull(13) ? "" : r.GetString(13);
                             Defines.LocationSettings.socialTwitter = r.IsDBNull(14) ? "" : r.GetString(14);
                             Defines.LocationSettings.socialFacebook = r.IsDBNull(15) ? "" : r.GetString(15);
                             Defines.LocationSettings.myLocationId = r.GetInt32(16);
