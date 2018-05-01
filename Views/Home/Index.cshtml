@@ -1,5 +1,7 @@
 @using SearchProcurement.Helpers
 
+<div id="topleftcorner"></div>
+
 <div class="home-container">
     <div id="main-logo-container">
         <div id="main-logo-padding">
@@ -15,6 +17,9 @@
     <div id="main-search-container">
         <form method="get" action="/search" role="search">
             <input type="text" name="kw" placeholder="Looking for bids and RFPs?">
+            <p>
+                Search for bids and opportunities with keywords, e.g.: landscape architecture
+            </p>
             <button type="submit" id="main-search" class="pure-button button-primary">search</button>
         </form>
     </div>
@@ -25,6 +30,11 @@
         <b><a href="http://ProcurementSearch.com">ProcurementSearch.com</a></b> is your
         one-stop shop for discovering government contracting opportunities.
     </h2>
+    <p>
+        You can search for and find up-to-date procurement opportunities and open RFPs
+        with any of our member agencies.  Whatever business you're in, you can find out
+        who's buying what you're selling.
+    </p>
 </div>
 
 <div class="home-container">
@@ -46,16 +56,6 @@
     </div>
 </div>
 
-<div class="home-container">
-    <h2 class="sliderheader">who we work with</h2>
-    <div class="slider">
-    @foreach (string url in ViewBag.agencyUrls)
-    {
-        <div><img src="@url" /></div>
-    }
-    </div>
-</div>
-
 <div class="home-breakout">
     <p class="pullquote">
         "It's never been easier."
@@ -71,16 +71,28 @@
 <div class="home-container">
     <div class="pure-g">
         <div class="pure-u-md-1-2 pure-u-1">
-            <p class="panel_header panel_header_small">As a buyer, do you want more bids and proposals from a wider, more diverse audience?</p>
+            <p id="step2" class="panel_header panel_header_small">Hey, procurement managers and diversity practitioners, is this you?</p>
             <p class="panel_text panel_text_small">
+                You hold outreach events.  You hand out flyers.  You pick up the phone
+                and call people.  But your vendor pool isn't growing, and it doesn't
+                reflect your community.  Why?<br><br>
+
+                The problem isn't in the events, or the flyers.  The problem is that
+                when your interested vendors get home, they all face the same frustration.
+                You're one of many agencies in your region, you're all competing for
+                the attention of your business community, and all the different e-bid
+                platforms are leaving your vendors feeling frustrated.<br><br>
+
+                <b>This is where we come in.</b><br><br>
+
                 We're the next-generation procurement outreach platform, and we're
-                excited to help your agency get your bids and opportunities out
-                in front of a wider, more diverse audience.
+                excited to get your agency's bids and opportunities out in front of
+                a wider, more diverse audience.<br><br>
 
                 Want to know more?
             </p>
             <p class="panel_signup">
-                <a href="/AccountInfo" class="panel_button">learn more</a>
+                <a href="#" class="panel_button" id="step3_jump">find out more</a>
             </p>
         </div>
         <div class="pure-u-md-1-2 pure-u-1">
@@ -89,20 +101,90 @@
     </div>
 </div>
 
+<div class="home-container">
+    <div class="pure-g">
+        <div class="pure-u-md-1-2 pure-u-1">
+            <p id="step2" class="panel_header panel_header_small">What makes us different?</p>
+            <p class="panel_text panel_text_small">
+                <b>Well, it's simple.</b><br><br>
+
+                We're a one-stop search engine for contracting opportunities all across your
+                metropolitan region.  We combine your contract and RFP database with the other
+                agencies in your region, giving your vendor community one single place to go.<br><br>
+
+                We help you collaborate with the other agencies in your region.  Instead of
+                competing with them for vendor attention, your outreach efforts now support
+                one another.  Every event you do, every tweet you post, it now has a multiplier
+                effect on your efforts.  And your vendors see it.<br><br>
+
+                Vendors can perform keyword searches to discover relevant contracting
+                opportunities so quickly and so easily, you'll start seeing more competitive
+                bidding, from a more diverse vendor pool.
+            </p>
+        </div>
+        <div class="pure-u-md-1-2 pure-u-1">
+            <p id="step2" class="panel_header panel_header_small">DBE?  Title VI?  Section 3?</p>
+            <p class="panel_text panel_text_small">
+                If you're a program manager in charge of equity and inclusion, you know how hard
+                it is to engage with new vendors.  Convincing historically disadvantaged businesses
+                to try and work with your agency is an uphill battle.<br><br>
+
+                <i>Get certified.  Take home these flyers.  Check our website every week.
+                Read through lists of RFPs.  You might be discouraged, but keep reading.</i><br><br>
+
+                More often than not, new vendors do get discouraged, even overwhelmed, at the
+                amount of administrative work they're asked to do, just to find your contracting
+                opportunities.<br><br>
+
+                We eliminate that work, simplify the process, and create happy vendors who submit
+                bids.  But does it work?  Well, we'll let some of our current customers speak for
+                us.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="home-container">
+    <div class="pure-g">
+        <div class="pure-u-md-1-2 pure-u-1">
+            <p id="step2" class="panel_header panel_header_small">Ready for an easy implementation?</p>
+            <p class="panel_text panel_text_small">
+                We don't ask you to change your e-bid platform.  We don't want you to change
+                your e-bid platform.  Keep what you've got, and we'll integrate your contracts
+                and RFPs into our search engine.  You don't need to change how you do your job to
+                see great results from Procurement Search.<br><br>
+
+                <b>We work hard to make sure implementation is as easy as possible.</b>  You don't
+                need to retrain your staff or change your processes.  You don't need to involve IT.
+                In most cases, we can get an agency up and running in less than a week.
+            </p>
+        </div>
+    </div>
+</div>
+
 
 <div class="home-breakout">
-    <p class="pullquote">
+    <p id="step3" class="pullquote">
         "I am happy to say that Procurement Search saved us time on our outreach,
         and has expanded our outreach activities, giving us the results we were
         seeking."
     </p>
     <p class="pullquoteattrib">
-         - Kimberly Mitchell-Phillips,<br>
+        - Kimberly Mitchell-Phillips,<br>
         Small Business Development Program Manager,<br>
         Port of Portland
     </p>
 </div>
 
+<div class="home-container">
+    <h2 class="sliderheader">who we work with</h2>
+    <div class="slider">
+    @foreach (string url in ViewBag.agencyUrls)
+    {
+        <div><img src="@url" /></div>
+    }
+    </div>
+</div>
 
 <div class="home-members">
     <h2>Our Member Agencies</h2>
@@ -132,6 +214,45 @@ jQuery(document).ready(function(){
         autoplaySpeed: 3000
     });
 
+
+
+    // set up the guided tour
+    var tour = {
+        id: "hello-hopscotch",
+        i18n: {
+            nextBtn: "Yes, tell me more!"
+        },
+        steps: [
+            {
+                title: "Hey, agency buyers!",
+                content: "We can help you grow your vendor pool and get your bids and opportunities in front of a local, wider, more diverse audience.  Want to know more?",
+                target: "topleftcorner",
+                placement: "bottom",
+                showCTAButton: true,
+                ctaLabel: "Skip",
+                onCTA: function() { hopscotch.endTour() },
+                onNext: function() { hopscotch.resetDefaultI18N() }
+            },
+            {
+                title: "What are we all about?",
+                content: "You want a wider and more diverse vendor pool.  Your local business community wants to work with you.  We want to bring you two together.",
+                target: "step2",
+                placement: "right"
+            },
+            {
+                title: "What people are saying...",
+                content: "Agencies large and small have had great success with us.",
+                target: "step3",
+                placement: "top"
+            }
+        ]
+    };
+
+    // Start the tour!
+    hopscotch.startTour(tour);
+
+
 });
+
 
 </script>

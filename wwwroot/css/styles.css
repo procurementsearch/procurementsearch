@@ -161,6 +161,11 @@ a {
     padding: 12pt 8pt;
 }
 
+#main-search-container form p {
+    font-size: 11pt;
+    font-style: italic;
+}
+
 #main-search {
     margin: 1em auto 0 auto;
     margin-top: 1.5em;
@@ -223,6 +228,12 @@ a {
 .home-container div.slider div img {
 }
 
+#topleftcorner {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
 .panel_header {
     color: #dc6d42;
     font-size: 28pt;
@@ -233,18 +244,18 @@ a {
 }
 
 .panel_header_small {
-    font-size: 24pt;
+    font-size: 22pt;
 }
 
 .panel_text {
     color: #636466;
     font-size: 24pt;
-    text-align: center;
+    text-align: left;
     margin: 1em;
 }
 
 .panel_text_small {
-    font-size: 20pt;
+    font-size: 12pt;
 }
 
 .panel_signup {
@@ -301,13 +312,17 @@ a {
     }
 
     .home-breakout {
-        padding: 2em 10%;
+        padding: 2em 15%;
     }
 
     .home-breakout h2 {
-        font-size: 28pt;
-        line-height: 200%;
+        font-size: 22pt;
+        line-height: 150%;
         font-weight: 100;
+    }
+
+    .home-breakout p {
+
     }
 
     .home-breakout p.pullquote {

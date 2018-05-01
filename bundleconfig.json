@@ -14,6 +14,7 @@
       "wwwroot/lib/blueimp-file-upload/css/jquery.fileupload.css",
       "wwwroot/lib/slick-carousel/slick/slick.css",
       "wwwroot/lib/slick-carousel/slick/slick-theme.css",
+      "wwwroot/lib/hopscotch/dist/css/hopscotch.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
       "wwwroot/css/detail.css",
@@ -30,6 +31,7 @@
       "wwwroot/css/fonts.css",
       "wwwroot/lib/slick-carousel/slick/slick.css",
       "wwwroot/lib/slick-carousel/slick/slick-theme.css",
+      "wwwroot/lib/hopscotch/dist/css/hopscotch.css",
       "wwwroot/css/pure-min.css",
       "wwwroot/css/grids-responsive-min.css",
       "wwwroot/css/styles.css",
@@ -52,6 +54,7 @@
       "wwwroot/lib/blueimp-file-upload/js/jquery.iframe-transport.js",
       "wwwroot/lib/blueimp-file-upload/js/jquery.fileupload.js",
       "wwwroot/lib/slick-carousel/slick/slick.js",
+      "wwwroot/lib/hopscotch/dist/js/hopscotch.js",
       "wwwroot/lib/Tocca.js/Tocca.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
@@ -69,6 +72,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/slick-carousel/slick/slick.js",
+      "wwwroot/lib/hopscotch/dist/js/hopscotch.js",
       "wwwroot/lib/Tocca.js/Tocca.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
