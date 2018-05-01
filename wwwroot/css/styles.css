@@ -260,14 +260,14 @@ a {
 
 .panel_signup {
     text-align: center;
-    margin-top: 4em;
+    margin-top: 2em;
 }
 
 .panel_button {
     color: #02b6a5;
     border: solid 3px #02b6a5;
     text-decoration: none;
-    font-size: 28pt;
+    font-size: 22pt;
     font-weight: bold;
     padding: 8pt;
 }
