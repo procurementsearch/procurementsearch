@@ -91,9 +91,9 @@
 
                 Want to know more?
             </p>
-            <p class="panel_signup">
+            <!-- <p class="panel_signup">
                 <a href="#" class="panel_button" id="step3_jump">find out more</a>
-            </p>
+            </p> -->
         </div>
         <div class="pure-u-md-1-2 pure-u-1">
             <img src="/images/panel2img.jpg" class="pure-img"/>
@@ -104,7 +104,7 @@
 <div class="home-container">
     <div class="pure-g">
         <div class="pure-u-md-1-2 pure-u-1">
-            <p id="step2" class="panel_header panel_header_small">What makes us different?</p>
+            <p id="step3" class="panel_header panel_header_small">What makes us different?</p>
             <p class="panel_text panel_text_small">
                 <b>Well, it's simple.</b><br><br>
 
@@ -123,7 +123,7 @@
             </p>
         </div>
         <div class="pure-u-md-1-2 pure-u-1">
-            <p id="step2" class="panel_header panel_header_small">DBE?  Title VI?  Section 3?</p>
+            <p id="step3x" class="panel_header panel_header_small">DBE?  Title VI?  Section 3?</p>
             <p class="panel_text panel_text_small">
                 If you're a program manager in charge of equity and inclusion, you know how hard
                 it is to engage with new vendors.  Convincing historically disadvantaged businesses
@@ -147,7 +147,7 @@
 <div class="home-container">
     <div class="pure-g">
         <div class="pure-u-md-1-2 pure-u-1">
-            <p id="step2" class="panel_header panel_header_small">Ready for an easy implementation?</p>
+            <p id="step4" class="panel_header panel_header_small">Ready for an easy implementation?</p>
             <p class="panel_text panel_text_small">
                 We don't ask you to change your e-bid platform.  We don't want you to change
                 your e-bid platform.  Keep what you've got, and we'll integrate your contracts
@@ -164,7 +164,7 @@
 
 
 <div class="home-breakout">
-    <p id="step3" class="pullquote">
+    <p id="step5" class="pullquote">
         "I am happy to say that Procurement Search saved us time on our outreach,
         and has expanded our outreach activities, giving us the results we were
         seeking."
@@ -176,7 +176,7 @@
     </p>
 </div>
 
-<div class="home-container">
+<div id="step6" class="home-container">
     <h2 class="sliderheader">who we work with</h2>
     <div class="slider">
     @foreach (string url in ViewBag.agencyUrls)
@@ -240,10 +240,28 @@ jQuery(document).ready(function(){
                 placement: "right"
             },
             {
-                title: "What people are saying...",
-                content: "Agencies large and small have had great success with us.",
+                title: "We're all better together.",
+                content: "We help you collaborate with all the other agencies in your region, building a one-stop source for government contracting that your vendors will love.",
                 target: "step3",
                 placement: "top"
+            },
+            {
+                title: "And it's easy to get started.",
+                content: "Implementation headaches?  No way!",
+                target: "step4",
+                placement: "right"
+            },
+            {
+                title: "What do our customers say?",
+                content: "We'd be happy to bring you the same great results they've been getting.",
+                target: "step5",
+                placement: "top"
+            },
+            {
+                title: "And who are our customers?",
+                content: "We're working with agencies all across Oregon and Washington, and we'd love to work with you, too.",
+                target: "step6",
+                placement: "bottom"
             }
         ]
     };
