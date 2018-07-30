@@ -49,6 +49,10 @@ namespace SearchProcurement.Controllers
             // Set up the RSS model and results
             Rss r = new Rss();
 
+            // no valid agency or source?
+	    if( agency == null && source == null )
+	        return Index();
+
             // Make sure we handle the deprecated case
             if( agency == null )
                 agency = source;

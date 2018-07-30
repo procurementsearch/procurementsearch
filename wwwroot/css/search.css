@@ -64,6 +64,10 @@
         content: " \f0d7";
     }
 
+    .agency-header {
+        margin: 1.5em 6em;
+	border: solid thin #ddd;
+    }
 }
 
 
@@ -126,6 +130,9 @@
         content: " \f0d7";
     }
 
+    .agency-header {
+        margin: 1em;
+    }
 }
 
 
@@ -139,10 +146,6 @@
 
 
 
-
-.agency-header {
-    margin: 1em;
-}
 
 .search-options span {
     margin-right: 20px;

@@ -22,29 +22,29 @@ namespace SearchProcurement.Helpers
     {
         public static NavAgency[] getAgencies(int locId)
         {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT a.agency_id, a.agency_name " +
+            // Set up the database connection, there has to be a better way!
+            using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+            {
+                // Open the DB connection
+                my_dbh.Open();
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "SELECT a.agency_id, a.agency_name " +
                         "FROM agency AS a " +
                         "LEFT JOIN agency_location_defaults AS ald ON a.agency_id = ald.agency_id " +
                         "WHERE ald.location_id = @id " +
                         "ORDER BY a.agency_name ASC";
-					cmd.Parameters.AddWithValue("@id", locId);
-					cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@id", locId);
+                    cmd.Prepare();
 
-					// Run the DB command
-					using(MySqlDataReader r = cmd.ExecuteReader())
-					{
-			            List<NavAgency> l = new List<NavAgency>();
+                    // Run the DB command
+                    using(MySqlDataReader r = cmd.ExecuteReader())
+                    {
+                        List<NavAgency> l = new List<NavAgency>();
 
-						while(r.Read())
-						{
+                        while(r.Read())
+                        {
                             l.Add(new NavAgency
                             {
                                 agencyId = r.GetInt32(0),
@@ -65,29 +65,29 @@ namespace SearchProcurement.Helpers
 
         public static string[] getAgencyLogoUrls(int locId)
         {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT a.agency_logo_url " +
+            // Set up the database connection, there has to be a better way!
+            using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+            {
+                // Open the DB connection
+                my_dbh.Open();
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "SELECT a.agency_logo_url " +
                         "FROM agency AS a " +
                         "LEFT JOIN agency_location_defaults AS ald ON a.agency_id = ald.agency_id " +
                         "WHERE a.agency_logo_url IS NOT NULL AND ald.location_id = @id " +
                         "ORDER BY a.agency_name ASC";
-					cmd.Parameters.AddWithValue("@id", locId);
-					cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@id", locId);
+                    cmd.Prepare();
 
-					// Run the DB command
-					using(MySqlDataReader r = cmd.ExecuteReader())
-					{
-			            List<string> l = new List<string>();
+                    // Run the DB command
+                    using(MySqlDataReader r = cmd.ExecuteReader())
+                    {
+                        List<string> l = new List<string>();
 
-						while(r.Read())
-						{
+                        while(r.Read())
+                        {
                             l.Add(r.GetString(0));
                         }
 
@@ -105,27 +105,27 @@ namespace SearchProcurement.Helpers
         {
             List<NavLocation> l = new List<NavLocation>();
 
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT location_id, location_name, location_domain " +
+            // Set up the database connection, there has to be a better way!
+            using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+            {
+                // Open the DB connection
+                my_dbh.Open();
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "SELECT location_id, location_name, location_domain " +
                         "FROM location " +
                         "WHERE location_type = 'state' AND location_name != 'Sandbox' " +
                         "ORDER BY location_name ASC";
-					cmd.Prepare();
+                    cmd.Prepare();
 
-					// Run the DB command
-					using(MySqlDataReader r = cmd.ExecuteReader())
-					{
+                    // Run the DB command
+                    using(MySqlDataReader r = cmd.ExecuteReader())
+                    {
                         int locId;
 
-						while(r.Read())
-						{
+                        while(r.Read())
+                        {
                             locId = r.GetInt32(0);
                             l.Add(new NavLocation
                             {
@@ -135,10 +135,10 @@ namespace SearchProcurement.Helpers
                             });
 
                             // Now get the subregions
-                			using(MySqlConnection my_dbh2 = new MySqlConnection(Defines.AppSettings.myConnectionString))
-                			{
-                				// Open the DB connection
-                				my_dbh2.Open();
+                            using(MySqlConnection my_dbh2 = new MySqlConnection(Defines.AppSettings.myConnectionString))
+                            {
+                                // Open the DB connection
+                                my_dbh2.Open();
                                 using(MySqlCommand cmd2 = new MySqlCommand())
                                 {
                                     cmd2.Connection = my_dbh2;

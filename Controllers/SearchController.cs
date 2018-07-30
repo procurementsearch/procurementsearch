@@ -91,7 +91,7 @@ namespace SearchProcurement.Controllers
         }
 
 
-        public IActionResult Agency(int agency)
+        public IActionResult Agency(int agency, string sortBy, string show)
         {
             if( agency == 0 )
                 return Redirect("/");
@@ -117,6 +117,13 @@ namespace SearchProcurement.Controllers
             // And log the search terms
             string kwlog = "source:" + s.searchString;
             LogHelper.logSearchTerms(kwlog, s.searchCount, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+
+            // Load up the defaults for the dropdowns
+            Dictionary<string, dynamic> SearchOpts = new Dictionary<string, dynamic>();
+            SearchOpts.Add("agency", agency);
+            SearchOpts.Add("sortBy", "");
+            SearchOpts.Add("show", "");
+            ViewBag.SearchOpts = SearchOpts;
 
             // Load the model
             return View(s);

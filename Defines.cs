@@ -4,8 +4,8 @@ namespace SearchProcurement
 	public sealed class Defines
 	{
 		/* The keyword table I'm using */
-		public const string mySphinxTable = "search_all";
-		public const string mySphinxIndex = "kw_all";
+		public const string mySphinxTable = "search_all_v2";
+		public const string mySphinxIndex = "kw_all_v2";
 
 		/* The dreamobjects access and secret keys */
 		public const string s3LogoPath = "agency_logos";

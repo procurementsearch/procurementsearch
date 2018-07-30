@@ -30,6 +30,21 @@
         <b><a href="http://ProcurementSearch.com">ProcurementSearch.com</a></b> is your
         one-stop shop for discovering government contracting opportunities.
     </h2>
+
+    <div class="regions">
+    @foreach (var l in SiteNavHelper.getLocations())
+    {
+        if (l.sub == true)
+        {
+        <a href="http://@l.url/">@l.name</a><br>
+        }
+        else
+        {
+        <div class="state"><a href="http://@l.url/">@l.name</a></div>
+        }
+    }
+    </div>
+
     <p>
         You can search for and find up-to-date procurement opportunities and open RFPs
         with any of our member agencies.  Whatever business you're in, you can find out
@@ -201,7 +216,7 @@
 
     @foreach (var a in SiteNavHelper.getAgencies(Defines.LocationSettings.myLocationId))
     {
-        <a href="/search/?agency=@a.agencyId">@a.name</a><br>
+        <a href="/search/Agency?agency=@a.agencyId">@a.name</a><br>
     }
 
 </div>

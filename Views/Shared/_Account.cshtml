@@ -65,29 +65,42 @@
 <body>
 
 
-    <div class="wrapper">
-        <!-- for sticky footer -->
+    <div id="layout">
 
-        <div class="header small-hide">
-            <div class="pure-menu pure-menu-horizontal">
-                <a class="pure-menu-heading rss" href="/rss"><img src="/images/rss-icon.png"></a>
+        <!-- for sticky footer -->
+        <a href="#menu" id="menuLink" class="menu-link">
+            <!-- Hamburger icon -->
+            <span></span>
+        </a>
+
+        <div id="menu">
+            <div class="pure-menu">
+                <a class="pure-menu-heading" href="#">Login</a>
                 <ul class="pure-menu-list">
-                    @Html.Partial("Pages-nav")
+                    @Html.Partial("Pages-login")
+                </ul>
+                <a class="pure-menu-heading" href="#">Menu</a>
+                <ul class="pure-menu-list">
+                    @Html.Partial("Pages-menu")
+                </ul>
+                <a class="pure-menu-heading" href="#">Social Media</a>
+                <ul class="pure-menu-list">
+                    @Html.Partial("Pages-social-media")
+                </ul>
+                <a class="pure-menu-heading" style="text-transform: none;" href="#">Procurement Search, LLC</a>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">(503) 395-5303</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">help @@ procurementsearch.com</a></li>
                 </ul>
             </div>
         </div>
-	<div style="clear: both;"></div>
 
-        @RenderBody()
+        <div id="main" class="my_content">
+            <!-- <div class="content"></div> -->
+            @RenderBody()
+        </div>
 
-        <div class="push"></div>
     </div>
-
-
-    <div class="footer pure-g">
-        @Html.Partial("Footer-three-columns")
-    </div>
-
 
 
 

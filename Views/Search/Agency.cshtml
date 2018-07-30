@@ -1,0 +1,124 @@
+﻿@using SearchProcurement.Helpers
+@using Microsoft.AspNetCore.Routing
+
+@Html.Partial("Search-header")
+
+@if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
+{
+<div class="agency-header" role="complementary">
+@Html.Raw(ViewBag.agencyHeader)
+</div>
+}
+
+<div class="search-options" role="complementary">
+    <span class="noselect" id="search-sortby">Sort by</span>
+    <span class="noselect" id="search-show">Show</span>
+</div>
+
+
+<div class="search-results" role="main">
+    <p class="head">
+        <span class="count">@ViewBag.searchCount RESULTS</span> for @ViewBag.searchString:
+    </p>
+    <p class="save">
+        <a href="">Save this search</a> | Notify with new matching results: <a href="http://blogtrottr.com/?subscribe=@ViewBag.rssUrl/rss/@ViewBag.searchUrlEncoded" target="_blank" title="Get this search delivered by email">Email</a> &nbsp; <a href="/rss/@ViewBag.searchUrl">RSS</a>
+    </p>
+
+    <div class="results">
+        @foreach (var res in Model.searchResults)
+        {
+        <div class="item">
+            <span class="title"><a href="/details/@res.Id@ViewBag.kwMatch">@res.Title</a></span><br>
+            <div class="preview">@res.Description</div>
+            <span class="link"><a title="View details for @res.Title" href="/details/@res.Id@ViewBag.kwMatch">View details</a></span> |
+            <span class="source"><a title="View all for @res.AgencyName" href="/search/Agency?agency=@res.AgencyId">@res.AgencyName</a></span> |
+            @if ( res.CloseDate != null )
+            {
+            <span class="close_date small">Bids Due: @res.CloseDate.ToString("M/d/yyyy")</span>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<div class="search-options-overlay" id="sortby-options">
+    <div class="parent">
+        <div class="options" data-option="sortBy" data-value="relevance">Relevance</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] != "bidsduefirst" && ViewBag.SearchOpts["sortBy"] != "bidsduelast" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
+    </div>
+    <div class="parent">
+        <div class="options" data-option="sortBy" data-value="bidsduefirst">Bids Due Date (earliest first)</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] == "bidsduefirst" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
+    </div>
+    <div class="parent">
+        <div class="options" data-option="sortBy" data-value="bidsduelast">Bids Due Date (latest first)</div>
+        <div class="check">@(ViewBag.SearchOpts["sortBy"] == "bidsduelast" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
+    </div>
+</div>
+
+<div class="search-options-overlay" id="show-options">
+    <div class="parent">
+        <div class="options" data-option="show" data-value="open">Open Opportunities</div>
+        <div class="check">@(ViewBag.SearchOpts["show"] != "closed" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
+    </div>
+    <div class="parent">
+        <div class="options" data-option="show" data-value="closed">Closed Opportunities</div>
+        <div class="check">@(ViewBag.SearchOpts["show"] == "closed" ? Html.Raw("<i class=\"fas fa-check-circle\"></i>") : Html.Raw("") )</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var showing = "";
+
+function makeClickable(clickable, overlay) {
+    // Correctly position the option overlay
+    var np = jQuery(clickable);
+    var pos = np.offset();
+    jQuery(overlay).offset({
+      top: pos.top + np.height() + 0,
+      left: pos.left
+    });
+
+    // and make them clickable
+    var el = jQuery(clickable);
+    var over = jQuery(overlay);
+
+    // show the overlay
+    el.click(function(e){
+        over.show();
+    });
+
+    // and make everything else hideable
+    jQuery(document).mouseup(function(e){
+        var el = jQuery(overlay);
+        if (!el.is(e.target) && el.has(e.target).length === 0) {
+            el.hide();
+            showing = "";
+        }
+    });
+}
+
+
+function updateSearch(opt, val) {
+    var SearchOpts = new URLSearchParams(window.location.search);
+    if( val )
+        SearchOpts.set(opt, val);
+    else
+        SearchOpts.delete(opt);
+    location.assign("?" + SearchOpts.toString());
+}
+
+jQuery(document).ready(function(){
+    makeClickable('#search-sortby', '#sortby-options');
+    makeClickable('#search-show', '#show-options');
+
+    // Wire up the single click options
+    jQuery(".search-options-overlay .parent .options").click(function(e){
+        var el = jQuery(e.target);
+        var option = el.data("option");
+        var value = el.data("value");
+        updateSearch(option, value);
+    });
+})
+</script>

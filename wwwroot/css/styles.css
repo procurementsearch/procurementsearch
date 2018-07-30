@@ -205,6 +205,29 @@ a {
     font-weight: 100;
 }
 
+.home-breakout .regions {
+    -webkit-column-count: 4;
+    -moz-column-count: 4;
+    column-count: 4;
+    -webkit-column-gap: 40px;
+    -moz-column-gap: 40px;
+    column-gap: 40px;
+    -webkit-column-rule: 1px solid lightgrey;
+    -moz-column-rule: 1px solid lightgrey;
+    column-rule: 1px solid lightgrey;
+    font-size: 12pt;
+    text-align: left;
+}
+
+.home-breakout .regions .state {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+.home-breakout .regions .state:not(:first-child) {
+    margin-top: 1em;
+}
+  
 
 
 .home-container h2.sliderheader {

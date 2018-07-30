@@ -1,0 +1,163 @@
+﻿@using SearchProcurement.Models
+@using SearchProcurement.Helpers
+
+<div class="view-box" role="main">
+
+    <div class="title">Viewing @Model.agencyName Opportunity:</div>
+
+    @if (Model.parentId != 0)
+    {
+    <h2>Subcontract: @Model.title</h2>
+    <div class="subtitle">
+        <span class="attention">Project</span>:  <a href="/details/@Model.parentId">@Model.subtitle</a>
+    </div>
+    }
+    else
+    {
+    <h2>@Model.title</h2>
+    }
+
+    @if (Model.CloseDate != null)
+    {
+    <div class="subtitle">
+        <b>Bids Due:</b> @Model.CloseDate.ToString("M/d/yyyy")
+    </div>
+    }
+
+    <h2>Opportunity Description:</h2>
+    <div class="description" id="details">
+        @if (Model.agencyLogo != "" )
+        {
+        <img src="@Model.agencyLogo" class="pure-img">
+        }
+        @Html.Raw(Library.nl2br(Model.description))
+    </div>
+
+    @if (Model.status == ListingStatus.Closed)
+    {
+    <div class="message">
+        <span class="attention">Attention:</span> This opportunity has closed.
+    </div>
+    }
+
+    @if (Model.snippets.Length > 0 )
+    {
+    <div class="snippets">
+        Bid document preview for <b>@ViewBag.kw</b>:
+        <dl>
+            @foreach (var res in Model.snippets)
+            {
+            <dt>@res.Title:</dt>
+            <dd>@Html.Raw(res.Snippet)</dd>
+            }
+        </dl>
+    </div>
+    }
+
+    @if (Model.attachments.Length > 0 )
+    {
+    <h2>Bid Documents</h2>
+    <div class="attachments">
+        <p>This project has the following bid documents.  You may need to log into the project owner's website to review these documents.</p>
+        <table class="pure-table pure-table-horizontal pure-table-striped">
+            <thead>
+                <tr>
+                    <th>Bid Document:</th>
+                    <th>File Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int i = 0;}
+                @foreach (var res in Model.attachments)
+                {
+                <tr>
+                   <td><a target="_blank" href="@res.Url">@res.Title</a></td><td>@res.Filetype</td>
+                </tr>
+                i = 1 - i;
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    @if (Model.subcontracts.Length > 0 )
+    {
+    <h2>Subcontracts</h2>
+    <div class="subcontracts">
+        <p>This project has @Model.subcontracts.Length subcontracting opportunities:</p>
+        <ul>
+            @foreach (var res in Model.subcontracts)
+            {
+            <li><a target="_blank" href="/details/@res.id">@res.title</a></li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.actionSteps))
+    {
+    <h2>Your Next Steps</h2>
+    <div class="view-action-steps">
+        @Html.Raw(Library.nl2br(Model.actionSteps))
+    </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.contactInformation))
+    {
+    <h2>Contact Information</h2>
+    <div class="view-action-steps">
+        @Html.Raw(Library.nl2br(Model.contactInformation))
+    </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.agencyAboutText))
+    {
+    <h2>About @Model.agencyName</h2>
+    <div class="view-action-steps">
+        @Html.Raw(Model.agencyAboutText)
+    </div>
+    }
+
+    <p class="share-title">
+        Share with a friend!
+    </p>
+    <p>
+        <span class="st_sharethis_large" displaytext="ShareThis"></span>
+        <span class="st_facebook_large" displaytext="Facebook"></span>
+        <span class="st_twitter_large" displaytext="Tweet"></span>
+        <span class="st_linkedin_large" displaytext="LinkedIn"></span>
+        <span class="st_googleplus_large" displaytext="Google +"></span>
+        <span class="st_email_large" displaytext="Email"></span>
+    </p>
+</div>
+
+<script type="text/javascript">
+function resizedetails() {
+    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var buffer = 150; // how many pixels to subtract from window height to fit the iframe
+    if( h <= 450 )
+        document.getElementById('details').style.height = (h - buffer) + 'px';
+    else
+        document.getElementById('details').style.height = '300px';
+};
+window.onload = window.onresize = resizedetails;
+</script>
+
+
+<div class="pure-g">
+    <div class="pure-u-1 l-box">
+        <div class="footnote">
+
+            <div class="pages large-hide">
+                <div class="head">Pages</div>
+                <ul role="navigation">
+                    @Html.Partial("Pages-menu")
+                </ul>
+            </div>
+
+            <p class="tip">
+                Got questions?  Oh yes you do.
+            </p>
+        </div>
+    </div>
+</div>

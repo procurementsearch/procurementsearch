@@ -1,5 +1,8 @@
 using System;
+using System.Data;
+using System.Net;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using SteveHavelka.SphinxFTS;
 using SearchProcurement.Helpers;
@@ -112,6 +115,7 @@ namespace SearchProcurement.Models
 			// Pull out the search data
 			s.searchString = SearchHelper.loadAgencyName(agency);
 			s.searchUrl = "agency=" + agency;
+			s.searchUrlEncoded = WebUtility.UrlEncode(s.searchUrl);
 			s.searchCount = ids_from_agency.Length;
 
 			// no result?

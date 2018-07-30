@@ -36,7 +36,14 @@
             <tr>
                 <th valign="top">Due Date:</th>
                 <td>
+		    @if( Model.CloseDate == null )
+		    {
+		    <i>No close date</i>
+		    }
+		    else
+		    {
                     @Model.CloseDate.ToString("M/d/yyyy")
+		    }
 
                     @if (Model.status == ListingStatus.Closed)
                     {

@@ -37,6 +37,14 @@ namespace SearchProcurement.Controllers
             return View();
         }
 
+        /**
+         * Show the privacy policy page
+         */
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
         public IActionResult Contact()
         {
             

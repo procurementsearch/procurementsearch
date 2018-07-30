@@ -97,11 +97,12 @@ namespace SteveHavelka.SphinxFTS
 					cmd.Connection = my_sph;
 
 					/* let's get a total possible count */
-                    // SELECT COUNT(*) FROM search_pdx WHERE query='\\"concrete formwork\\"; groupby=attr:listing_id; mode=extended;';
+					// SELECT COUNT(*) FROM search_pdx WHERE query='\\"concrete formwork\\"; groupby=attr:listing_id; mode=extended;';
 					cmd.CommandText =
 						"SELECT SQL_NO_CACHE COUNT(*) FROM " + kwTable +
-                        " WHERE query='" + words + ";" +
+						" WHERE query='" + words + ";" +
 						" groupby=attr:listing_id;" +
+						" limit=1;" +
 						(locationId != 0 ? " filter=location_id," + locationId + ";" : "" ) +
 						(agencyLimit != null && agencyLimit.Length > 0 ? " filter=agency_id," + String.Join(",", agencyLimit) + ";" : "" ) +
 						(show != null ? " filter=status," + show + ";" : "" ) +
@@ -149,7 +150,7 @@ namespace SteveHavelka.SphinxFTS
 					//
 					// We'll use a limit of 10 results at a time, to make sure we never
 					// exceed the sphinxse hard-coded limit.
-					int my_limit = 10;
+					int my_limit = 5;
 					int my_offset = offset;
 					List<int> ids = new List<int>();
 
