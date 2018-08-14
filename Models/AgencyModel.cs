@@ -12,9 +12,9 @@ using SearchProcurement.Helpers;
 namespace SearchProcurement.Models
 {
     // The class for the login
-    public class AgencyLogin
+    public class AgencyTeam
     {
-        public int AgencyLoginId { get; set; }
+        public int AgencyTeamId { get; set; }
 
         // The logged-in user display name and email address
         [Display(Name="Your name")]
@@ -33,7 +33,7 @@ namespace SearchProcurement.Models
 	public partial class Agency {
 
         public int AgencyId;
-        public AgencyLogin MyLogin;
+        public AgencyTeam MyLogin;
 
         // The agency information
         [Display(Name="The name of your agency")]
@@ -214,7 +214,7 @@ namespace SearchProcurement.Models
                             // Store the agency data
                             AgencyName = r.GetString(0);
                             AgencyType = r.GetString(1);
-                            MyLogin = new AgencyLogin {
+                            MyLogin = new AgencyTeam {
                                 UserRealName = r.GetString(2),
                                 UserEmailAddress = r.GetString(3),
                                 isAdmin = r.GetInt32(23) == 1 ? true : false
