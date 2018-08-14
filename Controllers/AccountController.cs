@@ -222,7 +222,7 @@ namespace SearchProcurement.Controllers
                 a.loadDataByAgencyIdentifier(uniq);
 
                 // Saving the same email?  Then we pass the email-in-use check..
-                if( a.UserEmailAddress == email )
+                if( a.MyLogin.UserEmailAddress == email )
                     return StatusCode(200);
                 else
                     // New email?  Then check if the email exists, and return a good/bad status code as needed

@@ -11,26 +11,31 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Models
 {
-    /* The address struct */
-	public class Address
-	{
-		public string Address1 { get; set; }
-		public string Address2 { get; set; }
-		public string City { get; set; }
-		public string State { get; set; }
-		public string Country { get; set; }
-        public string Postal { get; set; }
-	}
+    // The class for the login
+    public class AgencyLogin
+    {
+        public int AgencyLoginId { get; set; }
 
-
-	public class Agency {
-
-        public int AgencyId;
-
+        // The logged-in user display name and email address
         [Display(Name="Your name")]
         public string UserRealName { get; set; }
         [Display(Name="Your email address")]
         public string UserEmailAddress { get; set; }
+
+        // The contact info for this logged-in user
+        public Address Contact { get; set; }
+
+        // is this person an admin?
+        public bool isAdmin { get; set; }
+    }
+
+
+	public partial class Agency {
+
+        public int AgencyId;
+        public AgencyLogin MyLogin;
+
+        // The agency information
         [Display(Name="The name of your agency")]
         public string AgencyName { get; set; }
 
@@ -102,7 +107,7 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "select count(*) " +
-                        "from agency_login as a " +
+                        "from agency_team as a " +
                         "where uniqueidentifier = @uniq";
 					cmd.Parameters.AddWithValue("@uniq", uniq);
 					cmd.Prepare();
@@ -136,7 +141,7 @@ namespace SearchProcurement.Models
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "SELECT a.agency_id " +
                         "FROM agency AS a " +
-                        "LEFT JOIN agency_login AS al ON al.agency_id = a.agency_id " +
+                        "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
                         "WHERE al.uniqueidentifier = @uniq";
 					cmd.Parameters.AddWithValue("@uniq", uniq);
 
@@ -148,171 +153,6 @@ namespace SearchProcurement.Models
 
 
 
-
-
-
-        /**
-         * Does this location have a payment token (unlimited, or unused
-         * one-time use) to the specified state?
-         * @param int locId The location ID
-         * @return bool Can they post here?
-         */
-        public bool hasAvailablePaymentToken(int locId)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT COUNT(*) " +
-                        "FROM agency_payment_token " +
-                        "WHERE agency_id = @id " +
-                        "AND ((location_id = @locId AND token_type = 'unlimited' AND CURDATE() <= token_expires) " +
-                        "OR (location_id IS NULL AND token_type = 'single' AND token_used = 0))";
-					cmd.Parameters.AddWithValue("@id", AgencyId);
-					cmd.Parameters.AddWithValue("@locId", locId);
-
-					// Run the DB command
-					return Convert.ToBoolean(cmd.ExecuteScalar());
-                }
-            }
-
-        }
-
-
-
-
-        /**
-         * How many uses of a specific payment token type does this agency
-         * have for the given state?
-         * @param int locId The location ID
-         * @param string type The listing type, simple or umbrella listing
-         * @return int How many tokens available (an unlimited token always returns true for the region)
-         */
-        public int getPaymentTokens(int locId, string type)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT COUNT(*) " +
-                        "FROM agency_payment_token " +
-                        "WHERE agency_id = @id " +
-                        "AND (" +
-                            "(location_id = @locId AND token_type = 'unlimited' AND CURDATE() <= token_expires) " +
-                            "OR (location_id IS NULL AND token_type = 'single' AND listing_type = @listingType AND token_used = 0)" +
-                        ")";
-					cmd.Parameters.AddWithValue("@id", AgencyId);
-					cmd.Parameters.AddWithValue("@locId", locId);
-					cmd.Parameters.AddWithValue("@listingType", type);
-
-					// Run the DB command
-					return Convert.ToInt32(cmd.ExecuteScalar());
-                }
-            }
-
-        }
-
-
-
-
-
-
-        /**
-         * Add a payment token and register it to this account
-         * @param listingType The type of listing they've paid for
-         * @return none
-         */
-        public void addPaymentToken(string listingType, decimal amount, string stripeToken)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "INSERT INTO agency_payment_token " +
-                        "(agency_id, token_type, listing_type, amount_paid, stripe_token, created) " +
-                        "VALUES " +
-                        "(@agency_id, 'single', @type, @amt, @token, NOW())";
-					cmd.Parameters.AddWithValue("@agency_id", AgencyId);
-                    cmd.Parameters.AddWithValue("@type", listingType);
-                    cmd.Parameters.AddWithValue("@amt", amount);
-                    cmd.Parameters.AddWithValue("@token", stripeToken);
-					cmd.Prepare();
-
-					// Run the DB command, and we're done
-                    cmd.ExecuteScalar();
-
-                }
-            }
-        }
-
-
-
-
-
-        /**
-         * Use a payment token!
-         * @param int locId The location ID
-         * @param string type The listing type, simple or umbrella listing
-         * @return int How many tokens available (an unlimited token always returns true for the region)
-         */
-        public bool usePaymentToken(int locId, string type, string ip_addr)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT COUNT(*) FROM agency_payment_token WHERE agency_id = @id " +
-                        "AND location_id = @locId AND token_type = 'unlimited' AND token_expires <= CURDATE()";
-					cmd.Parameters.AddWithValue("@id", AgencyId);
-					cmd.Parameters.AddWithValue("@locId", locId);
-
-                    // If they've got an unlimited access token for this region, always preferentially apply that
-                    if( Convert.ToInt32(cmd.ExecuteScalar()) > 0 )
-                        return true;
-
-                }
-
-                // Otherwise, use their payment token
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "UPDATE agency_payment_token " +
-                        "SET token_used = 1, activated = NOW(), activated_ipaddr = @ip_addr " +
-                        "WHERE " +
-                        "agency_id = @id AND location_id IS NULL AND token_type = 'single' AND listing_type = @listingType AND token_used = 0 " +
-                        "LIMIT 1";
-					cmd.Parameters.AddWithValue("@id", AgencyId);
-                    cmd.Parameters.AddWithValue("@listingType", type);
-                    cmd.Parameters.AddWithValue("@ip_addr", ip_addr);
-
-                    // If we've actually updated a row, that means the payment token
-                    // has been successfully applied!
-                    return Convert.ToInt32(cmd.ExecuteNonQuery()) > 0 ? true : false;
-                }
-            }
-        }
 
 
 
@@ -334,31 +174,32 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT agency_name, " + // 0
-                        "agency_type, " +                      // 1
-                        "user_real_name, " +                   // 2
-                        "user_email_address, " +               // 3
-                        "agency_contact_name, " +              // 4
-                        "agency_contact_email, " +             // 5
-                        "agency_url, " +                       // 6
-                        "agency_logo_url, " +                  // 7
-                        "agency_phone, " +                     // 8
-                        "agency_fax, " +                       // 9
-                        "agency_about_text, " +                // 10
-                        "billing_address_1, " +                // 11
-                        "billing_address_2, " +                // 12
-                        "billing_city, " +                     // 13
-                        "billing_state, " +                    // 14
-                        "billing_country, " +                  // 15
-                        "billing_postal, " +                   // 16
-                        "shipping_address_1, " +               // 17
-                        "shipping_address_2, " +               // 18
-                        "shipping_city, " +                    // 19
-                        "shipping_state, " +                   // 20
-                        "shipping_country, " +                 // 21
-                        "shipping_postal " +                   // 22
+					cmd.CommandText = "SELECT a.agency_name, " + // 0
+                        "a.agency_type, " +                      // 1
+                        "al.user_real_name, " +                   // 2
+                        "al.user_email_address, " +               // 3
+                        "a.agency_contact_name, " +              // 4
+                        "a.agency_contact_email, " +             // 5
+                        "a.agency_url, " +                       // 6
+                        "a.agency_logo_url, " +                  // 7
+                        "a.agency_phone, " +                     // 8
+                        "a.agency_fax, " +                       // 9
+                        "a.agency_about_text, " +                // 10
+                        "a.billing_address_1, " +                // 11
+                        "a.billing_address_2, " +                // 12
+                        "a.billing_city, " +                     // 13
+                        "a.billing_state, " +                    // 14
+                        "a.billing_country, " +                  // 15
+                        "a.billing_postal, " +                   // 16
+                        "a.shipping_address_1, " +               // 17
+                        "a.shipping_address_2, " +               // 18
+                        "a.shipping_city, " +                    // 19
+                        "a.shipping_state, " +                   // 20
+                        "a.shipping_country, " +                 // 21
+                        "a.shipping_postal, " +                  // 22
+                        "al.is_admin " +                         // 23
                         "FROM agency AS a " +
-                        "LEFT JOIN agency_login AS al ON al.agency_id = a.agency_id " +
+                        "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
                         "WHERE al.uniqueidentifier = @uniq";
 					cmd.Parameters.AddWithValue("@uniq", uniq);
 
@@ -369,12 +210,15 @@ namespace SearchProcurement.Models
                         if( r.HasRows )
                         {
                             r.Read();
-        
+
                             // Store the agency data
                             AgencyName = r.GetString(0);
                             AgencyType = r.GetString(1);
-                            UserRealName = r.GetString(2);
-                            UserEmailAddress = r.GetString(3);
+                            MyLogin = new AgencyLogin {
+                                UserRealName = r.GetString(2),
+                                UserEmailAddress = r.GetString(3),
+                                isAdmin = r.GetInt32(23) == 1 ? true : false
+                            };
                             AgencyContactName = r.IsDBNull(4) ? null : r.GetString(4);
                             AgencyContactEmail = r.IsDBNull(5) ? null : r.GetString(5);
                             AgencyUrl = r.IsDBNull(6) ? null : r.GetString(6);
@@ -431,20 +275,18 @@ namespace SearchProcurement.Models
 				{
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO agency " +
-                        "(agency_name, agency_type, user_real_name, user_email_address, agency_contact_name, agency_contact_email, " +
+                        "(agency_name, agency_type, agency_contact_name, agency_contact_email, " +
                         "agency_url, agency_phone, agency_fax, agency_about_text, " +
                         "billing_address_1, billing_address_2, billing_city, billing_state, billing_country, billing_postal, " +
                         "shipping_address_1, shipping_address_2, shipping_city, shipping_state, shipping_country, shipping_postal, " +
                         "created, created_ipaddr, updated) VALUES (" +
-                        "@a1, @a2, @a3, @a4, @a5, @a6, " +
+                        "@a1, @a2, @a5, @a6, " +
                         "@a7, @a8, @a9, @a10, @a11, " +
                         "@a12, @a13, @a14, @a15, @a16, @a17, " +
                         "@a18, @a19, @a20, @a21, @a22, " +
                         "now(), @ip_addr, now())";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
 					cmd.Parameters.AddWithValue("@a2", AgencyType);
-					cmd.Parameters.AddWithValue("@a3", UserRealName);
-					cmd.Parameters.AddWithValue("@a4", UserEmailAddress);
 					cmd.Parameters.AddWithValue("@a5", AgencyContactName);
 					cmd.Parameters.AddWithValue("@a6", AgencyContactEmail);
 					cmd.Parameters.AddWithValue("@a7", AgencyUrl);
@@ -479,7 +321,7 @@ namespace SearchProcurement.Models
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "INSERT INTO agency_login " +
+					cmd.CommandText = "INSERT INTO agency_team " +
                         "(agency_id, uniqueidentifier) VALUES (@a1, @a2)";
 					cmd.Parameters.AddWithValue("@a1", AgencyId);
 					cmd.Parameters.AddWithValue("@a2", uniq);
@@ -518,8 +360,6 @@ namespace SearchProcurement.Models
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "UPDATE agency SET " +
                         "agency_name=@a1, " +
-                        "user_real_name=@a2, " +
-                        "user_email_address=@a3, " +
                         "agency_contact_name=@a4, " +
                         "agency_contact_email=@a5, " +
                         "agency_url=@a6, " +
@@ -541,8 +381,6 @@ namespace SearchProcurement.Models
                         "updated=NOW() " +
                         "WHERE agency_id=@id";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
-					cmd.Parameters.AddWithValue("@a2", UserRealName);
-					cmd.Parameters.AddWithValue("@a3", UserEmailAddress);
 					cmd.Parameters.AddWithValue("@a4", AgencyContactName);
 					cmd.Parameters.AddWithValue("@a5", AgencyContactEmail);
 					cmd.Parameters.AddWithValue("@a6", AgencyUrl);
@@ -575,122 +413,6 @@ namespace SearchProcurement.Models
 
         }
 
-
-
-
-        /**
-         * Add a logo to an agency, uploading it to DreamObjects/S3 in the process
-         * @param string logoName The filename of the logo
-         * @param string encodedLogo The logo, base 64 encoded
-         * @return bool Success?
-         */
-        public void saveLogo(string logoName, string encodedLogo)
-        {
-            // Parse out the image data, and get ready to commit it to DreamObjects
-            if( encodedLogo.IndexOf("data:image/png;base64,") == 0 )
-            {
-                // Decode the logo, and get an mp3 for the s3 file name
-                byte[] decodedLogo = Convert.FromBase64String( encodedLogo.Replace("data:image/png;base64,", ""));
-                string decodedLogoMd5;
-
-                // And get the md5dum for the logo
-                using (IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.MD5))
-                {
-                    hasher.AppendData(decodedLogo);
-                    hasher.AppendData(Encoding.ASCII.GetBytes(UserEmailAddress));
-                    decodedLogoMd5 = BitConverter.ToString(hasher.GetHashAndReset()).Replace("-", "");
-                }
-
-                // Save the logo to the local logo repository
-                string myLogo = Library.tidyString(logoName) + "-" + decodedLogoMd5 + ".png";
-
-                System.IO.File.WriteAllBytes(Defines.AppSettings.UploadStoragePath + Defines.UploadLogoPath + "/" + myLogo, decodedLogo);
-
-                // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-                {
-                    // Open the DB connection
-                    my_dbh.Open();
-                    using(MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = my_dbh;
-                        cmd.CommandText = "UPDATE agency SET agency_logo_url = @url WHERE agency_id = @id";
-                        cmd.Parameters.AddWithValue("@url", Defines.AppSettings.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo);
-                        cmd.Parameters.AddWithValue("@id", AgencyId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                // And save the logo back to the object
-                AgencyLogo = Defines.AppSettings.UploadStorageUrl + Defines.UploadLogoPath + "/" + myLogo;
-
-            }
-            else
-                throw new System.ArgumentException("Not base 64-encoded image!!");
-
-        }
-
-
-
-
-        /**
-         * Remove the logo from an agency
-         * @return none
-         */
-        public void removeLogo()
-        {
-            // Make sure we have a logo to delete...
-            if( AgencyLogo != "" )
-            {
-                // Set up the database connection, there has to be a better way!
-                using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-                {
-                    // Open the DB connection
-                    my_dbh.Open();
-
-                    // And save the agency logo to the database
-                    using(MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = my_dbh;
-                        cmd.CommandText = "UPDATE agency SET agency_logo_url = NULL WHERE agency_id = @id";
-                        cmd.Parameters.AddWithValue("@id", AgencyId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-
-                }
-
-                // And, delete the object from disk
-                string logoName = AgencyLogo.Split('/').Last();
-                System.IO.File.Delete(Defines.AppSettings.UploadStoragePath + Defines.UploadLogoPath + "/" + logoName);
-
-            }
-
-        }
-
-
-
-        /**
-         * Load just the logo for the agency
-         * @return none
-         */
-        public void loadLogo()
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT agency_logo_url FROM agency WHERE agency_id = @id";
-					cmd.Parameters.AddWithValue("@id", AgencyId);
-					AgencyLogo = Convert.ToString(cmd.ExecuteScalar());
-                }
-            }
-        }
 
 
 

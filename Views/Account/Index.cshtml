@@ -3,7 +3,7 @@
 }
 <div class="view-box">
     <h1>
-        Welcome, @Model.UserRealName!
+        Welcome, @Model.MyLogin.UserRealName!
     </h1>
     @if (!String.IsNullOrEmpty(Model.AgencyLogo))
     {
@@ -15,6 +15,10 @@
     <p>
         <a class="pure-button button-small pure-button-primary" href="/account/newListing">Set up a new Listing/ITB</a>
         <a class="pure-button button-small" href="/account/myAccount">Edit my account</a>
+        @if (Model.MyLogin.isAdmin)
+        {
+        <a class="pure-button button-small" href="/account/myTeam">Manage team</a>
+        }
         <a class="pure-button button-small" href="/account/logout">Log out</a>
     </p>
 
@@ -32,16 +36,18 @@
                     <th>Status</th>
                     <th>Close Date</th>
                     <th></th>
+<!--
                     <th></th>
-<!--                    <th></th>
                     <th></th>
--->                </tr>
+-->
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
                 @if (ViewBag.activeListings.Length == 0)
                 {
                 <tr>
-                    <th colspan="5">No active listings</th>
+                    <th colspan="6">No active listings</th>
                 </tr>
                 }
                 else
@@ -62,13 +68,15 @@
                         <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
                         }
                     </td>
-<!--                    <td style="text-align: center;">
+<!--
+                    <td style="text-align: center;">
                         <a href="/account/cloneListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="/account/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause Listing - can be reopened"><img src="/images/icons/database_gear.png"><br>Pause</a>
+                        <a href="/account/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause Listing - can be reopened"><img src="/images/icons/database_gear.png"><br>Search/Notify Vendors</a>
                     </td>
--->                    <td style="text-align: center;">
+-->
+                    <td style="text-align: center;">
                         <a href="/account/closeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Close Listing Now"><img src="/images/icons/database_delete.png"><br>Close</a>
                     </td>
                 </tr>
