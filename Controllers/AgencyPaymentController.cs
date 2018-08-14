@@ -100,7 +100,7 @@ namespace SearchProcurement.Controllers
 
             var charge = charges.Create(new StripeChargeCreateOptions {
                 Amount = Decimal.ToInt32(Price.loadPrice(a.AgencyType, listingType) * 100),
-                Description = "RFP/ITB Listing on ProcurementSearch.com",
+                Description = "Listing on ProcurementSearch.com",
                 Currency = "usd",
                 CustomerId = customer.Id
             });
