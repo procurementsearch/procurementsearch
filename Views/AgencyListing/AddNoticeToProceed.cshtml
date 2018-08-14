@@ -10,7 +10,7 @@
 
     <p>Once you've closed a bid, you can add information on your notice to proceed here.</p>
 
-    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/addNoticeToProceed">
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/Agency/addNoticeToProceed">
     @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@ViewBag.id">
 
@@ -98,7 +98,7 @@ $(function () {
   var removeUpload = function(e, a, uploadId) {
       e.stopPropagation();
       e.preventDefault();
-      $.ajax('/account/RemoveAttachment?id=' + uploadId, {
+      $.ajax('/Agency/RemoveAttachment?id=' + uploadId, {
           success: function() {
               // If the server says we've removed that file, remove the file from the list
               $(a).closest('tr').remove();
@@ -118,7 +118,7 @@ $(function () {
   }
 
   $('#fileupload').fileupload({
-      url: '/account/saveUpload',
+      url: '/Agency/saveUpload',
       dataType: 'json',
       done: function (e, data) {
           console.log("DONE:");

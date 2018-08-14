@@ -4,14 +4,24 @@
 }
 
 <div class="view-box">
-    <h1>Your Buyer/PM Account</h1>
+    <h1>Setting up your Buyer/PM Account</h1>
 
-    @if( ViewBag.message != null && ViewBag.message != "" )
-    {
-        <div class="message">@ViewBag.message <a href="/account">Click here to return to your account.</a></div>
-    }
+    <p>
+        Ready to start listing your contracts, RFPs, and projects on ProcurementSearch.com?
+        You've come to the right place.  If you're an agency buyer and you'd like to post
+        contracts yourself, we offer a self-serve system, so you can list your contracting
+        opportunities to the vendor community.  This is the place to start doing that.
+    </p>
 
-    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/MyAccount">
+    <p>
+        <span class="attention">Please note:  this account is for buyers,
+        project managers, procurement analysts and managers, and anyone
+        else who wants to post a contract, project, or RFP to ProcurementSearch.com.</span>
+        If you're a vendor looking for opportunities, this is not the place where you'll
+        set up your account.
+    </p>
+
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/Agency/NewAccount">
     @Html.AntiForgeryToken()
 
         <fieldset>
@@ -24,7 +34,7 @@
             <span class="pure-form-message">This is a required field.</span>
 
             <label asp-for="MyLogin.UserEmailAddress"></label>
-            <input asp-for="MyLogin.UserEmailAddress" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true" data-parsley-type="email" data-parsley-remote="/account/checkEmail?email={value}">
+            <input asp-for="MyLogin.UserEmailAddress" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true" data-parsley-type="email" data-parsley-remote="/Agency/checkEmail?email={value}">
             <span class="pure-form-message">This is a required field.</span>
         </fieldset>
 
@@ -36,21 +46,20 @@
             <span class="pure-form-message">This is a required field.</span>
 
             <p>
-                You're registered as a
-                @if (Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.GovernmentNP)
-                {
-                <b>Government/Non-profit</b>
-                }
-                else if (Model.AgencyType == SearchProcurement.Helpers.AgencyTypes.TribalGovt)
-                {
-                <b>Tribal Government/Organization</b>
-                }
-                else
-                {
-                <b>Private Sector</b>
-                }
-                agency.  If you think this is incorrect, please call us at 503-395-5303.
+                What kind of agency do you represent?  <i>Choose carefully.
+                You can't go back and change your agency type after you've
+                set up your account!</i>
             </p>
+
+            <label asp-for="AgencyType" class="pure-radio">
+                <input asp-for="AgencyType" id="AgencyType_governmentnp" type="radio" value="governmentnp" checked> Government/Non-profit
+            </label>
+            <label asp-for="AgencyType" class="pure-radio">
+                <input asp-for="AgencyType" id="AgencyType_tribalgov" type="radio" value="tribalgov"> Tribal Government/Organization
+            </label>
+            <label asp-for="AgencyType" class="pure-radio">
+                <input asp-for="AgencyType" id="AgencyType_private" type="radio" value="private"> Private Sector (General Contractor, etc.)
+            </label>
 
             <label asp-for="AgencyAboutText"></label>
             <textarea asp-for="AgencyAboutText" class="pure-u-23-24" rows=5></textarea>
@@ -80,13 +89,7 @@
                             <div id="croppie"></div>
                         </div>
                     </div>
-                    <div id="logo_preview" style="padding: 1em;">
-                    @if ( !String.IsNullOrEmpty(Model.AgencyLogo) )
-                    {
-                    <p id="oldLogo">Uploaded logo:</p><img src="@Model.AgencyLogo">
-                    }
-                    </div>
-                    <input type="hidden" name="removeOldLogo" id="removeOldLogo" value="0">
+                    <div id="logo_preview" style="padding: 1em;"></div>
                 </div>
             </div>
         </fieldset>
@@ -120,7 +123,8 @@
         </fieldset>
 
         <fieldset>
-            <legend>Agency Address</legend>
+            <legend>Agency Address Information</legend>
+
             <p><i>Where is your office physically located?</i></p>
 
             <div class="pure-g">
@@ -194,13 +198,16 @@
 
         </fieldset>
 
+        <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
+
         <input type="hidden" name="logoData">
         <input type="hidden" name="logoName">
-        <button type="submit" class="pure-button pure-button-primary">Update your information</button>
+        <button type="submit" class="pure-button pure-button-primary">Sign Up</button>
 
     </form>
 
 </div>
+
 
 
 
@@ -275,7 +282,6 @@ $(function () {
     }).then(function (resp) {
       $('#logo_preview').empty().append('<p>Uploaded logo:</p><img src="' + resp + '">');
       $('input[name=logoData]').val(resp);
-      $('input[name=removeOldLogo]').val('0');
       $hid.toggle();
       $hid_btn.toggle();
     });
@@ -292,7 +298,6 @@ $(function () {
     $('#logo_preview').empty();
     $('input[name=logoData]').val('');
     $('input[name=logoName]').val('');
-    $('input[name=removeOldLogo]').val('1');
     $hid.toggle();
     $hid_btn.toggle();
   });

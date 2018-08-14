@@ -20,7 +20,7 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
-    public class AccountListingController : Controller
+    public class AgencyListingController : Controller
     {
 
 //        IAmazonS3 S3Client { get; set; }
@@ -30,7 +30,7 @@ namespace SearchProcurement.Controllers
         /**
          * Constructor
          */
-        public AccountListingController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
+        public AgencyListingController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
         {
             // Inject the IHostingEnvironment
             _environment = environment;
@@ -49,13 +49,13 @@ namespace SearchProcurement.Controllers
          * @param int id The listing ID to show subcontracts for
          */
         [Authorize]
-        [Route("/Account/setupUmbrella")]
+        [Route("/Agency/setupUmbrella")]
         public IActionResult SetupUmbrella(int id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/newAccount");
+                return Redirect("/Agency/newAccount");
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -63,7 +63,7 @@ namespace SearchProcurement.Controllers
 
             // Make sure we own it
             if( l.AgencyId != a.AgencyId )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             return View(l);
 
@@ -79,13 +79,13 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/newListing")]
+        [Route("/Agency/newListing")]
         public IActionResult NewListing(int? locId, string listingType)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/newAccount");
+                return Redirect("/Agency/newAccount");
 
             // Try to use the session location, if we didn't get one in the query string.
             // If the session location is also empty, this'll do nothing, which is the
@@ -108,7 +108,7 @@ namespace SearchProcurement.Controllers
                     // They are a government agency, so they can only use simple listings, no umbrella listings
                     // TODO See if this varies by state, and is an Oregon-specific thing, or if it is true everywhere
                     HttpContext.Session.SetString(Defines.SessionKeys.ListingType, ListingTypes.Simple);
-                    return Redirect("/Account/addListing");
+                    return Redirect("/Agency/addListing");
                 }
                 else if(
                     (listingType == ListingTypes.Simple && a.getPaymentTokens(locId.Value, ListingTypes.Simple) > 0) ||
@@ -116,7 +116,7 @@ namespace SearchProcurement.Controllers
                 {
                     // OK!  They've selected a listing type AND they have a payment token for it
                     HttpContext.Session.SetString(Defines.SessionKeys.ListingType, listingType);
-                    return Redirect("/Account/addListing");
+                    return Redirect("/Agency/addListing");
                 }
                 else
                 {
@@ -145,18 +145,18 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/newListingActivate")]
+        [Route("/Agency/newListingActivate")]
         public IActionResult NewListingActivate(string listingType)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Failsafe
             int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
             if( locId == null )
-                return Redirect("/account/newListing");
+                return Redirect("/Agency/newListing");
 
             // And set up the view
             ViewBag.simpleTokens = a.getPaymentTokens(locId.Value, ListingTypes.Simple);
@@ -171,13 +171,13 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/closeListing")]
+        [Route("/Agency/closeListing")]
         public IActionResult closeListing(int? id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Load the listing
             Listing l = new Listing();
@@ -185,7 +185,7 @@ namespace SearchProcurement.Controllers
 
             // Make sure we own it
             if( l.AgencyId != a.AgencyId )
-                return Redirect("/Account");
+                return Redirect("/Agency");
 
             // Update the status
             l.updateStatus(ListingStatus.Closed);
@@ -199,22 +199,22 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/addListing")]
+        [Route("/Agency/addListing")]
         public IActionResult addListing(int? id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Make sure they've selected a location Id
             int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
             if( locId == null )
-                return Redirect("/account/newListing");
+                return Redirect("/Agency/newListing");
 
             // If they can't post here, send them to the payment screen
             if( !a.hasAvailablePaymentToken(locId.Value) )
-                return Redirect("/account/newListing?locId=" + locId.Value);
+                return Redirect("/Agency/newListing?locId=" + locId.Value);
 
             // OK, they've picked a location and they've paid for it ..
             Listing l = new Listing();
@@ -222,7 +222,7 @@ namespace SearchProcurement.Controllers
             // Get the item
             ViewBag.listingLocation = LocationHelper.getNameForId(locId.Value);
             ViewBag.locId = locId.Value;
-            return View("~/Views/AccountListing/SetupListing.cshtml", l);
+            return View("~/Views/AgencyListing/SetupListing.cshtml", l);
 
         }
 
@@ -232,13 +232,13 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/editListing")]
+        [Route("/Agency/editListing")]
         public IActionResult editListing(int id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // They're editing an existing listing .. let's load it before showing the view
             Listing l = new Listing();
@@ -251,7 +251,7 @@ namespace SearchProcurement.Controllers
             ViewBag.locId = l.PrimaryLocationId;
             ViewBag.listingLocation = LocationHelper.getNameForId(l.PrimaryLocationId);
             ViewBag.id = id;
-            return View("~/Views/AccountListing/SetupListing.cshtml", l);
+            return View("~/Views/AgencyListing/SetupListing.cshtml", l);
 
         }
 
@@ -265,21 +265,21 @@ namespace SearchProcurement.Controllers
          */
         [Authorize]
         [HttpPost]
-        [Route("/Account/setupListing")]
+        [Route("/Agency/setupListing")]
         [ValidateAntiForgeryToken]
         public IActionResult SetupListingPost(int? id, Listing listing)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
 
             // Cancel!
             if( action == "cancel" )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Are we adding, or updating?
             if( id == null )
@@ -287,13 +287,13 @@ namespace SearchProcurement.Controllers
                 // First, a failsafe, to make sure they have a location
                 int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
                 if( locId == null )
-                    return Redirect("/account/newListing");
+                    return Redirect("/Agency/newListing");
 
                 // And a failsafe, to make sure they have a payment token when they're
                 // adding a new listing
                 string listingType = HttpContext.Session.GetString(Defines.SessionKeys.ListingType);
                 if( listingType == null || a.getPaymentTokens(locId.Value, listingType) == 0 )
-                    return Redirect("/account/newListing");
+                    return Redirect("/Agency/newListing");
 
                 // No ID means it's a new listing
                 listing.AgencyId = a.AgencyId;
@@ -330,7 +330,7 @@ namespace SearchProcurement.Controllers
 
                 // A failsafe, in case they're trying to be tricky
                 if( listing.getAgencyId() != a.AgencyId )
-                    return Redirect("/account");  // This should never happen!
+                    return Redirect("/Agency");  // This should never happen!
 
 
                 // They are saving an existing listing, so we have a somewhat complicated
@@ -410,30 +410,30 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/addSublisting")]
+        [Route("/Agency/addSublisting")]
         public IActionResult AddSublisting(int parentId)
         {
             // Have we seen this unique identifier before?  If not, they really shouldn't be here
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Make sure they gave us a parent ID
             if( parentId == 0 )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Make sure that the listing they're attaching this subcontract to,
             // they own that listing ...
             Listing parent = new Listing();
             parent.loadById(parentId);
             if( parent.AgencyId != a.AgencyId )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Get the item
             Listing l = new Listing();
             ViewBag.projectTitle = parent.Title;
             ViewBag.parentId = parentId;
-            return View("~/Views/AccountListing/SetupSublisting.cshtml", l);
+            return View("~/Views/AgencyListing/SetupSublisting.cshtml", l);
 
         }
 
@@ -442,13 +442,13 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/editSublisting")]
+        [Route("/Agency/editSublisting")]
         public IActionResult EditSublisting(int parentId, int id)
         {
             // Have we seen this unique identifier before?  If not, they really shouldn't be here
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Load the parent, to get the title/project description
             Listing parent = new Listing();
@@ -458,7 +458,7 @@ namespace SearchProcurement.Controllers
             Listing l = new Listing();
             l.loadById(id);
             if( l.AgencyId != a.AgencyId )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Now save these files to the session, so we can remove them by GUID
             HttpContext.Session.SetString(Defines.SessionKeys.Files, JsonConvert.SerializeObject(l.BidDocuments));
@@ -467,7 +467,7 @@ namespace SearchProcurement.Controllers
             ViewBag.projectTitle = parent.Title;
             ViewBag.parentId = parentId;
             ViewBag.id = id;
-            return View("~/Views/AccountListing/SetupSublisting.cshtml", l);
+            return View("~/Views/AgencyListing/SetupSublisting.cshtml", l);
 
         }
 
@@ -481,21 +481,21 @@ namespace SearchProcurement.Controllers
          */
         [Authorize]
         [HttpPost]
-        [Route("/Account/setupSublisting")]
+        [Route("/Agency/setupSublisting")]
         [ValidateAntiForgeryToken]
         public IActionResult SetupSublistingPost(int parentId, int? id, Listing listing)
         {
             // Have we seen this unique identifier before?  If not, they really shouldn't be here
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
 
             // Cancel!
             if( action == "cancel" )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             if( id == null )
             {
@@ -514,7 +514,7 @@ namespace SearchProcurement.Controllers
 
                 // A failsafe, in case they're trying to be tricky
                 if( listing.getAgencyId() != a.AgencyId )
-                    return Redirect("/account");  // This should never happen!
+                    return Redirect("/Agency");  // This should never happen!
 
                 // And, update!
                 listing.update(ListingUpdateMode.Revision);
@@ -541,13 +541,13 @@ namespace SearchProcurement.Controllers
          * @param int id The listing ID of the subcontract to remove
          */
         [Authorize]
-        [Route("/Account/removeSublisting")]
+        [Route("/Agency/removeSublisting")]
         public IActionResult RemoveSublisting(int id)
         {
             // Have we seen this unique identifier before?  If no, send them to the new account page
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -574,13 +574,13 @@ namespace SearchProcurement.Controllers
          * @param int id The listing ID to show intent to award for
          */
         [Authorize]
-        [Route("/Account/addIntentToAward")]
+        [Route("/Agency/addIntentToAward")]
         public IActionResult AddIntentToAward(int id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/newAccount");
+                return Redirect("/Agency/newAccount");
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -588,7 +588,7 @@ namespace SearchProcurement.Controllers
 
             // Make sure we own it
             if( l.AgencyId != a.AgencyId )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Now save these files to the session, so we can access them by GUID
             Attachment[] documents = AttachmentHelper.filterIntentToAward(l.BidDocuments);
@@ -611,18 +611,18 @@ namespace SearchProcurement.Controllers
          */
         [Authorize]
         [HttpPost]
-        [Route("/Account/addIntentToAward")]
+        [Route("/Agency/addIntentToAward")]
         [ValidateAntiForgeryToken]
         public IActionResult AddIntentToAwardPost(int? id, Listing listing)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Cancel!  Also, no ID?  No whiskey!
             if( id == null || HttpContext.Request.Form["action"] == "cancel" )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Be sure to set the old listing ID, since the model binding doesn't
             // catch this
@@ -630,7 +630,7 @@ namespace SearchProcurement.Controllers
 
             // A failsafe, in case they're trying to be tricky
             if( listing.getAgencyId() != a.AgencyId )
-                return Redirect("/account");  // This should never happen!
+                return Redirect("/Agency");  // This should never happen!
 
             // And, update!
             listing.IntentToAward = HttpContext.Request.Form["IntentToAward"];
@@ -657,13 +657,13 @@ namespace SearchProcurement.Controllers
          * @param int id The listing ID to show notice to proceed for
          */
         [Authorize]
-        [Route("/Account/addNoticeToProceed")]
+        [Route("/Agency/addNoticeToProceed")]
         public IActionResult AddNoticeToProceed(int id)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/newAccount");
+                return Redirect("/Agency/newAccount");
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -671,7 +671,7 @@ namespace SearchProcurement.Controllers
 
             // Make sure we own it
             if( l.AgencyId != a.AgencyId )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Stash some data in the ViewBag
             ViewBag.id = id;
@@ -686,18 +686,18 @@ namespace SearchProcurement.Controllers
          */
         [Authorize]
         [HttpPost]
-        [Route("/Account/addNoticeToProceed")]
+        [Route("/Agency/addNoticeToProceed")]
         [ValidateAntiForgeryToken]
         public IActionResult AddNoticeToProceed(int? id, Listing listing)
         {
             // Have we seen this unique identifier before?
             Agency a = new Agency(this.readNameIdentifier());
             if( a.AgencyId == 0 )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Cancel!  Also, no ID?  No whiskey!
             if( id == null || HttpContext.Request.Form["action"] == "cancel" )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Be sure to set the old listing ID, since the model binding doesn't
             // catch this
@@ -705,7 +705,7 @@ namespace SearchProcurement.Controllers
 
             // A failsafe, in case they're trying to be tricky
             if( listing.getAgencyId() != a.AgencyId )
-                return Redirect("/account");  // This should never happen!
+                return Redirect("/Agency");  // This should never happen!
 
             // And, update!
             listing.IntentToAward = HttpContext.Request.Form["NoticeToProceed"];

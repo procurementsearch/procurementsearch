@@ -14,7 +14,7 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
-    public class AccountPaymentController : Controller
+    public class AgencyPaymentController : Controller
     {
 
 //        IAmazonS3 S3Client { get; set; }
@@ -24,7 +24,7 @@ namespace SearchProcurement.Controllers
         /**
          * Constructor
          */
-        public AccountPaymentController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
+        public AgencyPaymentController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
         {
             // Inject the IHostingEnvironment
             _environment = environment;
@@ -40,7 +40,7 @@ namespace SearchProcurement.Controllers
          * purchases a single RFP.
          */
         [Authorize]
-        [Route("/account/ChargeSimple")]
+        [Route("/Agency/ChargeSimple")]
         public IActionResult ChargeSimple(string stripeEmail, string stripeToken)
         {
             return Charge(ListingTypes.Simple, stripeEmail, stripeToken);
@@ -53,7 +53,7 @@ namespace SearchProcurement.Controllers
          * purchases a block of 10 RFPs.
          */
         [Authorize]
-        [Route("/account/ChargeSimple10")]
+        [Route("/Agency/ChargeSimple10")]
         public IActionResult ChargeSimple10(string stripeEmail, string stripeToken)
         {
             return Charge(ListingTypes.Simple10, stripeEmail, stripeToken);
@@ -64,7 +64,7 @@ namespace SearchProcurement.Controllers
          * purchases an umbrella RFP.
          */
         [Authorize]
-        [Route("/account/ChargeUmbrella")]
+        [Route("/Agency/ChargeUmbrella")]
         public IActionResult ChargeUmbrella(string stripeEmail, string stripeToken)
         {
             return Charge(ListingTypes.Umbrella, stripeEmail, stripeToken);
@@ -124,7 +124,7 @@ namespace SearchProcurement.Controllers
             // assuming they'll use this first
             HttpContext.Session.SetString(Defines.SessionKeys.ListingType, listingType);
 
-            return Redirect("/account/addListing");
+            return Redirect("/Agency/addListing");
         }
 
 

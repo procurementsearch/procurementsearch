@@ -24,7 +24,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccount()
         {
             if (User.Identity.IsAuthenticated)
-                return Redirect("/Account");
+                return Redirect("/Agency");
             else
                 return View();
         }

@@ -13,13 +13,13 @@
         @Model.AgencyName
     </h2>
     <p>
-        <a class="pure-button button-small pure-button-primary" href="/account/newListing">Set up a new Listing/ITB</a>
-        <a class="pure-button button-small" href="/account/myAccount">Edit my account</a>
+        <a class="pure-button button-small pure-button-primary" href="/Agency/newListing">Set up a new Listing/ITB</a>
+        <a class="pure-button button-small" href="/Agency/myAccount">Edit my account</a>
         @if (Model.MyLogin.isAdmin)
         {
-        <a class="pure-button button-small" href="/account/myTeam">Manage team</a>
+        <a class="pure-button button-small" href="/Agency/myTeam">Manage team</a>
         }
-        <a class="pure-button button-small" href="/account/logout">Log out</a>
+        <a class="pure-button button-small" href="/Agency/logout">Log out</a>
     </p>
 
 
@@ -61,23 +61,23 @@
                     <td style="text-align: center;">
                         @if (l.Type == "umbrella")
                         {
-                        <a href="/account/setupUmbrella?id=@l.ListingId" rel="modal:open" class="pure-button button-xsmall edit-multiple" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        <a href="/Agency/setupUmbrella?id=@l.ListingId" rel="modal:open" class="pure-button button-xsmall edit-multiple" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
                         }
                         else
                         {
-                        <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                        <a href="/Agency/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Edit Listing"><img src="/images/icons/database_edit.png"><br>Edit</a>
                         }
                     </td>
 <!--
                     <td style="text-align: center;">
-                        <a href="/account/cloneListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="/Agency/cloneListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="/account/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause Listing - can be reopened"><img src="/images/icons/database_gear.png"><br>Search/Notify Vendors</a>
+                        <a href="/Agency/pauseListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Pause Listing - can be reopened"><img src="/images/icons/database_gear.png"><br>Search/Notify Vendors</a>
                     </td>
 -->
                     <td style="text-align: center;">
-                        <a href="/account/closeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Close Listing Now"><img src="/images/icons/database_delete.png"><br>Close</a>
+                        <a href="/Agency/closeListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Close Listing Now"><img src="/images/icons/database_delete.png"><br>Close</a>
                     </td>
                 </tr>
                 }
@@ -116,13 +116,13 @@
                     <td>@l.Status</td>
                     <td>@(l.CloseDate == DateTime.MinValue ? "none" : l.CloseDate.ToString("M/d/y"))</td>
                     <td style="text-align: center;">
-                        <a href="/account/addIntentToAward?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Intent to Award"><img src="/images/icons/database_add.png"><br>Add Intent<br>to Award</a>
+                        <a href="/Agency/addIntentToAward?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Intent to Award"><img src="/images/icons/database_add.png"><br>Add Intent<br>to Award</a>
                     </td>
                     <td style="text-align: center;">
-                        <a href="/account/addNoticeToProceed?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Notice to Proceed"><img src="/images/icons/database_go.png"><br>Add Notice<br>to Proceed</a>
+                        <a href="/Agency/addNoticeToProceed?id=@l.ListingId" class="pure-button button-xsmall" alt="Add Notice to Proceed"><img src="/images/icons/database_go.png"><br>Add Notice<br>to Proceed</a>
                     </td>
 <!--                    <td style="text-align: center;">
-                        <a href="/account/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
+                        <a href="/Agency/editListing?id=@l.ListingId" class="pure-button button-xsmall" alt="Clone Listing"><img src="/images/icons/database_lightning.png"><br>Clone</a>
                     </td>
 -->                </tr>
                 }

@@ -6,20 +6,38 @@
 }
 
 <div class="view-box">
-    <h1>Adding an Intent to Award</h1>
+    <h1>Setting up your subcontract</h1>
+    <h2>Project: @ViewBag.projectTitle</h2>
 
-    <p>Once you've closed a bid, you can add information on your intent to award here.</p>
-
-    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/addIntentToAward">
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/Agency/setupSublisting">
     @Html.AntiForgeryToken()
+    @if (ViewBag.id != null)
+    {
         <input type="hidden" name="id" value="@ViewBag.id">
+    }
+        <input type="hidden" name="parentId" value="@ViewBag.parentId">
+
 
         <fieldset>
-            <legend>RFP/ITB: @Model.Title</legend>
+            <legend>Subcontract Information</legend>
 
-            <label asp-for="IntentToAward"></label>
-            <textarea asp-for="IntentToAward" class="pure-u-23-24" rows=5></textarea>
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
             <span class="pure-form-message">This is a required field.</span>
+
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="pure-u-23-24" rows=5></textarea>
+            <span class="pure-form-message">This is a required field.</span>
+        </fieldset>
+
+        <fieldset>
+            <legend>Optional Information</legend>
+
+            <label asp-for="Contact"></label>
+            <textarea asp-for="Contact" class="pure-u-23-24" rows=3></textarea>
+
+            <label asp-for="ActionSteps"></label>
+            <textarea asp-for="ActionSteps" class="pure-u-23-24" rows=5></textarea>
         </fieldset>
 
         <fieldset>
@@ -42,16 +60,18 @@
                 <thead>
                     <tr>
                         <th>File</th>
+                        <th>Set attachment download URL? (optional)</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="files" class="files">
-                @if (ViewBag.awardDocuments != null)
+                @if (Model.BidDocuments != null)
                 {
-                @foreach (Attachment a in ViewBag.awardDocuments)
+                @foreach (Attachment a in Model.BidDocuments)
                 {
                     <tr>
                         <td>@a.DocumentName</td>
+                        <td><input class="small" name="redir-@a.Guid" value="@a.RedirectUrl"></td>
                         <td><a class="pure-button button-xsmall" data-guid="@a.Guid" href="#">remove</a></td>
                     </tr>
                 }
@@ -60,12 +80,14 @@
             </table>
          </fieldset>
 
-        <p>That's it!  You can save your intent to award and it'll be attached to your listing.</p>
+        <p>That's it!  That's all we need to set up your subcontract on this project.</p>
 
-        <button type="submit" name="action" value="save" class="pure-button pure-button-primary">Save Intent to Award</button>
+        <button type="submit" name="action" value="save" class="pure-button button-secondary">Save</button>
         <button type="submit" name="action" value="cancel" class="pure-button button-secondary" formnovalidate>Cancel editing</button>
     </form>
+
 </div>
+
 
 
 <div class="pure-g">
@@ -98,7 +120,7 @@ $(function () {
   var removeUpload = function(e, a, uploadId) {
       e.stopPropagation();
       e.preventDefault();
-      $.ajax('/account/RemoveAttachment?id=' + uploadId, {
+      $.ajax('/Agency/RemoveAttachment?id=' + uploadId, {
           success: function() {
               // If the server says we've removed that file, remove the file from the list
               $(a).closest('tr').remove();
@@ -118,7 +140,7 @@ $(function () {
   }
 
   $('#fileupload').fileupload({
-      url: '/account/saveUpload',
+      url: '/Agency/saveUpload',
       dataType: 'json',
       done: function (e, data) {
           console.log("DONE:");
@@ -131,8 +153,9 @@ $(function () {
               });
               a.addClass('pure-button button-xsmall');
               var name = $('<td/>').text(file.name);
+              var redir = $('<td><input class="small" name="redir-' + file.uploadId + '"></td>');
               var rem = $('<td/>').append(a);
-              var row = $('<tr>').append(name).append(rem);
+              var row = $('<tr>').append(name).append(redir).append(rem);
               row.appendTo('#files');
           });
       },

@@ -23,7 +23,7 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
-    public class AccountController : Controller
+    public class AgencyController : Controller
     {
 
 //        IAmazonS3 S3Client { get; set; }
@@ -33,7 +33,7 @@ namespace SearchProcurement.Controllers
         /**
          * Constructor
          */
-        public AccountController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
+        public AgencyController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
         {
             // Inject the IHostingEnvironment
             _environment = environment;
@@ -49,7 +49,7 @@ namespace SearchProcurement.Controllers
             // Have we seen this unique identifier before?  If no, send them to the new account page
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Yep, they're good, they can stay here
             Agency a = new Agency();
@@ -72,7 +72,7 @@ namespace SearchProcurement.Controllers
 
         }
 
-        public IActionResult Login(string returnUrl = "/account")
+        public IActionResult Login(string returnUrl = "/Agency")
         {
             return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
         }
@@ -101,7 +101,7 @@ namespace SearchProcurement.Controllers
             // Never seen 'em before?  They shouldn't be here
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // Yep, they're good, they can stay here
             Agency a = new Agency();
@@ -123,7 +123,7 @@ namespace SearchProcurement.Controllers
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
             if( !Agency.isKnownAgency(uniq) )
-                return Redirect("/account/NewAccount");
+                return Redirect("/Agency/NewAccount");
 
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
@@ -171,7 +171,7 @@ namespace SearchProcurement.Controllers
             // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = this.readNameIdentifier();
             if( Agency.isKnownAgency(uniq) )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // Yep, they're good, they can stay here
             Agency a = new Agency();
@@ -193,7 +193,7 @@ namespace SearchProcurement.Controllers
             // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = this.readNameIdentifier();
             if( Agency.isKnownAgency(uniq) )
-                return Redirect("/account");
+                return Redirect("/Agency");
 
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page

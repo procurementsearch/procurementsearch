@@ -20,13 +20,13 @@ using SearchProcurement.Helpers;
 
 namespace SearchProcurement.Controllers
 {
-    public class AccountAttachmentController : Controller
+    public class AgencyAttachmentController : Controller
     {
 
         [Authorize]
         [HttpPost]
         [DisableFormValueModelBinding]
-        [Route("/Account/saveUpload")]
+        [Route("/Agency/saveUpload")]
         public async Task<IActionResult> SaveUpload()
         {
             Attachment myFile = new Attachment {};
@@ -106,7 +106,7 @@ namespace SearchProcurement.Controllers
 
 
         [Authorize]
-        [Route("/Account/removeAttachment")]
+        [Route("/Agency/removeAttachment")]
         public IActionResult RemoveAttachment(string id)
         {
             // And now, do we already have some files for this session?  If so, let's get them

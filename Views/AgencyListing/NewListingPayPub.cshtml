@@ -65,13 +65,13 @@
                     @if (ViewBag.simpleTokens > 0)
                     {
                     <b>Begin your RFP/ITB:</b><br>
-                    <a href="/account/newListing?listingType=@ListingTypes.Simple" class="pure-button pure-button-primary button-small">RFP/ITB with One Scope of Work</a>
+                    <a href="/Agency/newListing?listingType=@ListingTypes.Simple" class="pure-button pure-button-primary button-small">RFP/ITB with One Scope of Work</a>
                     }
                     else
                     {
                     <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple)</b>
 
-                    <form action="/account/ChargeSimple" method="POST" style="text-align: center;">
+                    <form action="/Agency/ChargeSimple" method="POST" style="text-align: center;">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                         data-key="@Defines.AppSettings.StripeKey"
@@ -89,7 +89,7 @@
 
                     <b>Your cost: $@Price.loadPrice(Model.AgencyType, ListingTypes.Simple10)</b>
 
-                    <form action="/account/ChargeSimple10" method="POST" style="text-align: center;">
+                    <form action="/Agency/ChargeSimple10" method="POST" style="text-align: center;">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                         data-key="@Defines.AppSettings.StripeKey"

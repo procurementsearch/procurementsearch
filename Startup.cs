@@ -116,8 +116,8 @@ namespace SearchProcurement
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                LoginPath = new PathString("/account/login"),
-                LogoutPath = new PathString("/account/logout")
+                LoginPath = new PathString("/Agency/login"),
+                LogoutPath = new PathString("/Agency/logout")
             });
 
             // Add the OIDC middleware

@@ -26,7 +26,7 @@
     <h1>Setting up your RFP/ITB</h1>
     }
 
-    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/account/setupListing">
+    <form class="pure-form pure-form-stacked" id="account" method="POST" action="/Agency/setupListing">
     @Html.AntiForgeryToken()
     @if (@Model.ListingId != 0)
     {
@@ -184,7 +184,7 @@ $(function () {
   var removeUpload = function(e, a, uploadId) {
       e.stopPropagation();
       e.preventDefault();
-      $.ajax('/account/RemoveAttachment?id=' + uploadId, {
+      $.ajax('/Agency/RemoveAttachment?id=' + uploadId, {
           success: function() {
               // If the server says we've removed that file, remove the file from the list
               $(a).closest('tr').remove();
@@ -204,7 +204,7 @@ $(function () {
   }
 
   $('#fileupload').fileupload({
-      url: '/account/saveUpload',
+      url: '/Agency/saveUpload',
       dataType: 'json',
       done: function (e, data) {
           console.log("DONE:");

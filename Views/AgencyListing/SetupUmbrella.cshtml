@@ -8,8 +8,8 @@
     <h2>Project: @Model.Title</h2>
     <br>
     <p>
-        <a class="pure-button button-small" href="/account/editListing?id=@Model.ListingId">Edit this listing</a>
-        <a class="pure-button button-small" href="/account/addSublisting?parentId=@Model.ListingId">Add a subcontract</a>
+        <a class="pure-button button-small" href="/Agency/editListing?id=@Model.ListingId">Edit this listing</a>
+        <a class="pure-button button-small" href="/Agency/addSublisting?parentId=@Model.ListingId">Add a subcontract</a>
     </p>
     <br>
     @if (Model.Sublistings == null)
@@ -47,7 +47,7 @@
             <tr>
                 <td><a target="_blank" href="/details/@l.ListingId">@l.Title</a></td>
                 <td style="text-align: center;">
-                    <a href="/account/editSublisting?id=@l.ListingId&parentId=@Model.ListingId" class="pure-button button-xsmall" alt="Edit Subcontract"><img src="/images/icons/database_edit.png"><br>Edit</a>
+                    <a href="/Agency/editSublisting?id=@l.ListingId&parentId=@Model.ListingId" class="pure-button button-xsmall" alt="Edit Subcontract"><img src="/images/icons/database_edit.png"><br>Edit</a>
                 </td>
                 <td style="text-align: center;">
                     <a href="#" class="pure-button button-xsmall remove_button" data-id="@l.ListingId" alt="Remove Subcontract"><img src="/images/icons/database_delete.png"><br>Remove</a>
@@ -67,7 +67,7 @@ $(".remove_button").click(function(e){
     if( confirm("Are you sure you want to delete this subcontract?") ) {
         var that = this;
         var myId = $(this).data("id");
-        $.ajax('/account/removeSublisting?id=' + myId, {
+        $.ajax('/Agency/removeSublisting?id=' + myId, {
             success: function() {
                 // If the server says we've removed that file, remove the file from the list
                 $(that).closest('tr').remove();
