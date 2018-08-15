@@ -3,13 +3,6 @@
 
 @Html.Partial("Search-header")
 
-@if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
-{
-<div class="agency-header" role="complementary">
-@Html.Raw(ViewBag.agencyHeader)
-</div>
-}
-
 <div class="search-options" role="complementary">
     <span class="noselect" id="search-sortby">Sort by</span>
     <span class="noselect" id="search-show">Show</span>
@@ -40,6 +33,13 @@
         }
     </div>
 </div>
+
+@if (!String.IsNullOrEmpty(ViewBag.agencyHeader))
+{
+<div class="agency-header" role="complementary">
+@Html.Raw(ViewBag.agencyHeader)
+</div>
+}
 
 <div class="search-options-overlay" id="sortby-options">
     <div class="parent">
