@@ -66,6 +66,18 @@ namespace SearchProcurement
 //            services.AddAWSService<IAmazonS3>();
             services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+
+            // This is so we can access HTTP Contexts outside controllers
+        	services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Add in some custom authentication levels, since we're dealing with
+            // unverified vs verified users from auth0
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Verified", policy =>
+                    policy.RequireClaim("email_verified", "true"));
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

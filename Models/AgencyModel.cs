@@ -77,7 +77,7 @@ namespace SearchProcurement.Models
          */
         public Agency(string uniq)
         {
-            if( Agency.isKnownAgency(uniq) )
+            if( Agency.isKnownLogin(uniq) )
             {
                 this.loadIdByAgencyIdentifier(uniq);
                 this.loadDataByAgencyIdentifier(uniq);
@@ -94,7 +94,7 @@ namespace SearchProcurement.Models
          * @param uniq The unique identifier
          * @return bool Do we have this identifier in our database?
          */
-        public static bool isKnownAgency(string uniq)
+        public static bool isKnownLogin(string uniq)
         {
 			// Set up the database connection, there has to be a better way!
 			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))

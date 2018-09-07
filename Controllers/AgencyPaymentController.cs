@@ -81,7 +81,7 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?  If not, they shouldn't be submitting a payment token at all
             string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            if( !Agency.isKnownLogin(uniq) )
                 return StatusCode(401);
 
             // Yep, they're good, they can stay here

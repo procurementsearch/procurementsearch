@@ -48,7 +48,7 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?  If no, send them to the new account page
             string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            if( !Agency.isKnownLogin(uniq) )
                 return Redirect("/Agency/NewAccount");
 
             // Yep, they're good, they can stay here
@@ -95,12 +95,13 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="Verified")]
         public IActionResult MyAccount()
         {
+            Console.WriteLine("*\n* IN MYACCOUNT\n*\n");
             // Never seen 'em before?  They shouldn't be here
             string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            if( !Agency.isKnownLogin(uniq) )
                 return Redirect("/Agency/NewAccount");
 
             // Yep, they're good, they can stay here
@@ -122,7 +123,7 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?
             string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownAgency(uniq) )
+            if( !Agency.isKnownLogin(uniq) )
                 return Redirect("/Agency/NewAccount");
 
             // So we have a valid model in account now...  Let's just save it
@@ -164,13 +165,14 @@ namespace SearchProcurement.Controllers
 
 
 
-
         [Authorize]
         public IActionResult NewAccount()
         {
+            Console.WriteLine("*\n* IN NEWACCOUNT\n*\n");
+
             // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = this.readNameIdentifier();
-            if( Agency.isKnownAgency(uniq) )
+            if( Agency.isKnownLogin(uniq) )
                 return Redirect("/Agency");
 
             // Yep, they're good, they can stay here
@@ -192,7 +194,7 @@ namespace SearchProcurement.Controllers
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
             string uniq = this.readNameIdentifier();
-            if( Agency.isKnownAgency(uniq) )
+            if( Agency.isKnownLogin(uniq) )
                 return Redirect("/Agency");
 
             // So we have a valid model in account now...  Let's just save it
@@ -215,7 +217,7 @@ namespace SearchProcurement.Controllers
             // Do we have a logged-in user, maybe updating their email?
             // If so, then their own email shouldn't match as an existing email...
             string uniq = this.readNameIdentifier();
-            if( Agency.isKnownAgency(uniq) )
+            if( Agency.isKnownLogin(uniq) )
             {
                 // Yep, they're good, they can stay here
                 Agency a = new Agency();

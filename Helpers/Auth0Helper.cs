@@ -1,5 +1,9 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+
 using SearchProcurement.Controllers;
 
 namespace SearchProcurement.Helpers
@@ -29,6 +33,41 @@ namespace SearchProcurement.Helpers
         }
 
 
+        /**
+         * Return true if we're a logged-in user with a verified email
+         * @return bool Whether this user has verified their email
+         */
+        public static bool isEmailVerified(this Controller a)
+        {
+            return a.User.Claims.
+                Where(c => c.Type == "email_verified").
+                Select(v => v.Value).
+                FirstOrDefault() != "false";
+        }
+
     }
+
+
+
+
+public class AccessDeniedAuthorizeAttribute : AuthorizeAttribute
+{
+    public override void OnAuthorization(AuthorizationContext filterContext)
+    {
+        base.OnAuthorization(filterContext);
+        if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
+        {
+            filterContext.Result = new RedirectResult("~/Account/Logon");
+            return;
+        }
+
+        if (filterContext.Result is HttpUnauthorizedResult)
+        {
+            filterContext.Result = new RedirectResult("~/Account/Denied");
+        }
+    }
+}
+
+
 
 }

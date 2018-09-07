@@ -4,13 +4,14 @@
 }
 
 <div class="view-box">
-    <h1>Setting up your Buyer/PM Account</h1>
+    <h1>Setting up your Buyer Account</h1>
 
     <p>
-        Ready to start listing your contracts, RFPs, and projects on ProcurementSearch.com?
-        You've come to the right place.  If you're an agency buyer and you'd like to post
-        contracts yourself, we offer a self-serve system, so you can list your contracting
-        opportunities to the vendor community.  This is the place to start doing that.
+        Ready to start listing your agency's contracts, RFPs, and projects on
+        ProcurementSearch.com?  You've come to the right place.  If you're an
+        agency buyer, contract analyst, or anyone otherwise responsible for
+        listing and maintaining your agency's RFPs and contract solicitations,
+        you may set up an agency buyer account here.
     </p>
 
     <p>
@@ -38,167 +39,10 @@
             <span class="pure-form-message">This is a required field.</span>
         </fieldset>
 
-        <fieldset>
-            <legend>About Your Agency</legend>
-
-            <label asp-for="AgencyName"></label>
-            <input asp-for="AgencyName" class="pure-u-23-24" placeholder="" required data-parsley-errors-messages-disabled="true">
-            <span class="pure-form-message">This is a required field.</span>
-
-            <p>
-                What kind of agency do you represent?  <i>Choose carefully.
-                You can't go back and change your agency type after you've
-                set up your account!</i>
-            </p>
-
-            <label asp-for="AgencyType" class="pure-radio">
-                <input asp-for="AgencyType" id="AgencyType_governmentnp" type="radio" value="governmentnp" checked> Government/Non-profit
-            </label>
-            <label asp-for="AgencyType" class="pure-radio">
-                <input asp-for="AgencyType" id="AgencyType_tribalgov" type="radio" value="tribalgov"> Tribal Government/Organization
-            </label>
-            <label asp-for="AgencyType" class="pure-radio">
-                <input asp-for="AgencyType" id="AgencyType_private" type="radio" value="private"> Private Sector (General Contractor, etc.)
-            </label>
-
-            <label asp-for="AgencyAboutText"></label>
-            <textarea asp-for="AgencyAboutText" class="pure-u-23-24" rows=5></textarea>
-            <span class="pure-form-message">This is not a required field.  You can leave this blank and change it later.</span>
-
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label asp-for="AgencyUrl"></label>
-                    <input asp-for="AgencyUrl" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label for="AgencyLogo">Your Agency Logo</label>
-                    <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
-
-                    <div id="croppie_modal" style="display: none;">
-                        <a class="pure-button pure-button-secondary file-button">
-                            <span>Choose a file</span>
-                            <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
-                        </a>
-                        <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
-                        <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
-                        <div class="upload-msg">
-                            Upload a logo.  If you need to resize it, you can do so here.
-                        </div>
-                        <div class="upload-demo-wrap">
-                            <div id="croppie"></div>
-                        </div>
-                    </div>
-                    <div id="logo_preview" style="padding: 1em;"></div>
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>Agency Contact Information</legend>
-
-            <p><i>This is how vendors will reach your agency if they have questions.</i></p>
-
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label asp-for="AgencyContactName"></label>
-                    <input asp-for="AgencyContactName" class="pure-u-23-24" placeholder="">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label asp-for="AgencyContactEmail"></label>
-                    <input asp-for="AgencyContactEmail" class="pure-u-23-24" placeholder="">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label asp-for="AgencyPhone"></label>
-                    <input asp-for="AgencyPhone" class="pure-u-23-24" placeholder="">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-2">
-                    <label asp-for="AgencyFax"></label>
-                    <input asp-for="AgencyFax" class="pure-u-23-24" placeholder="">
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>Agency Address Information</legend>
-
-            <p><i>Where is your office physically located?</i></p>
-
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.Address1">Street Address</label>
-                    <input asp-for="ShippingAddress.Address1" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.Address2">Street Address 2</label>
-                    <input asp-for="ShippingAddress.Address2" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.City">City</label>
-                    <input asp-for="ShippingAddress.City" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.State">State</label>
-                    <select class="pure-u-23-24" asp-for="ShippingAddress.State" asp-items="Model.States"></select>
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.Country">Country</label>
-                    <select class="pure-u-23-24" asp-for="ShippingAddress.Country" asp-items="Model.Countries"></select>
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="ShippingAddress.Postal">Zip/Postal Code</label>
-                    <input asp-for="ShippingAddress.Postal" class="pure-u-23-24">
-                </div>
-            </div>
-
-            <p>
-                <i>What is your mailing address?  If it's the same as your physical address, check here.</i>
-                <input type="checkbox" id="billing_same_as_shipping">
-            </p>
-
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.Address1">Street Address</label>
-                    <input asp-for="BillingAddress.Address1" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.Address2">Street Address 2</label>
-                    <input asp-for="BillingAddress.Address2" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.City">City</label>
-                    <input asp-for="BillingAddress.City" class="pure-u-23-24">
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.State">State</label>
-                    <select class="pure-u-23-24" asp-for="BillingAddress.State" asp-items="Model.States"></select>
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.Country">Country</label>
-                    <select class="pure-u-23-24" asp-for="BillingAddress.Country" asp-items="Model.Countries"></select>
-                </div>
-
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <label asp-for="BillingAddress.Postal">Zip/Postal Code</label>
-                    <input asp-for="BillingAddress.Postal" class="pure-u-23-24">
-                </div>
-            </div>
-
-        </fieldset>
-
-        <p>That's it!  That's all we need to set up your buyer/PM account on ProcurementSearch.com.</p>
+        <p>
+            After you've submitted this, watch out for an account confirmation email.
+            It should arrive in the next few minutes.
+        </p>
 
         <input type="hidden" name="logoData">
         <input type="hidden" name="logoName">

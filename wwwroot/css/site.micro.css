@@ -1386,7 +1386,8 @@ a {
 
     .agency-header {
         margin: 1.5em 6em;
-	border: solid thin #ddd;
+        border: solid thin #ddd;
+        padding: 1em;
     }
 }
 
@@ -1452,6 +1453,8 @@ a {
 
     .agency-header {
         margin: 1em;
+        border: solid thin #ddd;
+        padding: 1em;
     }
 }
 
