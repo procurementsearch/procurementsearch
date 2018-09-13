@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -76,7 +77,11 @@ namespace SearchProcurement
             {
                 options.AddPolicy("Verified", policy =>
                     policy.RequireClaim("email_verified", "true"));
+                options.AddPolicy("VerifiedKnown", policy =>
+                    policy.Requirements.Add(new Auth0KnownUniqueIdRequirement()));
             });
+
+            services.AddSingleton<IAuthorizationHandler, Auth0KnownUniqueIdHandler>();
 
         }
 
@@ -129,7 +134,8 @@ namespace SearchProcurement
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 LoginPath = new PathString("/Agency/login"),
-                LogoutPath = new PathString("/Agency/logout")
+                LogoutPath = new PathString("/Agency/logout"),
+                AccessDeniedPath = new PathString("/Agency/AccessDenied")
             });
 
             // Add the OIDC middleware

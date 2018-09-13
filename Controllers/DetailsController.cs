@@ -23,7 +23,7 @@ namespace SearchProcurement.Controllers
             if( d.status == ListingStatus.Draft || d.status == ListingStatus.Published || d.status == ListingStatus.Disabled )
             {
                 // What's the agency?
-                Agency a = new Agency(this.readNameIdentifier());
+                Agency a = new Agency(this.getAuth0UniqueId());
 
                 // No agency?  Or not the owning agency?  Don't show the listing
                 if( a.AgencyId == 0 || a.AgencyId != d.agencyId )

@@ -87,6 +87,38 @@ namespace SearchProcurement.Models
 
 
 
+
+        /**
+         * Do we have a pending team invitation for this email?
+         * @param email The email address
+         * @return bool Do we have this email as a pending invitation in our database?
+         */
+        public static bool isPendingTeamInvitation(string email)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT COUNT(*) " +
+                        "FROM agency_team_invitation AS A " +
+                        "WHERE email_address = @email " +
+                        "AND accepted IS NULL";
+					cmd.Parameters.AddWithValue("@email", email);
+					cmd.Prepare();
+
+					// Run the DB command
+                    return Convert.ToBoolean(cmd.ExecuteScalar());
+                }
+            }
+        }
+
+
+
+
         /**
          * Do we have an account for this unique identifier?  If so, then we're
          * probably sending the user to their account page.  If not, we're
@@ -96,26 +128,7 @@ namespace SearchProcurement.Models
          */
         public static bool isKnownLogin(string uniq)
         {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "select count(*) " +
-                        "from agency_team as a " +
-                        "where uniqueidentifier = @uniq";
-					cmd.Parameters.AddWithValue("@uniq", uniq);
-					cmd.Prepare();
-
-					// Run the DB command
-                    return Convert.ToBoolean(cmd.ExecuteScalar());
-                }
-            }
+            return AgencyHelper.isKnownLogin(uniq);
         }
 
 

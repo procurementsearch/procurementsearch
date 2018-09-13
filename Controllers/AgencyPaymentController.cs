@@ -20,6 +20,8 @@ namespace SearchProcurement.Controllers
 //        IAmazonS3 S3Client { get; set; }
         private IHostingEnvironment _environment;
 
+        // The unique ID from Auth0
+        private string auth0Id { get; set; }
 
         /**
          * Constructor
@@ -31,6 +33,10 @@ namespace SearchProcurement.Controllers
 
             // Dependency-inject the s3 client
             //this.S3Client = s3Client;
+
+            // Get the unique ID because we'll use it everywhere -- and it can be null!
+            auth0Id = this.getAuth0UniqueId();
+
         }
 
 
@@ -39,7 +45,7 @@ namespace SearchProcurement.Controllers
          * Process a Stripe token to charge a credit card when someone
          * purchases a single RFP.
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/ChargeSimple")]
         public IActionResult ChargeSimple(string stripeEmail, string stripeToken)
         {
@@ -52,7 +58,7 @@ namespace SearchProcurement.Controllers
          * Process a Stripe token to charge a credit card when someone
          * purchases a block of 10 RFPs.
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/ChargeSimple10")]
         public IActionResult ChargeSimple10(string stripeEmail, string stripeToken)
         {
@@ -63,7 +69,7 @@ namespace SearchProcurement.Controllers
          * Process a Stripe token to charge a credit card when someone
          * purchases an umbrella RFP.
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/ChargeUmbrella")]
         public IActionResult ChargeUmbrella(string stripeEmail, string stripeToken)
         {
@@ -77,17 +83,13 @@ namespace SearchProcurement.Controllers
          * Process a Stripe token to charge a credit card when someone
          * purchases an umbrella RFP.
          */
+        [Authorize(Policy="VerifiedKnown")]
         public IActionResult Charge(string listingType, string stripeEmail, string stripeToken)
         {
-            // Have we seen this unique identifier before?  If not, they shouldn't be submitting a payment token at all
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownLogin(uniq) )
-                return StatusCode(401);
-
             // Yep, they're good, they can stay here
             Agency a = new Agency();
-            a.loadDataByAgencyIdentifier(uniq);
-            a.loadIdByAgencyIdentifier(uniq);
+            a.loadDataByAgencyIdentifier(auth0Id);
+            a.loadIdByAgencyIdentifier(auth0Id);
 
             // Now, process the Stripe customer and charge
             var customers = new StripeCustomerService();

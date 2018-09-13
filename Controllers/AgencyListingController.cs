@@ -26,6 +26,8 @@ namespace SearchProcurement.Controllers
 //        IAmazonS3 S3Client { get; set; }
         private IHostingEnvironment _environment;
 
+        // The unique ID from Auth0
+        private string auth0Id { get; set; }
 
         /**
          * Constructor
@@ -37,6 +39,10 @@ namespace SearchProcurement.Controllers
 
             // Dependency-inject the s3 client
             //this.S3Client = s3Client;
+
+            // Get the unique ID because we'll use it everywhere -- and it can be null!
+            auth0Id = this.getAuth0UniqueId();
+
         }
 
 
@@ -48,14 +54,11 @@ namespace SearchProcurement.Controllers
          * Show the umbrella listing overlay
          * @param int id The listing ID to show subcontracts for
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/setupUmbrella")]
         public IActionResult SetupUmbrella(int id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/newAccount");
+            Agency a = new Agency(auth0Id);
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -78,14 +81,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/newListing")]
         public IActionResult NewListing(int? locId, string listingType)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/newAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Try to use the session location, if we didn't get one in the query string.
             // If the session location is also empty, this'll do nothing, which is the
@@ -144,14 +145,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/newListingActivate")]
         public IActionResult NewListingActivate(string listingType)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Failsafe
             int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
@@ -170,14 +169,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/closeListing")]
         public IActionResult closeListing(int? id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Load the listing
             Listing l = new Listing();
@@ -198,14 +195,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/addListing")]
         public IActionResult addListing(int? id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Make sure they've selected a location Id
             int? locId = HttpContext.Session.GetInt32(Defines.SessionKeys.LocationId);
@@ -231,14 +226,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/editListing")]
         public IActionResult editListing(int id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // They're editing an existing listing .. let's load it before showing the view
             Listing l = new Listing();
@@ -263,16 +256,14 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for adding a new RFP listing
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [HttpPost]
         [Route("/Agency/setupListing")]
         [ValidateAntiForgeryToken]
         public IActionResult SetupListingPost(int? id, Listing listing)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
@@ -409,14 +400,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/addSublisting")]
         public IActionResult AddSublisting(int parentId)
         {
-            // Have we seen this unique identifier before?  If not, they really shouldn't be here
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency  If not, they really shouldn't be here
+            Agency a = new Agency(auth0Id);
 
             // Make sure they gave us a parent ID
             if( parentId == 0 )
@@ -441,14 +430,12 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/editSublisting")]
         public IActionResult EditSublisting(int parentId, int id)
         {
-            // Have we seen this unique identifier before?  If not, they really shouldn't be here
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency  If not, they really shouldn't be here
+            Agency a = new Agency(auth0Id);
 
             // Load the parent, to get the title/project description
             Listing parent = new Listing();
@@ -479,16 +466,14 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for saving a subcontract
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [HttpPost]
         [Route("/Agency/setupSublisting")]
         [ValidateAntiForgeryToken]
         public IActionResult SetupSublistingPost(int parentId, int? id, Listing listing)
         {
-            // Have we seen this unique identifier before?  If not, they really shouldn't be here
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency  If not, they really shouldn't be here
+            Agency a = new Agency(auth0Id);
 
             // Which button did they click on?
             string action = HttpContext.Request.Form["action"];
@@ -540,14 +525,12 @@ namespace SearchProcurement.Controllers
          * Remove the sublisting from an umbrella contract
          * @param int id The listing ID of the subcontract to remove
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/removeSublisting")]
         public IActionResult RemoveSublisting(int id)
         {
-            // Have we seen this unique identifier before?  If no, send them to the new account page
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency  If no, send them to the new account page
+            Agency a = new Agency(auth0Id);
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -573,14 +556,12 @@ namespace SearchProcurement.Controllers
          * Show the screen to add an intent to award
          * @param int id The listing ID to show intent to award for
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/addIntentToAward")]
         public IActionResult AddIntentToAward(int id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/newAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -609,16 +590,14 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for adding an intent to award
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [HttpPost]
         [Route("/Agency/addIntentToAward")]
         [ValidateAntiForgeryToken]
         public IActionResult AddIntentToAwardPost(int? id, Listing listing)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Cancel!  Also, no ID?  No whiskey!
             if( id == null || HttpContext.Request.Form["action"] == "cancel" )
@@ -656,14 +635,12 @@ namespace SearchProcurement.Controllers
          * Show the screen to add a notice to proceed
          * @param int id The listing ID to show notice to proceed for
          */
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/addNoticeToProceed")]
         public IActionResult AddNoticeToProceed(int id)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/newAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Let's try to load the listing
             Listing l = new Listing();
@@ -684,16 +661,14 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for adding a notice to proceed
          */
-        [Authorize]
         [HttpPost]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/addNoticeToProceed")]
         [ValidateAntiForgeryToken]
         public IActionResult AddNoticeToProceed(int? id, Listing listing)
         {
-            // Have we seen this unique identifier before?
-            Agency a = new Agency(this.readNameIdentifier());
-            if( a.AgencyId == 0 )
-                return Redirect("/Agency/NewAccount");
+            // Load the agency
+            Agency a = new Agency(auth0Id);
 
             // Cancel!  Also, no ID?  No whiskey!
             if( id == null || HttpContext.Request.Form["action"] == "cancel" )

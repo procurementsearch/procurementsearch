@@ -4,6 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 
+
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+
+
+
 using SearchProcurement.Controllers;
 
 namespace SearchProcurement.Helpers
@@ -34,6 +41,20 @@ namespace SearchProcurement.Helpers
 
 
         /**
+         * Return the email address from the claim.
+         * @return string The email address
+         */
+        public static string readEmailAddress(this Controller a)
+        {
+            return a.User.Claims.
+                Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").
+                Select(v => v.Value).
+                FirstOrDefault();
+        }
+
+
+
+        /**
          * Return true if we're a logged-in user with a verified email
          * @return bool Whether this user has verified their email
          */
@@ -50,24 +71,33 @@ namespace SearchProcurement.Helpers
 
 
 
-public class AccessDeniedAuthorizeAttribute : AuthorizeAttribute
-{
-    public override void OnAuthorization(AuthorizationContext filterContext)
+    public class Auth0KnownUniqueIdRequirement : IAuthorizationRequirement
     {
-        base.OnAuthorization(filterContext);
-        if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
-        {
-            filterContext.Result = new RedirectResult("~/Account/Logon");
-            return;
-        }
+        public Auth0KnownUniqueIdRequirement() {}
+    }
 
-        if (filterContext.Result is HttpUnauthorizedResult)
+
+
+    public class Auth0KnownUniqueIdHandler : AuthorizationHandler<Auth0KnownUniqueIdRequirement>
+    {
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
+                                                    Auth0KnownUniqueIdRequirement requirement)
         {
-            filterContext.Result = new RedirectResult("~/Account/Denied");
+            string uniq = context.User.Claims.
+                Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").
+                Select(v => v.Value).
+                FirstOrDefault();
+
+            if( AgencyHelper.isKnownLogin(uniq) )
+                context.Succeed(requirement);
+
+            //TODO: Use the following if targeting a version of
+            //.NET Framework older than 4.6:
+            //      return Task.FromResult(0);
+            return Task.CompletedTask;
+
         }
     }
-}
-
 
 
 }

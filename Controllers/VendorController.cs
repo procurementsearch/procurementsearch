@@ -47,7 +47,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Index()
         {
             // Have we seen this unique identifier before?  If no, send them to the new account page
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( !Vendor.isKnownVendor(uniq) )
                 return Redirect("/vendor/NewAccount");
 
@@ -93,7 +93,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccount()
         {
             // Never seen 'em before?  They shouldn't be here
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( !Vendor.isKnownVendor(uniq) )
                 return Redirect("/vendor/NewAccount");
 
@@ -115,7 +115,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccountPost(Vendor vendor)
         {
             // Have we seen this unique identifier before?
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( !Vendor.isKnownVendor(uniq) )
                 return Redirect("/vendor/NewAccount");
 
@@ -141,7 +141,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccount()
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( Vendor.isKnownVendor(uniq) )
                 return Redirect("/vendor");
 
@@ -163,7 +163,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccountPost(Vendor vendor)
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( Vendor.isKnownVendor(uniq) )
                 return Redirect("/vendor");
 
@@ -180,7 +180,7 @@ namespace SearchProcurement.Controllers
         {
             // Do we have a logged-in user, maybe updating their email?
             // If so, then their own email shouldn't match as an existing email...
-            string uniq = this.readNameIdentifier();
+            string uniq = this.getAuth0UniqueId();
             if( Vendor.isKnownVendor(uniq) )
             {
                 // Yep, they're good, they can stay here

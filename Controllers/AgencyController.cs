@@ -29,6 +29,8 @@ namespace SearchProcurement.Controllers
 //        IAmazonS3 S3Client { get; set; }
         private IHostingEnvironment _environment;
 
+        // The unique ID from Auth0
+        private string auth0Id { get; set; }
 
         /**
          * Constructor
@@ -40,21 +42,22 @@ namespace SearchProcurement.Controllers
 
             // Dependency-inject the s3 client
             //this.S3Client = s3Client;
+
+
+            // Get the unique ID because we'll use it everywhere -- and it can be null!
+            auth0Id = this.getAuth0UniqueId();
+
         }
 
 
 
+        [Authorize(Policy="VerifiedKnown")]
         public IActionResult Index()
         {
-            // Have we seen this unique identifier before?  If no, send them to the new account page
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownLogin(uniq) )
-                return Redirect("/Agency/NewAccount");
-
             // Yep, they're good, they can stay here
             Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(uniq);
-            a.loadDataByAgencyIdentifier(uniq);
+            a.loadIdByAgencyIdentifier(auth0Id);
+            a.loadDataByAgencyIdentifier(auth0Id);
 
             // Load up the listings
             Listing[] activeListings = a.getActiveListings();
@@ -64,7 +67,7 @@ namespace SearchProcurement.Controllers
             HttpContext.Session.Remove(Defines.SessionKeys.LocationId);
 
             // And stash the data
-            ViewBag.nameidentifier = uniq;
+            ViewBag.nameidentifier = auth0Id;
             ViewBag.activeListings = activeListings;
             ViewBag.inactiveListings = inactiveListings;
 
@@ -88,6 +91,34 @@ namespace SearchProcurement.Controllers
 
         public IActionResult AccessDenied()
         {
+            // Okay, so they're authenticated but not verified -- send them to
+            // the awaiting email verification view
+            if( User.Identity.IsAuthenticated && !this.isEmailVerified() )
+            {
+                return Redirect("/Agency/Unverified");
+            }
+            if( User.Identity.IsAuthenticated && this.isEmailVerified() )
+            {
+                if( !AgencyHelper.isKnownLogin(auth0Id) )
+                {
+                    return Redirect("/Agency/NewAccount");
+                }
+            }
+
+            return View();
+        }
+
+
+        [Authorize]
+        public IActionResult Unverified()
+        {
+            // If it turns out they land here and they are verified,
+            // just send them to the agency page and it'll route them
+            // to the right place
+            if( this.isEmailVerified() )
+            {
+                return Redirect("/Agency");
+            }
             return View();
         }
 
@@ -95,18 +126,13 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize(Policy="Verified")]
+
+        [Authorize(Policy="VerifiedKnown")]
         public IActionResult MyAccount()
         {
-            Console.WriteLine("*\n* IN MYACCOUNT\n*\n");
-            // Never seen 'em before?  They shouldn't be here
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownLogin(uniq) )
-                return Redirect("/Agency/NewAccount");
-
             // Yep, they're good, they can stay here
             Agency a = new Agency();
-            a.loadDataByAgencyIdentifier(uniq);
+            a.loadDataByAgencyIdentifier(auth0Id);
             return View(a);
         }
 
@@ -115,20 +141,15 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for updating an existing account.
          */
-        [Authorize]
         [HttpPost]
+        [Authorize(Policy="VerifiedKnown")]
         [ValidateAntiForgeryToken]
         [ActionName("MyAccount")]
         public IActionResult MyAccountPost(Agency agency)
         {
-            // Have we seen this unique identifier before?
-            string uniq = this.readNameIdentifier();
-            if( !Agency.isKnownLogin(uniq) )
-                return Redirect("/Agency/NewAccount");
-
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            agency.loadIdByAgencyIdentifier(uniq);
+            agency.loadIdByAgencyIdentifier(auth0Id);
             agency.update();
 
             // Did we get a new logo?
@@ -165,17 +186,19 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="Verified")]
         public IActionResult NewAccount()
         {
-            Console.WriteLine("*\n* IN NEWACCOUNT\n*\n");
-
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = this.readNameIdentifier();
-            if( Agency.isKnownLogin(uniq) )
+            if( Agency.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
-            // Yep, they're good, they can stay here
+            // Has someone invited this email to a team?
+            string email = this.readEmailAddress();
+            if( Agency.isPendingTeamInvitation(email) )
+                ViewBag.joinAgency = AgencyHelper.getTeamInvitationAgencyName(email);
+
+            // Show the new-account page
             Agency a = new Agency();
             return View(a);
         }
@@ -186,20 +209,19 @@ namespace SearchProcurement.Controllers
         /**
          * The POST endpoint for adding new accounts.
          */
-        [Authorize]
         [HttpPost]
+        [Authorize(Policy="Verified")]
         [ActionName("NewAccount")]
         [ValidateAntiForgeryToken]
         public IActionResult NewAccountPost(Agency agency)
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            string uniq = this.readNameIdentifier();
-            if( Agency.isKnownLogin(uniq) )
+            if( Agency.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            agency.add(uniq, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+            agency.add(auth0Id, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
             if(
                 !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
                 !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
@@ -216,12 +238,11 @@ namespace SearchProcurement.Controllers
         {
             // Do we have a logged-in user, maybe updating their email?
             // If so, then their own email shouldn't match as an existing email...
-            string uniq = this.readNameIdentifier();
-            if( Agency.isKnownLogin(uniq) )
+            if( Agency.isKnownLogin(auth0Id) )
             {
                 // Yep, they're good, they can stay here
                 Agency a = new Agency();
-                a.loadDataByAgencyIdentifier(uniq);
+                a.loadDataByAgencyIdentifier(auth0Id);
 
                 // Saving the same email?  Then we pass the email-in-use check..
                 if( a.MyLogin.UserEmailAddress == email )

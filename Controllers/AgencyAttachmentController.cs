@@ -22,9 +22,8 @@ namespace SearchProcurement.Controllers
 {
     public class AgencyAttachmentController : Controller
     {
-
-        [Authorize]
         [HttpPost]
+        [Authorize(Policy="VerifiedKnown")]
         [DisableFormValueModelBinding]
         [Route("/Agency/saveUpload")]
         public async Task<IActionResult> SaveUpload()
@@ -105,7 +104,7 @@ namespace SearchProcurement.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Policy="VerifiedKnown")]
         [Route("/Agency/removeAttachment")]
         public IActionResult RemoveAttachment(string id)
         {
