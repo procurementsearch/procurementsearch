@@ -12,24 +12,6 @@ using SearchProcurement.Helpers;
 namespace SearchProcurement.Models
 {
     // The class for the login
-    public class AgencyTeam
-    {
-        public int AgencyTeamId { get; set; }
-
-        // The logged-in user display name and email address
-        [Display(Name="Your name")]
-        public string UserRealName { get; set; }
-        [Display(Name="Your email address")]
-        public string UserEmailAddress { get; set; }
-
-        // The contact info for this logged-in user
-        public Address Contact { get; set; }
-
-        // is this person an admin?
-        public bool isAdmin { get; set; }
-    }
-
-
 	public partial class Agency {
 
         public int AgencyId;
@@ -167,39 +149,6 @@ namespace SearchProcurement.Models
                         }
 
                     }
-                }
-            }
-        }
-
-
-
-
-
-        /**
-         * Do we have a pending team invitation for this email?
-         * @param email The email address
-         * @return bool Do we have this email as a pending invitation in our database?
-         */
-        public static bool isPendingTeamInvitation(string email)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT COUNT(*) " +
-                        "FROM agency_team_invitation AS A " +
-                        "WHERE email_address = @email " +
-                        "AND accepted IS NULL";
-					cmd.Parameters.AddWithValue("@email", email);
-					cmd.Prepare();
-                    Console.WriteLine(cmd.CommandText);
-
-					// Run the DB command
-                    return Convert.ToBoolean(cmd.ExecuteScalar());
                 }
             }
         }

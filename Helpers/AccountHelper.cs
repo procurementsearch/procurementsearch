@@ -12,6 +12,7 @@ namespace SearchProcurement.Helpers
 		public string State { get; set; }
 		public string Country { get; set; }
         public string Postal { get; set; }
+		public string Phone { get; set; }
 	}
 
 }

@@ -194,12 +194,14 @@ namespace SearchProcurement.Controllers
 
             // Has someone invited this email to a team?
             string email = this.readEmailAddress();
-            if( Agency.isPendingTeamInvitation(email) )
+            if( AgencyTeam.isPendingTeamInvitation(email) )
                 ViewBag.joinAgency = AgencyHelper.getTeamInvitationAgencyName(email);
 
+            ViewBag.verifiedEmail = email;
+
             // Show the new-account page
-            Agency a = new Agency();
-            return View(a);
+            AgencyTeam at = new AgencyTeam();
+            return View(at);
         }
 
 
@@ -210,22 +212,34 @@ namespace SearchProcurement.Controllers
          */
         [HttpPost]
         [Authorize(Policy="Verified")]
-        [ActionName("NewAccount")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewAccountPost(Agency agency)
+        public IActionResult NewAccountPost(AgencyTeam agencyteam)
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
             if( AgencyHelper.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
+            // Has someone invited this email to a team?
+            string email = this.readEmailAddress();
+            if( AgencyTeam.isPendingTeamInvitation(email) )
+                ViewBag.joinAgency = AgencyHelper.getTeamInvitationAgencyName(email);
+
+
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            agency.add(auth0Id, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
-            if(
-                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
-                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
-            )
-                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
+            if( !string.IsNullOrEmpty(HttpContext.Request.Form["joinTeam"]) )
+            {
+
+}
+
+            agencyteam.add(auth0Id, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+
+
+            // if(
+            //     !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
+            //     !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
+            // )
+            //     agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
 
             return View("NewAccountPost");
         }
