@@ -55,9 +55,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Index()
         {
             // Yep, they're good, they can stay here
-            Agency a = new Agency();
-            a.loadIdByAgencyIdentifier(auth0Id);
-            a.loadDataByAgencyIdentifier(auth0Id);
+            Agency a = new Agency(auth0Id);
 
             // Load up the listings
             Listing[] activeListings = a.getActiveListings();
@@ -131,8 +129,7 @@ namespace SearchProcurement.Controllers
         public IActionResult MyAccount()
         {
             // Yep, they're good, they can stay here
-            Agency a = new Agency();
-            a.loadDataByAgencyIdentifier(auth0Id);
+            Agency a = new Agency(auth0Id);
             return View(a);
         }
 
@@ -149,7 +146,7 @@ namespace SearchProcurement.Controllers
         {
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            agency.loadIdByAgencyIdentifier(auth0Id);
+            agency.AgencyId = AgencyHelper.getIdForAgencyIdentifier(auth0Id);
             agency.update();
 
             // Did we get a new logo?
@@ -190,7 +187,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccount()
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            if( Agency.isKnownLogin(auth0Id) )
+            if( AgencyHelper.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
             // Has someone invited this email to a team?
@@ -216,7 +213,7 @@ namespace SearchProcurement.Controllers
         public IActionResult NewAccountPost(Agency agency)
         {
             // Have we seen this unique identifier before?  If so, send 'em to their account page
-            if( Agency.isKnownLogin(auth0Id) )
+            if( AgencyHelper.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
             // So we have a valid model in account now...  Let's just save it
@@ -238,11 +235,10 @@ namespace SearchProcurement.Controllers
         {
             // Do we have a logged-in user, maybe updating their email?
             // If so, then their own email shouldn't match as an existing email...
-            if( Agency.isKnownLogin(auth0Id) )
+            if( AgencyHelper.isKnownLogin(auth0Id) )
             {
                 // Yep, they're good, they can stay here
-                Agency a = new Agency();
-                a.loadDataByAgencyIdentifier(auth0Id);
+                Agency a = new Agency(auth0Id);
 
                 // Saving the same email?  Then we pass the email-in-use check..
                 if( a.MyLogin.UserEmailAddress == email )

@@ -2,11 +2,11 @@
 @media screen and (max-width: 48em) {
     /* small screens */
     .small-hide {
-	display: none !important;
+    	display: none !important;
     }
 
-    .view-box {
-	margin: 2em 1em 1em;
+    .details-container {
+    	margin: 2em 1em 1em;
     }
 
     .search-rss {
@@ -15,8 +15,7 @@
     .minisearch input[type=text] {
     }
 
-    .view-box form {
-        margin: 1em 1em;
+    .account-container form {
     }
 
 }
@@ -24,22 +23,21 @@
 @media screen and (min-width: 48em) {
     /* large screens */
     .large-hide {
-	display: none !important;
+	    display: none !important;
     }
 
-    .view-box {
-	margin: 4em 3em 2em;
+    .details-container {
+    	margin: 4em 3em 2em;
     }
 
     .search-rss {
-	width: 60%;
+    	width: 60%;
     }
 
     .minisearch input[type=text] {
     }
 
-    .view-box form {
-        margin: auto 5em;
+    .account-container form {
     }
 
 }

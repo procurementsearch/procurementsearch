@@ -12,6 +12,26 @@
     opacity: 0;
 }
 
+
+.join-team-callout {
+    border: solid thin #333;
+    box-sizing: border-box;
+    padding: 0em 1em;
+    outline: medium none;
+}
+
+.account-container {
+    margin: 2em;
+}
+
+.account-container .pure-form {
+    margin: 2em auto;
+}
+
+.account-container .pure-form legend {
+    font-size: 16pt;
+}
+
 /* Used on listing setup */
 #fileupload {
     margin: 0;

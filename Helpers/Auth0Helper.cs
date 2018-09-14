@@ -31,7 +31,7 @@ namespace SearchProcurement.Helpers
          * we'll alwys have this and it will be unique for every auth0 user.
          * @return string The name identifier
          */
-        public static string readNameIdentifier(this Controller a)
+        public static string getAuth0UniqueId(this Controller a)
         {
             return a.User.Claims.
                 Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").

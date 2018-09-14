@@ -87,9 +87,7 @@ namespace SearchProcurement.Controllers
         public IActionResult Charge(string listingType, string stripeEmail, string stripeToken)
         {
             // Yep, they're good, they can stay here
-            Agency a = new Agency();
-            a.loadDataByAgencyIdentifier(auth0Id);
-            a.loadIdByAgencyIdentifier(auth0Id);
+            Agency a = new Agency(auth0Id);
 
             // Now, process the Stripe customer and charge
             var customers = new StripeCustomerService();

@@ -27,6 +27,33 @@ namespace SearchProcurement.Helpers
     public class AgencyHelper
     {
         /**
+         * Load the account ID by the unique identifier key.
+         * @param uniq The unique identifier
+         * @return int The agency ID
+         */
+        public static int getIdForAgencyIdentifier(string uniq)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT a.agency_id " +
+                        "FROM agency AS a " +
+                        "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
+                        "WHERE al.uniqueidentifier = @uniq";
+					cmd.Parameters.AddWithValue("@uniq", uniq);
+					return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
+
+
+        /**
          * Do we have an account for this unique identifier?  If so, then we're
          * probably sending the user to their account page.  If not, we're
          * definitely sending them to the new account page.

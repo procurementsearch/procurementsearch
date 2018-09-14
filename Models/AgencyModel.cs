@@ -77,10 +77,97 @@ namespace SearchProcurement.Models
          */
         public Agency(string uniq)
         {
-            if( Agency.isKnownLogin(uniq) )
+            if( AgencyHelper.isKnownLogin(uniq) )
             {
-                this.loadIdByAgencyIdentifier(uniq);
-                this.loadDataByAgencyIdentifier(uniq);
+                // Set up the database connection, there has to be a better way!
+                using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+                {
+                    // Open the DB connection
+                    my_dbh.Open();
+
+                    // Pull the item data out of the database
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = my_dbh;
+                        cmd.CommandText = "SELECT a.agency_name, " + // 0
+                            "a.agency_type, " +                      // 1
+                            "al.user_real_name, " +                  // 2
+                            "al.user_email_address, " +              // 3
+                            "a.agency_contact_name, " +              // 4
+                            "a.agency_contact_email, " +             // 5
+                            "a.agency_url, " +                       // 6
+                            "a.agency_logo_url, " +                  // 7
+                            "a.agency_phone, " +                     // 8
+                            "a.agency_fax, " +                       // 9
+                            "a.agency_about_text, " +                // 10
+                            "a.billing_address_1, " +                // 11
+                            "a.billing_address_2, " +                // 12
+                            "a.billing_city, " +                     // 13
+                            "a.billing_state, " +                    // 14
+                            "a.billing_country, " +                  // 15
+                            "a.billing_postal, " +                   // 16
+                            "a.shipping_address_1, " +               // 17
+                            "a.shipping_address_2, " +               // 18
+                            "a.shipping_city, " +                    // 19
+                            "a.shipping_state, " +                   // 20
+                            "a.shipping_country, " +                 // 21
+                            "a.shipping_postal, " +                  // 22
+                            "al.is_admin, " +                        // 23
+                            "a.agency_id " +                         // 24
+                            "FROM agency AS a " +
+                            "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
+                            "WHERE al.uniqueidentifier = @uniq";
+                        cmd.Parameters.AddWithValue("@uniq", uniq);
+
+                        // Run the DB command
+                        // Run the DB command
+                        using(MySqlDataReader r = cmd.ExecuteReader())
+                        {
+                            if( r.HasRows )
+                            {
+                                r.Read();
+
+                                // Store the agency data
+                                AgencyId = r.GetInt32(24);
+                                AgencyName = r.GetString(0);
+                                AgencyType = r.GetString(1);
+                                MyLogin = new AgencyTeam {
+                                    UserRealName = r.GetString(2),
+                                    UserEmailAddress = r.GetString(3),
+                                    isAdmin = r.GetInt32(23) == 1 ? true : false
+                                };
+                                AgencyContactName = r.IsDBNull(4) ? null : r.GetString(4);
+                                AgencyContactEmail = r.IsDBNull(5) ? null : r.GetString(5);
+                                AgencyUrl = r.IsDBNull(6) ? null : r.GetString(6);
+                                AgencyLogo = r.IsDBNull(7) ? null : r.GetString(7);
+                                AgencyPhone = r.IsDBNull(8) ? null : r.GetString(8);
+                                AgencyFax = r.IsDBNull(9) ? null : r.GetString(9);
+                                AgencyAboutText = r.IsDBNull(10) ? null : r.GetString(10);
+                                BillingAddress = new Address {
+                                    Address1 = r.IsDBNull(11) ? null : r.GetString(11),
+                                    Address2 = r.IsDBNull(12) ? null : r.GetString(12),
+                                    City = r.IsDBNull(13) ? null : r.GetString(13),
+                                    State = r.IsDBNull(14) ? null : r.GetString(14),
+                                    Country = r.IsDBNull(15) ? null : r.GetString(15),
+                                    Postal = r.IsDBNull(16) ? null : r.GetString(16)
+                                };
+                                ShippingAddress = new Address {
+                                    Address1 = r.IsDBNull(17) ? null : r.GetString(17),
+                                    Address2 = r.IsDBNull(18) ? null : r.GetString(18),
+                                    City = r.IsDBNull(19) ? null : r.GetString(19),
+                                    State = r.IsDBNull(20) ? null : r.GetString(20),
+                                    Country = r.IsDBNull(21) ? null : r.GetString(21),
+                                    Postal = r.IsDBNull(22) ? null : r.GetString(22)
+                                };
+
+                            }
+                            else
+                                throw new System.ArgumentException("Couldn't find the agency by unique ID");
+
+                        }
+
+                    }
+                }
             }
         }
 
@@ -112,156 +199,6 @@ namespace SearchProcurement.Models
 
 					// Run the DB command
                     return Convert.ToBoolean(cmd.ExecuteScalar());
-                }
-            }
-        }
-
-
-
-
-        /**
-         * Do we have an account for this unique identifier?  If so, then we're
-         * probably sending the user to their account page.  If not, we're
-         * definitely sending them to the new account page.
-         * @param uniq The unique identifier
-         * @return bool Do we have this identifier in our database?
-         */
-        public static bool isKnownLogin(string uniq)
-        {
-            return AgencyHelper.isKnownLogin(uniq);
-        }
-
-
-
-
-
-        /**
-         * Load the account ID by the unique identifier key.
-         * @param uniq The unique identifier
-         * @return int The agency ID
-         */
-        public void loadIdByAgencyIdentifier(string uniq)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT a.agency_id " +
-                        "FROM agency AS a " +
-                        "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
-                        "WHERE al.uniqueidentifier = @uniq";
-					cmd.Parameters.AddWithValue("@uniq", uniq);
-
-					// Run the DB command
-					AgencyId = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-            }
-        }
-
-
-
-
-
-
-
-        /**
-         * Load the account by the unique identifier key.
-         * @param uniq The unique identifier
-         * @return bool Do we have this identifier in our database?
-         */
-        public void loadDataByAgencyIdentifier(string uniq)
-        {
-			// Set up the database connection, there has to be a better way!
-			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
-			{
-				// Open the DB connection
-				my_dbh.Open();
-
-				// Pull the item data out of the database
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT a.agency_name, " + // 0
-                        "a.agency_type, " +                      // 1
-                        "al.user_real_name, " +                   // 2
-                        "al.user_email_address, " +               // 3
-                        "a.agency_contact_name, " +              // 4
-                        "a.agency_contact_email, " +             // 5
-                        "a.agency_url, " +                       // 6
-                        "a.agency_logo_url, " +                  // 7
-                        "a.agency_phone, " +                     // 8
-                        "a.agency_fax, " +                       // 9
-                        "a.agency_about_text, " +                // 10
-                        "a.billing_address_1, " +                // 11
-                        "a.billing_address_2, " +                // 12
-                        "a.billing_city, " +                     // 13
-                        "a.billing_state, " +                    // 14
-                        "a.billing_country, " +                  // 15
-                        "a.billing_postal, " +                   // 16
-                        "a.shipping_address_1, " +               // 17
-                        "a.shipping_address_2, " +               // 18
-                        "a.shipping_city, " +                    // 19
-                        "a.shipping_state, " +                   // 20
-                        "a.shipping_country, " +                 // 21
-                        "a.shipping_postal, " +                  // 22
-                        "al.is_admin " +                         // 23
-                        "FROM agency AS a " +
-                        "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
-                        "WHERE al.uniqueidentifier = @uniq";
-					cmd.Parameters.AddWithValue("@uniq", uniq);
-
-					// Run the DB command
-					// Run the DB command
-					using(MySqlDataReader r = cmd.ExecuteReader())
-					{
-                        if( r.HasRows )
-                        {
-                            r.Read();
-
-                            // Store the agency data
-                            AgencyName = r.GetString(0);
-                            AgencyType = r.GetString(1);
-                            MyLogin = new AgencyTeam {
-                                UserRealName = r.GetString(2),
-                                UserEmailAddress = r.GetString(3),
-                                isAdmin = r.GetInt32(23) == 1 ? true : false
-                            };
-                            AgencyContactName = r.IsDBNull(4) ? null : r.GetString(4);
-                            AgencyContactEmail = r.IsDBNull(5) ? null : r.GetString(5);
-                            AgencyUrl = r.IsDBNull(6) ? null : r.GetString(6);
-                            AgencyLogo = r.IsDBNull(7) ? null : r.GetString(7);
-                            AgencyPhone = r.IsDBNull(8) ? null : r.GetString(8);
-                            AgencyFax = r.IsDBNull(9) ? null : r.GetString(9);
-                            AgencyAboutText = r.IsDBNull(10) ? null : r.GetString(10);
-                            BillingAddress = new Address {
-                                Address1 = r.IsDBNull(11) ? null : r.GetString(11),
-                                Address2 = r.IsDBNull(12) ? null : r.GetString(12),
-                                City = r.IsDBNull(13) ? null : r.GetString(13),
-                                State = r.IsDBNull(14) ? null : r.GetString(14),
-                                Country = r.IsDBNull(15) ? null : r.GetString(15),
-                                Postal = r.IsDBNull(16) ? null : r.GetString(16)
-                            };
-                            ShippingAddress = new Address {
-                                Address1 = r.IsDBNull(17) ? null : r.GetString(17),
-                                Address2 = r.IsDBNull(18) ? null : r.GetString(18),
-                                City = r.IsDBNull(19) ? null : r.GetString(19),
-                                State = r.IsDBNull(20) ? null : r.GetString(20),
-                                Country = r.IsDBNull(21) ? null : r.GetString(21),
-                                Postal = r.IsDBNull(22) ? null : r.GetString(22)
-                            };
-
-                        }
-                        else
-                            throw new System.ArgumentException("Couldn't find the agency by unique ID");
-
-                    }
-
                 }
             }
         }
