@@ -196,6 +196,7 @@ namespace SearchProcurement.Models
                         "AND accepted IS NULL";
 					cmd.Parameters.AddWithValue("@email", email);
 					cmd.Prepare();
+                    Console.WriteLine(cmd.CommandText);
 
 					// Run the DB command
                     return Convert.ToBoolean(cmd.ExecuteScalar());

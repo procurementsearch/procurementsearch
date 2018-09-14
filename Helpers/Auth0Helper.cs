@@ -27,8 +27,23 @@ namespace SearchProcurement.Helpers
     public static class Auth0Helper
     {
         /**
-         * Return the name identifier from the claim.  If we're logged in via auth0,
-         * we'll alwys have this and it will be unique for every auth0 user.
+         * Given an HttpContext, return the name identifier.  If we're logged in
+         * via auth0, we'll alwys have this and it will be unique for every auth0 user.
+         * @return string The name identifier
+         */
+        public static string getAuth0UniqueIdFromContext(HttpContext context)
+        {
+            return context.User.Claims.
+                Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").
+                Select(v => v.Value).
+                FirstOrDefault();
+        }
+
+
+
+        /**
+         * Return the name identifier from the claim, usable from within a controller.
+         * If we're logged in via auth0, this will always be unique for every user.
          * @return string The name identifier
          */
         public static string getAuth0UniqueId(this Controller a)

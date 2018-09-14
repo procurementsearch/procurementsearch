@@ -28,6 +28,7 @@ namespace SearchProcurement.Controllers
 
 //        IAmazonS3 S3Client { get; set; }
         private IHostingEnvironment _environment;
+        private readonly IHttpContextAccessor _context;
 
         // The unique ID from Auth0
         private string auth0Id { get; set; }
@@ -35,17 +36,18 @@ namespace SearchProcurement.Controllers
         /**
          * Constructor
          */
-        public AgencyController(IHostingEnvironment environment /*IAmazonS3 s3Client*/)
+        public AgencyController(IHostingEnvironment environment, IHttpContextAccessor context /*IAmazonS3 s3Client*/)
         {
             // Inject the IHostingEnvironment
             _environment = environment;
+            _context = context;
 
             // Dependency-inject the s3 client
             //this.S3Client = s3Client;
 
-
-            // Get the unique ID because we'll use it everywhere -- and it can be null!
-            auth0Id = this.getAuth0UniqueId();
+            // Get the unique ID because we'll use it everywhere.
+            // If it's null, we're not logged in.
+            auth0Id = Auth0Helper.getAuth0UniqueIdFromContext(context.HttpContext);
 
         }
 

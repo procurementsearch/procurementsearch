@@ -204,3 +204,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+wwwroot/css/site.micro.css
+wwwroot/css/site.micro.min.css
+wwwroot/css/site.min.css
