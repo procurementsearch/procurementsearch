@@ -248,6 +248,23 @@ namespace SearchProcurement.Controllers
 
 
 
+        [Authorize(Policy="VerifiedKnown")]
+        public IActionResult NewAccountStage2()
+        {
+            AgencyTeam at = new AgencyTeam(auth0Id);
+            Agency a = new Agency();
+
+            // Stash the team member object into the ViewBag
+            ViewBag.agencyTeam = at;
+
+            // Show the new-account page
+            return View(a);
+        }
+
+
+
+
+
         [Authorize]
         public IActionResult checkEmail(string email)
         {

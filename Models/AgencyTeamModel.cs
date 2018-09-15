@@ -41,10 +41,47 @@ namespace SearchProcurement.Models
         public AgencyTeam() {}
 
         /**
-         * Instantiate and load ID and data from unique string
-         * @param string uniq The unique identifier
+         * Instantiate and load object data from ID
+         * @param int id The agency team member ID
          */
         public AgencyTeam(int id)
+        {
+            loadDataById(id);
+        }
+
+
+        /**
+         * Instantiate and load object data from unique identifier
+         * @param string uniq The unique identifier
+         */
+        public AgencyTeam(string uniq)
+        {
+            using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+            {
+                // Open the DB connection
+                my_dbh.Open();
+                using(MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = my_dbh;
+                    cmd.CommandText = "SELECT agency_team_id FROM agency_team " +
+                        "WHERE uniqueidentifier=@uniq";
+                    cmd.Parameters.AddWithValue("@uniq", uniq);
+
+                    int id = Convert.ToInt32(cmd.ExecuteScalar());
+                    if( id == 0 )
+                        throw new System.ArgumentException("Could not find agency team member by unique identifier");
+
+                    // ok!  we must have gotten one, so let's load the object
+                    loadDataById(id);
+
+                }
+            }
+        }
+
+
+
+
+        public void loadDataById(int id)
         {
             using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
             {
@@ -57,7 +94,7 @@ namespace SearchProcurement.Models
                         "user_email_address, " +                  // 1
                         "user_contact_phone, " +                  // 2
                         "user_contact_address, " +                // 3
-                        "user_contact_address2, " +               // 4
+                        "user_contact_address_2, " +              // 4
                         "user_contact_city, " +                   // 5
                         "user_contact_state, " +                  // 6
                         "user_contact_country, " +                // 7
@@ -77,13 +114,15 @@ namespace SearchProcurement.Models
                             AgencyId = r.GetInt32(10);
                             UserRealName = r.GetString(0);
                             UserEmailAddress = r.GetString(1);
-                            Contact.Phone = r.IsDBNull(2) ? null : r.GetString(2);
-                            Contact.Address1 = r.IsDBNull(3) ? null : r.GetString(3);
-                            Contact.Address2 = r.IsDBNull(4) ? null : r.GetString(4);
-                            Contact.City = r.IsDBNull(5) ? null : r.GetString(5);
-                            Contact.State = r.IsDBNull(6) ? null : r.GetString(6);
-                            Contact.Country = r.IsDBNull(7) ? null : r.GetString(7);
-                            Contact.Postal = r.IsDBNull(8) ? null : r.GetString(8);
+                            Contact = new Address {
+                                Phone = r.IsDBNull(2) ? null : r.GetString(2),
+                                Address1 = r.IsDBNull(3) ? null : r.GetString(3),
+                                Address2 = r.IsDBNull(4) ? null : r.GetString(4),
+                                City = r.IsDBNull(5) ? null : r.GetString(5),
+                                State = r.IsDBNull(6) ? null : r.GetString(6),
+                                Country = r.IsDBNull(7) ? null : r.GetString(7),
+                                Postal = r.IsDBNull(8) ? null : r.GetString(8)
+                            };
                             isAdmin = r.GetInt32(9) == 1 ? true : false;
                         }
                         else
