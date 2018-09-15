@@ -219,29 +219,31 @@ namespace SearchProcurement.Controllers
             if( AgencyHelper.isKnownLogin(auth0Id) )
                 return Redirect("/Agency");
 
+            agencyteam.add(auth0Id, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+
             // Has someone invited this email to a team?
             string email = this.readEmailAddress();
             if( AgencyTeam.isPendingTeamInvitation(email) )
+            {
+                // Get the joined agency name
                 ViewBag.joinAgency = AgencyHelper.getTeamInvitationAgencyName(email);
 
+                // Did they join it?
+                if( !string.IsNullOrEmpty(HttpContext.Request.Form["joinTeam"]) )
+                {
+                    // reassign them to this agency, and send them to the
+                    // "thanks for joining this agency" view
+                    int agencyId = AgencyHelper.getTeamInvitationAgencyId(email);
+                    agencyteam.updateAssignedAgency(agencyId);
+                    agencyteam.acceptTeamInvitation();
 
-            // So we have a valid model in account now...  Let's just save it
-            // and bump them to their account page
-            if( !string.IsNullOrEmpty(HttpContext.Request.Form["joinTeam"]) )
-            {
+                    return View("NewAccountTeamJoined");
+                }
+            }
 
-}
-
-            agencyteam.add(auth0Id, HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
-
-
-            // if(
-            //     !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
-            //     !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
-            // )
-            //     agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
-
-            return View("NewAccountPost");
+            // Okay, either they didn't join a team, or they weren't invited to
+            // join a team, so let's proceed to stage 2
+            return Redirect("/Agency/NewAccountStage2");
         }
 
 

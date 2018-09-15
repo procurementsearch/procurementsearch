@@ -91,6 +91,8 @@ namespace SearchProcurement.Models
 
                     }
 
+                    // And save the agency team ID
+                    AgencyTeamId = id;
                 }
             }
         }
@@ -120,7 +122,6 @@ namespace SearchProcurement.Models
                         "AND accepted IS NULL";
 					cmd.Parameters.AddWithValue("@email", email);
 					cmd.Prepare();
-                    Console.WriteLine(cmd.CommandText);
 
 					// Run the DB command
                     return Convert.ToBoolean(cmd.ExecuteScalar());
@@ -149,8 +150,8 @@ namespace SearchProcurement.Models
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO agency_team " +
                         "(user_real_name, user_email_address, user_contact_phone, user_contact_address, " +
-                        "user_contact_address2, user_contact_city, user_contact_state, user_contact_country, " +
-                        "user_contact_postal, agency_id, is_admin, " +
+                        "user_contact_address_2, user_contact_city, user_contact_state, user_contact_country, " +
+                        "user_contact_postal, agency_id, is_admin, uniqueidentifier, " +
                         "user_created, user_created_ip_addr) VALUES (" +
                         "@a1, @a2, @a3, @a4, " +
                         "@a5, @a6, @a7, @a8, " +
@@ -245,6 +246,76 @@ namespace SearchProcurement.Models
 
 
 
+
+
+
+        /**
+         * Update the team member's assigned agency
+         */
+        public bool updateAssignedAgency(int id)
+        {
+
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE agency_team SET " +
+                        "agency_id=@agencyId " +
+                        "WHERE agency_team_id=@myId";
+					cmd.Parameters.AddWithValue("@agencyId", id);
+					cmd.Parameters.AddWithValue("@myId", AgencyTeamId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't update the agency team member");
+
+                    // and update the object
+                    AgencyId = id;
+                }
+
+            }
+
+            // And save the agency ID to the object
+            AgencyId = id;
+            return true;
+
+        }
+
+
+
+
+
+        /**
+         * Accept the team member invitation and mark the invitation as accepted
+         */
+        public void acceptTeamInvitation()
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE agency_team_invitation SET " +
+                        "accepted=NOW() " +
+                        "WHERE email_address=@email";
+					cmd.Parameters.AddWithValue("@email", UserEmailAddress);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't accept the team member invitation");
+
+                }
+
+            }
+
+        }
 
 
 

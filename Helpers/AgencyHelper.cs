@@ -118,6 +118,35 @@ namespace SearchProcurement.Helpers
                 }
             }
         }
+
+
+
+
+        /**
+         * Do we have a pending team invitation for this email?
+         * @param email The email address
+         * @return bool Do we have this email as a pending invitation in our database?
+         */
+        public static int getTeamInvitationAgencyId(string email)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "SELECT agency_id FROM agency_team_invitation " +
+                        "WHERE email_address = @email";
+					cmd.Parameters.AddWithValue("@email", email);
+					cmd.Prepare();
+
+					// Run the DB command
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
     }
 
 

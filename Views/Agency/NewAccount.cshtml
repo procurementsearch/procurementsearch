@@ -24,6 +24,9 @@
   </p>
 
 
+  <form class="pure-form pure-form-aligned" id="account" method="POST" action="/Agency/NewAccountPost">
+  @Html.AntiForgeryToken()
+
   @if (ViewBag.joinAgency != null)
   {
     <div class="join-team-callout">
@@ -38,11 +41,6 @@
     </div>
   }
 
-
-
-
-  <form class="pure-form pure-form-aligned" id="account" method="POST" action="/Agency/NewAccountPost">
-  @Html.AntiForgeryToken()
 
     <fieldset>
       <legend>About You</legend>
