@@ -81,6 +81,21 @@ namespace SearchProcurement.Models
 
 
 
+        /**
+         * Does this login account have a team assigned to it?  The only
+         * time we should be in this state is if we're just setting up a new
+         * account, but it's possible to be here...
+         * @return bool whether we've been assigned to a team
+         */
+        public bool hasAgency()
+        {
+            return AgencyId != 0 ? true : false;
+        }
+
+
+
+
+
         public void loadDataById(int id)
         {
             using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))

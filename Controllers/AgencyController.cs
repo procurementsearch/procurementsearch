@@ -263,6 +263,39 @@ namespace SearchProcurement.Controllers
 
 
 
+        /**
+         * The POST endpoint for adding new accounts.
+         */
+        [HttpPost]
+        [Authorize(Policy="VerifiedKnown")]
+        [ValidateAntiForgeryToken]
+        public IActionResult NewAccountStage2Post(Agency agency)
+        {
+            AgencyTeam at = new AgencyTeam(auth0Id);
+
+            // is this account assigned to an agency already?  If so, send 'em to their dashboard
+            if( at.hasAgency() )
+                return Redirect("/Agency");
+
+
+            // So we have a valid model in account now...  Let's just save it
+            // and bump them to their account page
+            agency.add(HttpContext.Features.Get<IHttpRequestFeature>().Headers["X-Real-IP"]);
+            if(
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
+            )
+            {
+                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
+            }
+
+            // And last, update the team account to belong to this agency
+            at.updateAssignedAgency(agency.AgencyId);
+
+            // that's it!
+            return View();
+        }
+
 
 
         [Authorize]

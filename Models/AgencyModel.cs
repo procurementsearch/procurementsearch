@@ -18,13 +18,13 @@ namespace SearchProcurement.Models
         public AgencyTeam MyLogin;
 
         // The agency information
-        [Display(Name="The name of your agency")]
+        [Display(Name="Your Agency Name")]
         public string AgencyName { get; set; }
 
         public string AgencyType { get; set; }
         [Display(Name="A few words about your agency")]
         public string AgencyAboutText { get; set; }
-        [Display(Name="Your Website")]
+        [Display(Name="Your Agency Website")]
         public string AgencyUrl { get; set; }
         public string AgencyLogo { get; set; }
 
@@ -161,7 +161,7 @@ namespace SearchProcurement.Models
         /**
          * Add the account to the database
          */
-        public bool add(string uniq, string ip_addr)
+        public bool add(string ip_addr)
         {
 
 			// Set up the database connection, there has to be a better way!
@@ -216,21 +216,6 @@ namespace SearchProcurement.Models
 
 				// Pull the item data out of the database
                 AgencyId = Library.lastInsertId(my_dbh);
-
-				// Save the agency unique auth0 identifier
-				using(MySqlCommand cmd = new MySqlCommand())
-				{
-					cmd.Connection = my_dbh;
-					cmd.CommandText = "INSERT INTO agency_team " +
-                        "(agency_id, uniqueidentifier) VALUES (@a1, @a2)";
-					cmd.Parameters.AddWithValue("@a1", AgencyId);
-					cmd.Parameters.AddWithValue("@a2", uniq);
-
-					// Run the DB command
-                    if( cmd.ExecuteNonQuery() == 0 )
-                        throw new System.ArgumentException("Couldn't add the agency login identifier!!");
-
-                }
 
             }
 
