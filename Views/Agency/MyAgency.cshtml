@@ -14,200 +14,231 @@
   @Html.AntiForgeryToken()
 
 
-<div id="tabs">
-  <ul>
-    <li><a href="#about">About You</a></li>
-    <li><a href="#contact">Contact Info</a></li>
-    <li><a href="#departments">Departments &amp; Categories</a></li>
-    <li><a href="#logo">Your Logo</a></li>
-    <li><a href="#text">Instructional Text</a></li>
-    <li><a href="#templates">Document &amp; Email Templates</a></li>
-  </ul>
+    <div id="tabs">
+      <ul>
+        <li><a href="#about">About You</a></li>
+        <li><a href="#contact">Contact Info</a></li>
+        <li><a href="#departments">Departments &amp; Categories</a></li>
+        <li><a href="#logo">Your Logo</a></li>
+        <li><a href="#text">Instructional Text</a></li>
+        <li><a href="#templates">Document &amp; Email Templates</a></li>
+      </ul>
 
-  <div id="about">
-    <fieldset>
-      <legend>About Your Organization</legend>
+      <div id="about">
+        <fieldset>
+          <legend>About Your Organization</legend>
 
-      <div class="pure-control-group">
-        <label asp-for="AgencyName"></label>
-        <input asp-for="AgencyName" placeholder="" required data-parsley-errors-messages-disabled="true">
-        <span class="pure-form-message-inline">This is a required field.</span>
-      </div>
+          <p class="attention">Basic information about your organization.</p>
 
-      <div class="pure-control-group">
-        <label asp-for="AgencyUrl"></label>
-        <input asp-for="AgencyUrl">
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Mailing Address</legend>
-
-      <p><i>What is your mailing address?</i></p>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.Address1">Address</label>
-        <input asp-for="BillingAddress.Address1">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.Address2">Street Address 2</label>
-        <input asp-for="BillingAddress.Address2">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.City">City</label>
-        <input asp-for="BillingAddress.City">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.State">State</label>
-        <select asp-for="BillingAddress.State" asp-items="Model.States"></select>
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.Country">Country</label>
-        <select asp-for="BillingAddress.Country" asp-items="Model.Countries"></select>
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.Postal">Zip/Postal Code</label>
-        <input asp-for="BillingAddress.Postal">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="BillingAddress.Phone"></label>
-        <input asp-for="BillingAddress.Phone">
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Physical Address</legend>
-
-      <p><i>What is your Physical address?</i></p>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.Address1">Address</label>
-        <input asp-for="ShippingAddress.Address1">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.Address2">Street Address 2</label>
-        <input asp-for="ShippingAddress.Address2">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.City">City</label>
-        <input asp-for="ShippingAddress.City">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.State">State</label>
-        <select asp-for="ShippingAddress.State" asp-items="Model.States"></select>
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.Country">Country</label>
-        <select asp-for="ShippingAddress.Country" asp-items="Model.Countries"></select>
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="ShippingAddress.Postal">Zip/Postal Code</label>
-        <input asp-for="ShippingAddress.Postal">
-      </div>
-
-    </fieldset>
-
-  </div>
-  <div id="contact">
-
-    <fieldset>
-      <legend>Organization Contact Information</legend>
-
-      <p class="attention">This is how vendors will reach your agency if they have general questions.</p>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyContactName"></label>
-        <input asp-for="AgencyContactName" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyContactEmail"></label>
-        <input asp-for="AgencyContactEmail" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyPhone"></label>
-        <input asp-for="AgencyPhone" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyFax"></label>
-        <input asp-for="AgencyFax" placeholder="">
-      </div>
-    </fieldset>
-
-  </div>
-  <div id="departments">
-
-  </div>
-  <div id="logo">
-
-    <fieldset>
-      <legend>Your Logo</legend>
-
-      <p class="attention">You can skip this if you don't have your logo handy.</p>
-
-      <div class="pure-controls">
-        <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
-
-        <div id="croppie_modal" style="display: none;">
-          <a class="pure-button pure-button-secondary file-button">
-            <span>Choose a file</span>
-            <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
-          </a>
-          <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
-          <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
-          <div class="upload-msg">
-            Upload a logo.  If you need to resize it, you can do so here.
+          <div class="pure-control-group">
+            <label asp-for="AgencyName"></label>
+            <input asp-for="AgencyName" placeholder="" required data-parsley-errors-messages-disabled="true">
+            <span class="pure-form-message-inline">This is a required field.</span>
           </div>
-          <div class="upload-demo-wrap">
-            <div id="croppie"></div>
+
+          <div class="pure-control-group">
+            <label asp-for="AgencyUrl"></label>
+            <input asp-for="AgencyUrl">
           </div>
-        </div>
-        <div id="logo_preview" style="padding: 1em;"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Mailing Address</legend>
+
+          <p><i>What is your mailing address?</i></p>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.Address1">Address</label>
+            <input asp-for="BillingAddress.Address1">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.Address2">Street Address 2</label>
+            <input asp-for="BillingAddress.Address2">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.City">City</label>
+            <input asp-for="BillingAddress.City">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.State">State</label>
+            <select asp-for="BillingAddress.State" asp-items="Model.States"></select>
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.Country">Country</label>
+            <select asp-for="BillingAddress.Country" asp-items="Model.Countries"></select>
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.Postal">Zip/Postal Code</label>
+            <input asp-for="BillingAddress.Postal">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="BillingAddress.Phone"></label>
+            <input asp-for="BillingAddress.Phone">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Physical Address</legend>
+
+          <p><i>What is your Physical address?</i></p>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.Address1">Address</label>
+            <input asp-for="ShippingAddress.Address1">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.Address2">Street Address 2</label>
+            <input asp-for="ShippingAddress.Address2">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.City">City</label>
+            <input asp-for="ShippingAddress.City">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.State">State</label>
+            <select asp-for="ShippingAddress.State" asp-items="Model.States"></select>
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.Country">Country</label>
+            <select asp-for="ShippingAddress.Country" asp-items="Model.Countries"></select>
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="ShippingAddress.Postal">Zip/Postal Code</label>
+            <input asp-for="ShippingAddress.Postal">
+          </div>
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
       </div>
-    </fieldset>
+      <div id="contact">
 
-  </div>
-  <div id="text">
+        <fieldset>
+          <legend>Organization Contact Information</legend>
 
-    <fieldset>
-      <legend>Organization Textual Information</legend>
+          <p class="attention">This is how vendors will reach your agency if they have general questions.</p>
 
-      <p class="attention">This is some of those big blocks of text that appear interspersed throughout the site.</p>
+          <div class="pure-control-group">
+            <label asp-for="AgencyContactName"></label>
+            <input asp-for="AgencyContactName" placeholder="">
+          </div>
 
-      <div class="pure-controls">
-        <textarea asp-for="AgencyOverviewText" placeholder="" class="pure-input-2-3"></textarea><br>
-        <label asp-for="AgencyOverviewText"></label>
+          <div class="pure-control-group">
+            <label asp-for="AgencyContactEmail"></label>
+            <input asp-for="AgencyContactEmail" placeholder="">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="AgencyPhone"></label>
+            <input asp-for="AgencyPhone" placeholder="">
+          </div>
+
+          <div class="pure-control-group">
+            <label asp-for="AgencyFax"></label>
+            <input asp-for="AgencyFax" placeholder="">
+          </div>
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
       </div>
+      <div id="departments">
 
-      <div class="pure-controls">
-        <label asp-for="AgencyAboutText"></label><br>
-        <textarea asp-for="AgencyAboutText" placeholder="" class="pure-input-2-3"></textarea>
+        <fieldset>
+          <legend>Departments and Categories</legend>
+          <p class="attention">These are the departments within your organizations, and the categories into which you can organize your solicitations.</p>
+
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
       </div>
+      <div id="logo">
 
-      <div class="pure-controls">
-        <label asp-for="AgencyDefaultActionSteps"></label><br>
-        <textarea asp-for="AgencyDefaultActionSteps" placeholder="" class="pure-input-2-3"></textarea>
+        <fieldset>
+          <legend>Your Logo</legend>
+
+          <p class="attention">You can skip this if you don't have your logo handy.</p>
+
+          <div class="pure-controls">
+            <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
+
+            <div id="croppie_modal" style="display: none;">
+              <a class="pure-button pure-button-secondary file-button">
+                <span>Choose a file</span>
+                <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
+              </a>
+              <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
+              <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
+              <div class="upload-msg">
+                Upload a logo.  If you need to resize it, you can do so here.
+              </div>
+              <div class="upload-demo-wrap">
+                <div id="croppie"></div>
+              </div>
+            </div>
+            <div id="logo_preview" style="padding: 1em;"></div>
+          </div>
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
       </div>
-    </fieldset>
+      <div id="text">
 
-  </div>
-  <div id="addresses">
+        <fieldset>
+          <legend>Organization Textual Information</legend>
 
-  </div>
-  </div>
+          <p class="attention">Throughout Procurement Search, suppliers will see informational or instructional text about your agency.</p>
+
+          <p><i><span class="attention">Agency Overview:</span> when a vendor is looking at your agency's overview page, which shows all of your open solicitations, they see this.</i></p>
+          <textarea asp-for="AgencyOverviewText" placeholder="" class="pure-input-2-3"></textarea>
+          <br><br>
+
+          <p><i><span class="attention">About Your Agency:</span> on each of your solicitations, this text appears under "About your agency".</i></p>
+          <textarea asp-for="AgencyAboutText" placeholder="" class="pure-input-2-3"></textarea>
+          <br><br>
+
+          <p><i><span class="attention">Default Action Steps:</span> each of your solicitations can have some optional instructions on what actions to take to participate in this solicitation.  While you can set that on a per-solicitation basis, this is the default that'll be affixed to each solicitation.</i></p>
+          <textarea asp-for="AgencyDefaultActionSteps" placeholder="" class="pure-input-2-3"></textarea>
+          <br><br>
+
+          <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+        </fieldset>
+
+      </div>
+      <div id="templates">
+
+        <fieldset>
+          <legend>Your document and email templates</legend>
+          <p class="attention">You may prepare and edit your automatically-generated documents and emails here.</p>
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
+      </div>
+    </div>
 
   </form>
 
@@ -220,6 +251,9 @@ $(function () {
 
   // create the tabs
   $( "#tabs" ).tabs();
+
+  // And the text editors
+  $( "#AgencyOverviewText, #AgencyAboutText, #AgencyDefaultActionSteps").trumbowyg();
 
   $('#account').parsley().on('field:validated', function() {
     if (this.validationResult === true) {

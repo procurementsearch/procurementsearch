@@ -32,6 +32,10 @@
     font-size: 16pt;
 }
 
+.account-container .pure-form fieldset {
+    margin-bottom: 2em;
+}
+
 /* Used on listing setup */
 #fileupload {
     margin: 0;

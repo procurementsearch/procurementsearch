@@ -16,6 +16,7 @@
       "wwwroot/lib/slick-carousel/slick/slick-theme.css",
       "wwwroot/lib/hopscotch/dist/css/hopscotch.css",
       "wwwroot/lib/jquery-ui/themes/base/jquery-ui.css",
+      "wwwroot/lib/trumbowyg/dist/ui/trumbowyg.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
       "wwwroot/css/detail.css",
@@ -58,6 +59,7 @@
       "wwwroot/lib/slick-carousel/slick/slick.js",
       "wwwroot/lib/hopscotch/dist/js/hopscotch.js",
       "wwwroot/lib/Tocca.js/Tocca.js",
+      "wwwroot/lib/trumbowyg/dist/trumbowyg.js",
       "wwwroot/js/site.js",
       "wwwroot/js/ui.js"
     ],
