@@ -4,7 +4,11 @@
 }
 
 <div class="account-container">
+  <img src="~/images/logo-100x100.png" alt="Procurement Search Logo">
   <h1>Your Organization Account</h1>
+  <p>
+    <a href="/Agency">Return to dashboard</a>
+  </p>
 
   <form class="pure-form pure-form-aligned" id="account" method="POST" action="/Agency/MyAgencyPost">
   @Html.AntiForgeryToken()
@@ -12,11 +16,12 @@
 
 <div id="tabs">
   <ul>
-    <li><a href="#about">Nunc tincidunt</a></li>
-    <li><a href="#contact">Proin dolor</a></li>
-    <li><a href="#logo">Aenean lacinia</a></li>
-    <li><a href="#text">Aenean lacinia</a></li>
-    <li><a href="#addresses">Aenean lacinia</a></li>
+    <li><a href="#about">About You</a></li>
+    <li><a href="#contact">Contact Info</a></li>
+    <li><a href="#departments">Departments &amp; Categories</a></li>
+    <li><a href="#logo">Your Logo</a></li>
+    <li><a href="#text">Instructional Text</a></li>
+    <li><a href="#templates">Document &amp; Email Templates</a></li>
   </ul>
 
   <div id="about">
@@ -34,91 +39,6 @@
         <input asp-for="AgencyUrl">
       </div>
     </fieldset>
-
-  </div>
-  <div id="contact">
-
-    <fieldset>
-      <legend>Organization Contact Information</legend>
-
-      <p class="attention">This is how vendors will reach your agency if they have general questions.</p>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyContactName"></label>
-        <input asp-for="AgencyContactName" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyContactEmail"></label>
-        <input asp-for="AgencyContactEmail" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyPhone"></label>
-        <input asp-for="AgencyPhone" placeholder="">
-      </div>
-
-      <div class="pure-control-group">
-        <label asp-for="AgencyFax"></label>
-        <input asp-for="AgencyFax" placeholder="">
-      </div>
-    </fieldset>
-
-  </div>
-  <div id="logo">
-
-    <fieldset>
-      <legend>Your Logo</legend>
-
-      <p class="attention">You can skip this if you don't have your logo handy.</p>
-
-      <div class="pure-controls">
-        <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
-
-        <div id="croppie_modal" style="display: none;">
-          <a class="pure-button pure-button-secondary file-button">
-            <span>Choose a file</span>
-            <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
-          </a>
-          <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
-          <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
-          <div class="upload-msg">
-            Upload a logo.  If you need to resize it, you can do so here.
-          </div>
-          <div class="upload-demo-wrap">
-            <div id="croppie"></div>
-          </div>
-        </div>
-        <div id="logo_preview" style="padding: 1em;"></div>
-      </div>
-    </fieldset>
-
-  </div>
-  <div id="text">
-
-    <fieldset>
-      <legend>Organization Textual Information</legend>
-
-      <p class="attention">This is some of those big blocks of text that appear interspersed throughout the site.</p>
-
-      <div class="pure-controls">
-        <textarea asp-for="AgencyOverviewText" placeholder="" class="pure-input-2-3"></textarea><br>
-        <label asp-for="AgencyOverviewText"></label>
-      </div>
-
-      <div class="pure-controls">
-        <label asp-for="AgencyAboutText"></label><br>
-        <textarea asp-for="AgencyAboutText" placeholder="" class="pure-input-2-3"></textarea>
-      </div>
-
-      <div class="pure-controls">
-        <label asp-for="AgencyDefaultActionSteps"></label><br>
-        <textarea asp-for="AgencyDefaultActionSteps" placeholder="" class="pure-input-2-3"></textarea>
-      </div>
-    </fieldset>
-
-  </div>
-  <div id="addresses">
 
     <fieldset>
       <legend>Mailing Address</legend>
@@ -197,6 +117,94 @@
       </div>
 
     </fieldset>
+
+  </div>
+  <div id="contact">
+
+    <fieldset>
+      <legend>Organization Contact Information</legend>
+
+      <p class="attention">This is how vendors will reach your agency if they have general questions.</p>
+
+      <div class="pure-control-group">
+        <label asp-for="AgencyContactName"></label>
+        <input asp-for="AgencyContactName" placeholder="">
+      </div>
+
+      <div class="pure-control-group">
+        <label asp-for="AgencyContactEmail"></label>
+        <input asp-for="AgencyContactEmail" placeholder="">
+      </div>
+
+      <div class="pure-control-group">
+        <label asp-for="AgencyPhone"></label>
+        <input asp-for="AgencyPhone" placeholder="">
+      </div>
+
+      <div class="pure-control-group">
+        <label asp-for="AgencyFax"></label>
+        <input asp-for="AgencyFax" placeholder="">
+      </div>
+    </fieldset>
+
+  </div>
+  <div id="departments">
+
+  </div>
+  <div id="logo">
+
+    <fieldset>
+      <legend>Your Logo</legend>
+
+      <p class="attention">You can skip this if you don't have your logo handy.</p>
+
+      <div class="pure-controls">
+        <input type="button" class="pure-button pure-button-secondary" id="croppie_show" value="Upload Logo" />
+
+        <div id="croppie_modal" style="display: none;">
+          <a class="pure-button pure-button-secondary file-button">
+            <span>Choose a file</span>
+            <input type="file" id="croppie_upload" value="Choose a file" accept="image/*" />
+          </a>
+          <input type="button" class="pure-button pure-button-secondary croppie_save" value="Save Logo"/>
+          <input type="button" class="pure-button pure-button-secondary" id="croppie_remove" value="Remove Logo"/>
+          <div class="upload-msg">
+            Upload a logo.  If you need to resize it, you can do so here.
+          </div>
+          <div class="upload-demo-wrap">
+            <div id="croppie"></div>
+          </div>
+        </div>
+        <div id="logo_preview" style="padding: 1em;"></div>
+      </div>
+    </fieldset>
+
+  </div>
+  <div id="text">
+
+    <fieldset>
+      <legend>Organization Textual Information</legend>
+
+      <p class="attention">This is some of those big blocks of text that appear interspersed throughout the site.</p>
+
+      <div class="pure-controls">
+        <textarea asp-for="AgencyOverviewText" placeholder="" class="pure-input-2-3"></textarea><br>
+        <label asp-for="AgencyOverviewText"></label>
+      </div>
+
+      <div class="pure-controls">
+        <label asp-for="AgencyAboutText"></label><br>
+        <textarea asp-for="AgencyAboutText" placeholder="" class="pure-input-2-3"></textarea>
+      </div>
+
+      <div class="pure-controls">
+        <label asp-for="AgencyDefaultActionSteps"></label><br>
+        <textarea asp-for="AgencyDefaultActionSteps" placeholder="" class="pure-input-2-3"></textarea>
+      </div>
+    </fieldset>
+
+  </div>
+  <div id="addresses">
 
   </div>
   </div>
