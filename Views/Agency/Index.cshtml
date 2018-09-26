@@ -14,10 +14,20 @@
     </h2>
     <p>
         <a class="pure-button button-small pure-button-primary" href="/Agency/newListing">Set up a new Listing</a>
+        @if (ViewBag.ActiveQA != null)
+        {
+        <a class="pure-button button-small" href="/Agency/qa">Review Q/A (ViewBag.QACount)</a>
+        }
+        else
+        {
+        <a class="pure-button button-small" href="/Agency/qa" disabled>Review Q/A (No open questions)</a>
+        }
+        <a class="pure-button button-small" href="/Agency/reports">Reports</a>
         <a class="pure-button button-small" href="/Agency/myAccount">Edit my account</a>
         @if (Model.MyLogin.isAdmin)
         {
-        <a class="pure-button button-small" href="/Agency/myTeam">Manage team</a>
+        <a class="pure-button button-small button-secondary" href="/Agency/myTeam">Manage team</a>
+        <a class="pure-button button-small button-secondary" href="/Agency/myAgency">Configure agency</a>
         }
         <a class="pure-button button-small" href="/Agency/logout">Log out</a>
     </p>

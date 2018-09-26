@@ -25,8 +25,6 @@ namespace SearchProcurement.Controllers
 {
     public class AgencyController : Controller
     {
-
-//        IAmazonS3 S3Client { get; set; }
         private IHostingEnvironment _environment;
         private readonly IHttpContextAccessor _context;
 
@@ -36,14 +34,11 @@ namespace SearchProcurement.Controllers
         /**
          * Constructor
          */
-        public AgencyController(IHostingEnvironment environment, IHttpContextAccessor context /*IAmazonS3 s3Client*/)
+        public AgencyController(IHostingEnvironment environment, IHttpContextAccessor context)
         {
             // Inject the IHostingEnvironment
             _environment = environment;
             _context = context;
-
-            // Dependency-inject the s3 client
-            //this.S3Client = s3Client;
 
             // Get the unique ID because we'll use it everywhere.
             // If it's null, we're not logged in.
@@ -56,6 +51,12 @@ namespace SearchProcurement.Controllers
         [Authorize(Policy="VerifiedKnown")]
         public IActionResult Index()
         {
+            // load up the agency team member, to make sure they've
+            // been assigned to an agency
+            AgencyTeam at = new AgencyTeam(auth0Id);
+            if( !at.hasAgency() )
+                return Redirect("/Agency/NewAccountStage2");
+
             // Yep, they're good, they can stay here
             Agency a = new Agency(auth0Id);
 
@@ -126,13 +127,25 @@ namespace SearchProcurement.Controllers
 
 
 
+        [Authorize(Policy="VerifiedKnown")]
+        public IActionResult MyAgency()
+        {
+            // Yep, they're good, they can stay here
+            Agency a = new Agency(auth0Id);
+            return View(a);
+        }
+
+
+
+
+
 
         [Authorize(Policy="VerifiedKnown")]
         public IActionResult MyAccount()
         {
             // Yep, they're good, they can stay here
-            Agency a = new Agency(auth0Id);
-            return View(a);
+            AgencyTeam at = new AgencyTeam(auth0Id);
+            return View(at);
         }
 
 
@@ -143,39 +156,21 @@ namespace SearchProcurement.Controllers
         [HttpPost]
         [Authorize(Policy="VerifiedKnown")]
         [ValidateAntiForgeryToken]
-        [ActionName("MyAccount")]
-        public IActionResult MyAccountPost(Agency agency)
+        public IActionResult MyAccountPost(AgencyTeam agencyteam)
         {
+            // Load up the existing one, to retrieve two properties
+            AgencyTeam my_at = new AgencyTeam(auth0Id);
+
             // So we have a valid model in account now...  Let's just save it
             // and bump them to their account page
-            agency.AgencyId = AgencyHelper.getIdForAgencyIdentifier(auth0Id);
-            agency.update();
-
-            // Did we get a new logo?
-            if(
-                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
-                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
-            )
-            {
-                // Remove the old one first
-                if( !string.IsNullOrEmpty(agency.AgencyLogo) )
-                    agency.removeLogo();
-
-                // And save the new logo to s3
-                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
-            }
-            else if( HttpContext.Request.Form["removeOldLogo"] == "1" )
-            {
-                // Remove the old logo as requested
-                if( !string.IsNullOrEmpty(agency.AgencyLogo) )
-                    agency.removeLogo();
-            }
-            else
-                agency.loadLogo();  // We just need to load the logo if we haven't done anything else to it
+            agencyteam.AgencyTeamId = my_at.AgencyTeamId;
+            agencyteam.AgencyId = my_at.AgencyId;
+            agencyteam.isAdmin = my_at.isAdmin;
+            agencyteam.update();
 
             // And show the account
             ViewBag.message = "I've saved your information!";
-            return View(agency);
+            return View(agencyteam);
         }
 
 
@@ -291,6 +286,7 @@ namespace SearchProcurement.Controllers
 
             // And last, update the team account to belong to this agency
             at.updateAssignedAgency(agency.AgencyId);
+            at.setAdminStatus(true);
 
             // that's it!
             return View();

@@ -20,14 +20,21 @@ namespace SearchProcurement.Models
         // The agency information
         [Display(Name="Your Agency Name")]
         public string AgencyName { get; set; }
-
         public string AgencyType { get; set; }
-        [Display(Name="A few words about your agency")]
-        public string AgencyAboutText { get; set; }
         [Display(Name="Your Agency Website")]
         public string AgencyUrl { get; set; }
         public string AgencyLogo { get; set; }
 
+        // The text blocks the agency uses throughout
+        [Display(Name="This text appears on the search results page for your organization.")]
+        public string AgencyOverviewText { get; set; }
+
+        [Display(Name="This text appears on every one of your solicitation pages, under the \"About this Agency\" section.")]
+        public string AgencyAboutText { get; set; }
+        [Display(Name="These are the solicitation action steps that are shown by default on your solicitations.  If you enter specific instructions for a specific solicitation, we don't show this for that solicitation.")]
+        public string AgencyDefaultActionSteps { get; set; }
+
+        // Contact information for the organization
         [Display(Name="Contact Person")]
         public string AgencyContactName { get; set; }
         [Display(Name="Contact Email")]
@@ -38,6 +45,7 @@ namespace SearchProcurement.Models
         public string AgencyFax { get; set; }
         public Address BillingAddress { get; set; }
         public Address ShippingAddress { get; set; }
+
 
 
         // For the HTML
@@ -73,15 +81,15 @@ namespace SearchProcurement.Models
                         cmd.Connection = my_dbh;
                         cmd.CommandText = "SELECT a.agency_name, " + // 0
                             "a.agency_type, " +                      // 1
-                            "al.user_real_name, " +                  // 2
-                            "al.user_email_address, " +              // 3
-                            "a.agency_contact_name, " +              // 4
-                            "a.agency_contact_email, " +             // 5
-                            "a.agency_url, " +                       // 6
-                            "a.agency_logo_url, " +                  // 7
-                            "a.agency_phone, " +                     // 8
-                            "a.agency_fax, " +                       // 9
-                            "a.agency_about_text, " +                // 10
+                            "a.agency_contact_name, " +              // 2
+                            "a.agency_contact_email, " +             // 3
+                            "a.agency_url, " +                       // 4
+                            "a.agency_logo_url, " +                  // 5
+                            "a.agency_phone, " +                     // 6
+                            "a.agency_fax, " +                       // 7
+                            "a.agency_overview_text, " +             // 8
+                            "a.agency_about_text, " +                // 9
+                            "a.agency_default_action_steps, " +      // 10
                             "a.billing_address_1, " +                // 11
                             "a.billing_address_2, " +                // 12
                             "a.billing_city, " +                     // 13
@@ -94,14 +102,12 @@ namespace SearchProcurement.Models
                             "a.shipping_state, " +                   // 20
                             "a.shipping_country, " +                 // 21
                             "a.shipping_postal, " +                  // 22
-                            "al.is_admin, " +                        // 23
-                            "a.agency_id " +                         // 24
+                            "a.agency_id " +                         // 23
                             "FROM agency AS a " +
                             "LEFT JOIN agency_team AS al ON al.agency_id = a.agency_id " +
                             "WHERE al.uniqueidentifier = @uniq";
                         cmd.Parameters.AddWithValue("@uniq", uniq);
 
-                        // Run the DB command
                         // Run the DB command
                         using(MySqlDataReader r = cmd.ExecuteReader())
                         {
@@ -110,21 +116,19 @@ namespace SearchProcurement.Models
                                 r.Read();
 
                                 // Store the agency data
-                                AgencyId = r.GetInt32(24);
+                                MyLogin = new AgencyTeam(uniq);
+                                AgencyId = r.GetInt32(23);
                                 AgencyName = r.GetString(0);
                                 AgencyType = r.GetString(1);
-                                MyLogin = new AgencyTeam {
-                                    UserRealName = r.GetString(2),
-                                    UserEmailAddress = r.GetString(3),
-                                    isAdmin = r.GetInt32(23) == 1 ? true : false
-                                };
-                                AgencyContactName = r.IsDBNull(4) ? null : r.GetString(4);
-                                AgencyContactEmail = r.IsDBNull(5) ? null : r.GetString(5);
-                                AgencyUrl = r.IsDBNull(6) ? null : r.GetString(6);
-                                AgencyLogo = r.IsDBNull(7) ? null : r.GetString(7);
-                                AgencyPhone = r.IsDBNull(8) ? null : r.GetString(8);
-                                AgencyFax = r.IsDBNull(9) ? null : r.GetString(9);
-                                AgencyAboutText = r.IsDBNull(10) ? null : r.GetString(10);
+                                AgencyContactName = r.IsDBNull(2) ? null : r.GetString(2);
+                                AgencyContactEmail = r.IsDBNull(3) ? null : r.GetString(3);
+                                AgencyUrl = r.IsDBNull(4) ? null : r.GetString(4);
+                                AgencyLogo = r.IsDBNull(5) ? null : r.GetString(5);
+                                AgencyPhone = r.IsDBNull(6) ? null : r.GetString(6);
+                                AgencyFax = r.IsDBNull(7) ? null : r.GetString(7);
+                                AgencyOverviewText = r.IsDBNull(8) ? null : r.GetString(8);
+                                AgencyAboutText = r.IsDBNull(9) ? null : r.GetString(9);
+                                AgencyDefaultActionSteps = r.IsDBNull(10) ? null : r.GetString(10);
                                 BillingAddress = new Address {
                                     Address1 = r.IsDBNull(11) ? null : r.GetString(11),
                                     Address2 = r.IsDBNull(12) ? null : r.GetString(12),
@@ -147,7 +151,6 @@ namespace SearchProcurement.Models
                                 throw new System.ArgumentException("Couldn't find the agency by unique ID");
 
                         }
-
                     }
                 }
             }
@@ -176,23 +179,27 @@ namespace SearchProcurement.Models
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "INSERT INTO agency " +
                         "(agency_name, agency_type, agency_contact_name, agency_contact_email, " +
-                        "agency_url, agency_phone, agency_fax, agency_about_text, " +
+                        "agency_url, agency_phone, agency_fax, " +
+                        "agency_overview_text, agency_about_text, agency_default_action_steps, " +
                         "billing_address_1, billing_address_2, billing_city, billing_state, billing_country, billing_postal, " +
                         "shipping_address_1, shipping_address_2, shipping_city, shipping_state, shipping_country, shipping_postal, " +
                         "created, created_ipaddr, updated) VALUES (" +
-                        "@a1, @a2, @a5, @a6, " +
-                        "@a7, @a8, @a9, @a10, @a11, " +
-                        "@a12, @a13, @a14, @a15, @a16, @a17, " +
-                        "@a18, @a19, @a20, @a21, @a22, " +
+                        "@a1, @a2, @a3, @a4, " +
+                        "@a5, @a6, @a7, " +
+                        "@a8, @a9, @a10, " +
+                        "@a11, @a12, @a13, @a14, @a15, @a16, " +
+                        "@a17, @a18, @a19, @a20, @a21, @a22, " +
                         "now(), @ip_addr, now())";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
 					cmd.Parameters.AddWithValue("@a2", AgencyType);
-					cmd.Parameters.AddWithValue("@a5", AgencyContactName);
-					cmd.Parameters.AddWithValue("@a6", AgencyContactEmail);
-					cmd.Parameters.AddWithValue("@a7", AgencyUrl);
-					cmd.Parameters.AddWithValue("@a8", AgencyPhone);
-					cmd.Parameters.AddWithValue("@a9", AgencyFax);
-					cmd.Parameters.AddWithValue("@a10", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a3", AgencyContactName);
+					cmd.Parameters.AddWithValue("@a4", AgencyContactEmail);
+					cmd.Parameters.AddWithValue("@a5", AgencyUrl);
+					cmd.Parameters.AddWithValue("@a6", AgencyPhone);
+					cmd.Parameters.AddWithValue("@a7", AgencyFax);
+					cmd.Parameters.AddWithValue("@a8", AgencyOverviewText);
+					cmd.Parameters.AddWithValue("@a9", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a10", AgencyDefaultActionSteps);
 					cmd.Parameters.AddWithValue("@a11", BillingAddress.Address1);
 					cmd.Parameters.AddWithValue("@a12", BillingAddress.Address2);
 					cmd.Parameters.AddWithValue("@a13", BillingAddress.City);
@@ -245,12 +252,14 @@ namespace SearchProcurement.Models
 					cmd.Connection = my_dbh;
 					cmd.CommandText = "UPDATE agency SET " +
                         "agency_name=@a1, " +
-                        "agency_contact_name=@a4, " +
-                        "agency_contact_email=@a5, " +
-                        "agency_url=@a6, " +
-                        "agency_phone=@a7, " +
-                        "agency_fax=@a8, " +
-                        "agency_about_text=@a9, " +
+                        "agency_contact_name=@a2, " +
+                        "agency_contact_email=@a3, " +
+                        "agency_url=@a4, " +
+                        "agency_phone=@a5, " +
+                        "agency_fax=@a6, " +
+                        "agency_overview_text=@a7, " +
+                        "agency_about_text=@a8, " +
+                        "agency_default_action_steps=@a9, " +
                         "billing_address_1=@a10, " +
                         "billing_address_2=@a11, " +
                         "billing_city=@a12, " +
@@ -266,12 +275,14 @@ namespace SearchProcurement.Models
                         "updated=NOW() " +
                         "WHERE agency_id=@id";
 					cmd.Parameters.AddWithValue("@a1", AgencyName);
-					cmd.Parameters.AddWithValue("@a4", AgencyContactName);
-					cmd.Parameters.AddWithValue("@a5", AgencyContactEmail);
-					cmd.Parameters.AddWithValue("@a6", AgencyUrl);
-					cmd.Parameters.AddWithValue("@a7", AgencyPhone);
-					cmd.Parameters.AddWithValue("@a8", AgencyFax);
-					cmd.Parameters.AddWithValue("@a9", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a2", AgencyContactName);
+					cmd.Parameters.AddWithValue("@a3", AgencyContactEmail);
+					cmd.Parameters.AddWithValue("@a4", AgencyUrl);
+					cmd.Parameters.AddWithValue("@a5", AgencyPhone);
+					cmd.Parameters.AddWithValue("@a6", AgencyFax);
+					cmd.Parameters.AddWithValue("@a7", AgencyOverviewText);
+					cmd.Parameters.AddWithValue("@a8", AgencyAboutText);
+					cmd.Parameters.AddWithValue("@a9", AgencyDefaultActionSteps);
 					cmd.Parameters.AddWithValue("@a10", BillingAddress.Address1);
 					cmd.Parameters.AddWithValue("@a11", BillingAddress.Address2);
 					cmd.Parameters.AddWithValue("@a12", BillingAddress.City);

@@ -67,7 +67,7 @@ namespace SearchProcurement.Helpers
 				using(MySqlCommand cmd = new MySqlCommand())
 				{
 					cmd.Connection = my_dbh;
-					cmd.CommandText = "SELECT agency_id FROM agency WHERE agencyshortname = @name";
+					cmd.CommandText = "SELECT agency_id FROM agency WHERE agency_short_name = @name";
 					cmd.Parameters.AddWithValue("@name",shortname);
 					cmd.Prepare();
                     return Convert.ToInt32(cmd.ExecuteScalar());

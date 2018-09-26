@@ -15,6 +15,7 @@
       "wwwroot/lib/slick-carousel/slick/slick.css",
       "wwwroot/lib/slick-carousel/slick/slick-theme.css",
       "wwwroot/lib/hopscotch/dist/css/hopscotch.css",
+      "wwwroot/lib/jquery-ui/themes/base/jquery-ui.css",
       "wwwroot/css/styles.css",
       "wwwroot/css/search.css",
       "wwwroot/css/detail.css",
@@ -45,6 +46,7 @@
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/jquery-ui/jquery-ui.js",
       "wwwroot/lib/jquery-modal/jquery.modal.js",
       "wwwroot/lib/parsleyjs/dist/parsley.js",
       "wwwroot/lib/Croppie/croppie.js",

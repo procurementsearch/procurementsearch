@@ -247,7 +247,7 @@ namespace SearchProcurement.Models
         /**
          * Update the account
          */
-        public bool update()
+        public void update()
         {
 
 			// Set up the database connection, there has to be a better way!
@@ -263,7 +263,7 @@ namespace SearchProcurement.Models
 					cmd.CommandText = "UPDATE agency_team SET " +
                         "user_real_name=@a1, " +
                         "user_email_address=@a2, " +
-                        "user_contact_email=@a3, " +
+                        "user_contact_phone=@a3, " +
                         "user_contact_address=@a4, " +
                         "user_contact_address_2=@a5, " +
                         "user_contact_city=@a6, " +
@@ -271,9 +271,8 @@ namespace SearchProcurement.Models
                         "user_contact_country=@a8, " +
                         "user_contact_postal=@a9, " +
                         "agency_id=@a10, " +
-                        "is_admin=@a11, " +
-                        "updated=NOW() " +
-                        "WHERE agency_id=@id";
+                        "is_admin=@a11 " +
+                        "WHERE agency_team_id=@id";
 					cmd.Parameters.AddWithValue("@a1", UserRealName);
 					cmd.Parameters.AddWithValue("@a2", UserEmailAddress);
 					cmd.Parameters.AddWithValue("@a3", Contact.Phone);
@@ -285,17 +284,13 @@ namespace SearchProcurement.Models
 					cmd.Parameters.AddWithValue("@a9", Contact.Postal);
 					cmd.Parameters.AddWithValue("@a10", AgencyId);
 					cmd.Parameters.AddWithValue("@a11", isAdmin ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@id", AgencyTeamId);
 
 					// Run the DB command
                     if( cmd.ExecuteNonQuery() == 0 )
                         throw new System.ArgumentException("Couldn't update the agency team member");
-
                 }
-
             }
-
-            return true;
-
         }
 
 
@@ -371,6 +366,43 @@ namespace SearchProcurement.Models
 
         }
 
+
+
+
+
+
+        /**
+         * Set the team member admin status
+         * @bool status True if they are an admin, false if not
+         */
+        public void setAdminStatus(bool status)
+        {
+			// Set up the database connection, there has to be a better way!
+			using(MySqlConnection my_dbh = new MySqlConnection(Defines.AppSettings.myConnectionString))
+			{
+				// Open the DB connection
+				my_dbh.Open();
+				using(MySqlCommand cmd = new MySqlCommand())
+				{
+					cmd.Connection = my_dbh;
+					cmd.CommandText = "UPDATE agency_team SET " +
+                        "is_admin=@status " +
+                        "WHERE agency_team_id=@id";
+					cmd.Parameters.AddWithValue("@status", status ? "1" : "0");
+					cmd.Parameters.AddWithValue("@id", AgencyTeamId);
+
+					// Run the DB command
+                    if( cmd.ExecuteNonQuery() == 0 )
+                        throw new System.ArgumentException("Couldn't accept the team member invitation");
+
+                    // And update the object status
+                    isAdmin = status;
+
+                }
+
+            }
+
+        }
 
 
 
