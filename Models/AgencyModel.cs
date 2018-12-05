@@ -23,6 +23,8 @@ namespace SearchProcurement.Models
         public string AgencyType { get; set; }
         [Display(Name="Your Agency Website")]
         public string AgencyUrl { get; set; }
+
+        // Agency logo
         public string AgencyLogo { get; set; }
 
         // The text blocks the agency uses throughout
@@ -31,6 +33,7 @@ namespace SearchProcurement.Models
 
         [Display(Name="This text appears on every one of your solicitation pages, under the \"About this Agency\" section.")]
         public string AgencyAboutText { get; set; }
+
         [Display(Name="These are the solicitation action steps that are shown by default on your solicitations.  If you enter specific instructions for a specific solicitation, we don't show this for that solicitation.")]
         public string AgencyDefaultActionSteps { get; set; }
 
@@ -43,16 +46,20 @@ namespace SearchProcurement.Models
         public string AgencyPhone { get; set; }
         [Display(Name="Fax Number")]
         public string AgencyFax { get; set; }
+
+        // Departments and Categories available to this agency
+        public string[] Departments { get; set; }
+        public string[] Categories { get; set; }
+
+
+        // Agency addresses
         public Address BillingAddress { get; set; }
         public Address ShippingAddress { get; set; }
-
 
 
         // For the HTML
         public List<SelectListItem> States { get; set; } = Library.StateListItems();
         public List<SelectListItem> Countries { get; set; } = Library.CountryListItems();
-
-
 
 
 

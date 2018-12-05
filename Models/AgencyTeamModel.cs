@@ -138,7 +138,7 @@ namespace SearchProcurement.Models
                                 Country = r.IsDBNull(7) ? null : r.GetString(7),
                                 Postal = r.IsDBNull(8) ? null : r.GetString(8)
                             };
-                            isAdmin = r.GetInt32(9) == 1 ? true : false;
+                            isAdmin = r.GetBoolean(9);
                         }
                         else
                             throw new System.ArgumentException("Couldn't find the agency by unique ID");

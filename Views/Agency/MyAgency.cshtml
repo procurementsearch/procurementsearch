@@ -22,6 +22,7 @@
         <li><a href="#logo">Your Logo</a></li>
         <li><a href="#text">Instructional Text</a></li>
         <li><a href="#templates">Document &amp; Email Templates</a></li>
+        <li><a href="#reports">Report Recipients</a></li>
       </ul>
 
       <div id="about">
@@ -163,6 +164,26 @@
           <legend>Departments and Categories</legend>
           <p class="attention">These are the departments within your organizations, and the categories into which you can organize your solicitations.</p>
 
+          <p><i><span class="attention">Departments:</span> list the departments within your organization that your solicitations may be associated with, one per line, e.g.:</i></p>
+          <textarea asp-for="Departments" placeholder="" class="pure-input-2-3" rows=4></textarea>
+          <br>
+<pre>
+Example:
+<i>  Facilities
+  Parks
+  Roads and Transportation
+  ...</i>
+</pre><br><br>
+
+          <p><i><span class="attention">Categories:</span> list the departments within your organization that your solicitations may be associated with, one per line, e.g.:</i></p>
+          <textarea asp-for="Categories" placeholder="" class="pure-input-2-3" rows=4></textarea>
+          <br>
+<pre>
+Example:
+<i>  Construction
+  Goods and Services
+  Personal Services</i>
+</pre>
 
           <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
@@ -194,7 +215,13 @@
                 <div id="croppie"></div>
               </div>
             </div>
-            <div id="logo_preview" style="padding: 1em;"></div>
+            <div id="logo_preview" style="padding: 1em;">
+            @if ( !String.IsNullOrEmpty(Model.AgencyLogo) )
+            {
+            <p id="oldLogo">Uploaded logo:</p><img src="@Model.AgencyLogo">
+            }
+            </div>
+            <input type="hidden" name="removeOldLogo" id="removeOldLogo" value="0">
           </div>
 
           <div class="pure-controls">
@@ -238,7 +265,22 @@
         </fieldset>
 
       </div>
+      <div id="reports">
+
+        <fieldset>
+          <legend>Report Recipients</legend>
+          <p class="attention">Set up the list of recipients for the automatically-generated reports.</p>
+
+          <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Save Changes</button>
+          </div>
+        </fieldset>
+
+      </div>
     </div>
+
+    <input type="hidden" name="logoData">
+    <input type="hidden" name="logoName">
 
   </form>
 

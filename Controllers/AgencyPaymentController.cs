@@ -90,15 +90,15 @@ namespace SearchProcurement.Controllers
             Agency a = new Agency(auth0Id);
 
             // Now, process the Stripe customer and charge
-            var customers = new StripeCustomerService();
-            var charges = new StripeChargeService();
+            var customers = new CustomerService();
+            var charges = new ChargeService();
 
-            var customer = customers.Create(new StripeCustomerCreateOptions {
+            var customer = customers.Create(new CustomerCreateOptions {
                 Email = stripeEmail,
                 SourceToken = stripeToken
             });
 
-            var charge = charges.Create(new StripeChargeCreateOptions {
+            var charge = charges.Create(new ChargeCreateOptions {
                 Amount = Decimal.ToInt32(Price.loadPrice(a.AgencyType, listingType) * 100),
                 Description = "Listing on ProcurementSearch.com",
                 Currency = "usd",

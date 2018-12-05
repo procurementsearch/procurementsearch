@@ -4,10 +4,10 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -76,18 +76,24 @@ namespace SearchProcurement.Controllers
 
         }
 
-        public IActionResult Login(string returnUrl = "/Agency")
+        /**
+         * Auth0 Login and Logout methods
+         */
+        public async Task Login(string returnUrl = "/Agency")
         {
-            return new ChallengeResult("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
+            await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
         }
 
         public async Task Logout()
         {
-            await HttpContext.Authentication.SignOutAsync("Auth0", new AuthenticationProperties
+            await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
             {
+                // Indicate here where Auth0 should redirect the user after a logout.
+                // Note that the resulting absolute Uri must be whitelisted in the
+                // **Allowed Logout URLs** settings for the app.
                 RedirectUri = Url.Action("Index", "Home")
             });
-            await HttpContext.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
         public IActionResult AccessDenied()
@@ -137,6 +143,52 @@ namespace SearchProcurement.Controllers
 
 
 
+        /**
+         * The POST endpoint for updating an existing agency.
+         */
+        [HttpPost]
+        [Authorize(Policy="VerifiedKnown")]
+        [ValidateAntiForgeryToken]
+        public IActionResult MyAgencyPost(Agency agency)
+        {
+            // Load up the existing one, to retrieve two properties
+            Agency my_a = new Agency(auth0Id);
+
+            // So we have a valid model in account now...  Let's just save it
+            // and bump them to their account page
+            agency.AgencyId = my_a.AgencyId;
+            agency.MyLogin = my_a.MyLogin;
+            agency.update();
+
+            // Did we get a new logo?
+            if(
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoName"]) &&
+                !string.IsNullOrEmpty(HttpContext.Request.Form["logoData"])
+            )
+            {
+                // Remove the old one first
+                if( !string.IsNullOrEmpty(agency.AgencyLogo) )
+                    agency.removeLogo();
+
+                // And save the new logo to s3
+                agency.saveLogo(HttpContext.Request.Form["logoName"], HttpContext.Request.Form["logoData"]);
+            }
+            else if( HttpContext.Request.Form["removeOldLogo"] == "1" )
+            {
+                // Remove the old logo as requested
+                if( !string.IsNullOrEmpty(agency.AgencyLogo) )
+                    agency.removeLogo();
+            }
+            else
+                agency.loadLogo();  // We just need to load the logo if we haven't done anything else to it
+
+
+            // And show the account
+            return View(agency);
+        }
+
+
+
 
 
 
@@ -169,7 +221,6 @@ namespace SearchProcurement.Controllers
             agencyteam.update();
 
             // And show the account
-            ViewBag.message = "I've saved your information!";
             return View(agencyteam);
         }
 

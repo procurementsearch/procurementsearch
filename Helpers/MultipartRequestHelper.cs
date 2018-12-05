@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Primitives;
 
 namespace SearchProcurement.Helpers
 {
@@ -13,18 +14,18 @@ namespace SearchProcurement.Helpers
         public static string GetBoundary(MediaTypeHeaderValue contentType, int lengthLimit)
         {
             var boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary);
-            if (string.IsNullOrWhiteSpace(boundary))
+            if (StringSegment.IsNullOrEmpty(boundary))
             {
                 throw new InvalidDataException("Missing content-type boundary.");
             }
-    
+
             if (boundary.Length > lengthLimit)
             {
                 throw new InvalidDataException(
                     $"Multipart boundary length limit {lengthLimit} exceeded.");
             }
     
-            return boundary;
+            return boundary.ToString();
         }
     
         public static bool IsMultipartContentType(string contentType)
@@ -38,8 +39,8 @@ namespace SearchProcurement.Helpers
             // Content-Disposition: form-data; name="key";
             return contentDisposition != null
                 && contentDisposition.DispositionType.Equals("form-data")
-                && string.IsNullOrEmpty(contentDisposition.FileName)
-                && string.IsNullOrEmpty(contentDisposition.FileNameStar);
+                && StringSegment.IsNullOrEmpty(contentDisposition.FileName)
+                && StringSegment.IsNullOrEmpty(contentDisposition.FileNameStar);
         }
     
         public static bool HasFileContentDisposition(ContentDispositionHeaderValue contentDisposition)
@@ -47,11 +48,9 @@ namespace SearchProcurement.Helpers
             // Content-Disposition: form-data; name="myfile1"; filename="Misc 002.jpg"
             return contentDisposition != null
                 && contentDisposition.DispositionType.Equals("form-data")
-                && (!string.IsNullOrEmpty(contentDisposition.FileName)
-                    || !string.IsNullOrEmpty(contentDisposition.FileNameStar));
+                && (!StringSegment.IsNullOrEmpty(contentDisposition.FileName)
+                    || !StringSegment.IsNullOrEmpty(contentDisposition.FileNameStar));
         }
     }
-
-
 
 }

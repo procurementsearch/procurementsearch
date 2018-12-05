@@ -59,11 +59,11 @@ namespace SearchProcurement.Helpers
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        string uploadFilename = contentDisposition.Parameters.Where(c => c.Name == "filename").
+                        var uploadFilename = contentDisposition.Parameters.Where(c => c.Name == "filename").
                             Select(v => v.Value).
                             FirstOrDefault();
                         uploadFilename = uploadFilename.Substring(1, uploadFilename.Length - 2);
-                        formAccumulator.Append("uploadFilename", uploadFilename);
+                        formAccumulator.Append("uploadFilename", uploadFilename.ToString());
 
                         await section.Body.CopyToAsync(targetStream);
                     }
@@ -90,7 +90,7 @@ namespace SearchProcurement.Helpers
                             {
                                 value = String.Empty;
                             }
-                            formAccumulator.Append(key, value);
+                            formAccumulator.Append(key.ToString(), value);
 
                             if (formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
                             {
