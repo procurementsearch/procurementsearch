@@ -169,7 +169,6 @@ ClientBin/
 *.dbproj.schemaview
 *.pfx
 *.publishsettings
-node_modules/
 bower_components/
 orleans.codegen.cs
 

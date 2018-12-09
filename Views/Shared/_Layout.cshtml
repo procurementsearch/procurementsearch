@@ -22,24 +22,23 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/css/fonts.css">
-        <link rel="stylesheet" href="~/css/pure-min.css">
-        <link rel="stylesheet" href="~/css/grids-responsive-min.css">
-        <link rel="stylesheet" href="~/css/styles.css">
+        <link rel="stylesheet" href="~/node_modules/purecss/build/pure-min.css">
+        <link rel="stylesheet" href="~/node_modules/purecss/build/grids-responsive-min.css">
+        <link rel="stylesheet" href="~/css/home.css">
+
+        <!-- <link rel="stylesheet" href="~/css/styles.css">
         <link rel="stylesheet" href="~/css/search.css">
         <link rel="stylesheet" href="~/css/detail.css">
         <link rel="stylesheet" href="~/css/hamburger-menu.css">
         <link rel="stylesheet" href="~/css/agency.css">
         <link rel="stylesheet" href="~/css/progress-bar.css">
         <link rel="stylesheet" href="~/css/listing-breadcrumbs.css">
-        <link rel="stylesheet" href="~/css/mobile.css">
-        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick.css">
-        <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick-theme.css">
-        <link rel="stylesheet" href="~/lib/hopscotch/dist/css/hopscotch.css">
+        <link rel="stylesheet" href="~/css/mobile.css"> -->
+        <link rel="stylesheet" href="~/node_modules/slick-carousel/slick/slick.css">
+        <link rel="stylesheet" href="~/node_modules/slick-carousel/slick/slick-theme.css">
 
-        <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
-        <script type="text/javascript" src="~/lib/slick-carousel/slick/slick.js"></script>
-        <script type="text/javascript" src="~/lib/hopscotch/dist/js/hopscotch.js">
-        <script type="text/javascript" src="~/lib/Tocca.js/Tocca.js"></script>
+        <script type="text/javascript" src="~/node_modules/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="~/node_modules/slick-carousel/slick/slick.js"></script>
         <script type="text/javascript" src="~/js/site.js"></script>
         <script type="text/javascript" src="~/js/ui.js"></script>
     </environment>
@@ -69,42 +68,68 @@
 </head>
 <body>
 
-    <div id="layout">
 
-        <!-- for sticky footer -->
-        <a href="#menu" id="menuLink" class="menu-link">
-            <!-- Hamburger icon -->
-            <span></span>
-        </a>
 
-        <div id="menu">
-            <div class="pure-menu">
-                <a class="pure-menu-heading" href="#">Login</a>
-                <ul class="pure-menu-list">
-                    @Html.Partial("Pages-login")
+
+
+
+
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+            <img src="/images/logo.png" class="pure-img">
+            <h1 class="brand-title">Procurement Search</h1>
+            <h2 class="brand-tagline">@Html.Raw(Defines.LocationSettings.homeTitle)</h2>
+
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="pure-button" href="http://purecss.io">Pure</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="pure-button" href="http://yuilibrary.com">YUI Library</a>
+                    </li>
+
+                    <a class="pure-menu-heading" href="#">Login</a>
+                    <ul class="pure-menu-list">
+                        @Html.Partial("Pages-login")
+                    </ul>
+                    <a class="pure-menu-heading" href="#">Menu</a>
+                    <ul class="pure-menu-list">
+                        @Html.Partial("Pages-menu")
+                    </ul>
+                    <a class="pure-menu-heading" href="#">Social Media</a>
+                    <ul class="pure-menu-list">
+                        @Html.Partial("Pages-social-media")
+                    </ul>
+
+
                 </ul>
-                <a class="pure-menu-heading" href="#">Menu</a>
-                <ul class="pure-menu-list">
-                    @Html.Partial("Pages-menu")
-                </ul>
-                <a class="pure-menu-heading" href="#">Social Media</a>
-                <ul class="pure-menu-list">
-                    @Html.Partial("Pages-social-media")
-                </ul>
-                <a class="pure-menu-heading" style="text-transform: none;" href="#">Procurement Search, LLC</a>
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">(503) 395-5303</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">help @@ procurementsearch.com</a></li>
-                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+            <!-- A wrapper for all the blog posts -->
+            @RenderBody()
+
+
+            <div class="footer">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">An Equity Hub Offering</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">(503) 395-5303</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">help @@ procurementsearch.com</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-
-        <div id="main" class="my_content">
-            <!-- <div class="content"></div> -->
-            @RenderBody()
-        </div>
-
     </div>
+</div>
+
+
+
 
 </body>
 </html>

@@ -252,43 +252,6 @@ jQuery(document).ready(function(){
         $('.agency-slider').slick('slickNext');
     });
 
-
-
-    // set up the guided tour
-    var tour = {
-        id: "hello-hopscotch",
-        i18n: {
-            nextBtn: "Yes, tell me more!"
-        },
-        scrollTopMargin: '20',
-        steps: [
-            {
-                title: "Hey, agency buyers!",
-                content: "We can help you grow your vendor pool and get your bids and opportunities in front of a local, wider, more diverse audience.  Want to know more?",
-                target: "topleftcorner",
-                placement: "bottom",
-                showCTAButton: true,
-                ctaLabel: "Skip",
-                onCTA: function() {
-                    hopscotch.endTour();
-                    createCookie("hidetour", "yes", 7);
-                },
-                onNext: function() { hopscotch.resetDefaultI18N() }
-            },
-            {
-                title: "What are we all about?",
-                content: "You want a wider and more diverse vendor pool.  Your local business community wants to work with you.  We want to bring you two together.",
-                target: "step2",
-                placement: "right"
-            }
-        ]
-    };
-
-    // Start the tour!
-    if( readCookie("hidetour") === null )
-        hopscotch.startTour(tour);
-
 });
-
 
 </script>
